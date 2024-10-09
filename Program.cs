@@ -1,2 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using KCKProjekt.Controllers;
+using KCKProjekt.Views.CLIViews;
+using KCKProjekt.Views.ViewInterfaces;
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		MainController mainController = new MainController();
+		Console.ReadKey();
+	}
+}
