@@ -8,14 +8,18 @@ namespace WpfApp.Views.UserWPFPages
     /// </summary>
     public partial class SignInPage : Page
     {
-        public SignInPage()
+		//private Action<(string,string)> _loginCallback;
+		public SignInPage()
         {
             InitializeComponent();
-        }
+			//_loginCallback = loginCallback;
+		}
 
-        private var Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            return (input1, input2);
+            var authenticationData = (input1.Text, input2.Text);
+			//_loginCallback?.Invoke(authenticationData);
+            NavigationService.GoBack();
         }
     }
 }

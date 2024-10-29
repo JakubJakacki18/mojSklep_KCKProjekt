@@ -3,7 +3,7 @@ using Library.Interfaces;
 
 namespace Library;
 
-public class Launcher(Io io, IUserView _userView)
+public class Launcher(/*Io io,*/ IUserView _userView)
 {
     private UserController _userController;
     public void Run()
@@ -15,11 +15,10 @@ public class Launcher(Io io, IUserView _userView)
 
 
 
-        int.TryParse(io.Input(), out int f);
-        int.TryParse(io.Input(), out int s);
+        //int.TryParse(io.Input(), out int f);
+        //int.TryParse(io.Input(), out int s);
 
-        var calc = Calculator.Add(f, s);
-
-        io.Output(calc.ToString());
+        //var calc = Calculator.Add(f, s);
+        //io.Output(calc.ToString());
     }
 }

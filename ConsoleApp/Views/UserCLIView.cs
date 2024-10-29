@@ -52,9 +52,9 @@ namespace ConsoleApp.Views
             switch (consoleKey)
             {
                 case ConsoleKey.Spacebar:
-                    return true;
-                case ConsoleKey.Enter:
                     return false;
+                case ConsoleKey.Enter:
+                    return true;
                 default:
                     throw new InvalidOperationException("Coś poszło nie tak");
             }

@@ -12,20 +12,28 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
-        }
+            //var launcher = new Launcher(new Io(str => output.Content = str, () =>
+            //{
+
+            //	++i;
+            //	return i % 2 == 0 ? input1.Text : input2.Text;
+            //}
+            //), new UserWPFView(MainFrame));
+            //launcher.Run();
+            //new UserWPFView(MainFrame);
+		}
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var launcher = new Launcher(new Io(str => output.Content = str, () =>
-                {
-
-                    ++i;
-                    return i % 2 == 0 ? input1.Text : input2.Text;
-                }
-            ), new UserWPFView());
-            launcher.Run();
+            
         }
 
         private int i = 0;
-    }
+
+		private void MainFrame_Loaded(object sender, RoutedEventArgs e)
+		{
+            var launcher = new Launcher(new UserWPFView(MainFrame));
+            launcher.Run();
+        }
+	}
 }

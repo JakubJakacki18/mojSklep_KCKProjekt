@@ -13,7 +13,7 @@ namespace Library.Controllers
 
         public void ShowInterface()
         {
-            _sellerView.ShowInterface();
+            //_sellerView.ShowInterface();
         }
 
         public void AddProduct()
