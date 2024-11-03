@@ -1,7 +1,5 @@
 ﻿using Library.Interfaces;
-using System;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 using WpfApp.Views.UserWPFPages;
 
 namespace WpfApp.Views
@@ -11,25 +9,29 @@ namespace WpfApp.Views
     /// </summary>
     public partial class UserWPFView : Page, IUserView
     {
-		private TaskCompletionSource<bool> isSignInDesireTask;
-		private readonly Frame _mainFrame;
+        private TaskCompletionSource<bool> isSignInDesireTask;
+        private readonly Frame _mainFrame;
         public UserWPFView(Frame mainFrame)
         {
             InitializeComponent();
             _mainFrame = mainFrame;
             //_mainFrame.Navigate(new LandingPage());
-			//_mainFrame.Navigated += LandingPageReturn;
-            
-            
-		}
+            //_mainFrame.Navigated += LandingPageReturn;
+
+
+        }
 
         public bool LandingPage()
         {
-			var landingPage = new LandingPage();
-			_mainFrame.Navigate(landingPage);
-			
-            return landingPage.WaitForUserChoiceAsync().Result;
-		}
+            return LandingPageAsync().Result;
+        }
+
+        public async Task<bool> LandingPageAsync()
+        {
+            var landingPage = new LandingPage();
+            _mainFrame.Navigate(landingPage);
+            return await landingPage.WaitForUserChoiceAsync();
+        }
 
         public (string, string) showSignIn()
         {
@@ -47,17 +49,17 @@ namespace WpfApp.Views
         {
 
         }
-  //      private void LandingPageReturn(object sender, NavigationEventArgs e)
-  //      {
-		//	if (e.Content is LandingPage landingPage)
-  //          {
-		//		_usersChoice = landingPage.usersChoice;
-		//	}
-		//}
+        //      private void LandingPageReturn(object sender, NavigationEventArgs e)
+        //      {
+        //	if (e.Content is LandingPage landingPage)
+        //          {
+        //		_usersChoice = landingPage.usersChoice;
+        //	}
+        //}
 
-		(string, string) IUserView.showSignUp()
-		{
-			throw new NotImplementedException();
-		}
-	}
+        (string, string) IUserView.showSignUp()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

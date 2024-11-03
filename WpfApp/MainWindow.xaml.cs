@@ -21,19 +21,19 @@ namespace WpfApp
             //), new UserWPFView(MainFrame));
             //launcher.Run();
             //new UserWPFView(MainFrame);
-		}
+        }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private int i = 0;
 
-		private void MainFrame_Loaded(object sender, RoutedEventArgs e)
-		{
+        private void MainFrame_Loaded(object sender, RoutedEventArgs e)
+        {
             var launcher = new Launcher(new UserWPFView(MainFrame));
             launcher.Run();
         }
-	}
+    }
 }
