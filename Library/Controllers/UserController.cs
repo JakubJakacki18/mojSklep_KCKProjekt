@@ -7,9 +7,11 @@ namespace KCKProjekt.Controllers
     public class UserController
     {
         private IUserView _userView;
-        public UserController(IUserView userView)
+        private IUserRepository _userRepository;
+        public UserController(IUserView userView, IUserRepository userRepository)
         {
             _userView = userView;
+            _userRepository = userRepository;
         }
 
         public async Task<UserModel> SignInOrUpSelectionAsync()
@@ -19,11 +21,12 @@ namespace KCKProjekt.Controllers
             UserModel? result;
             if (!isSignInDesire)
             {
+                bool isSignUpSuccess = true;
                 do
                 {
-                    authenticationData = await _userView.ShowSignUp();
-
-                } while (!SignUpAsync(authenticationData.Item1, authenticationData.Item2));
+                    authenticationData = await _userView.ShowSignUp(isSignUpSuccess);
+                    isSignUpSuccess = SignUpAsync(authenticationData.Item1, authenticationData.Item2);
+                } while (!isSignUpSuccess);
             }
 
             do
@@ -36,19 +39,30 @@ namespace KCKProjekt.Controllers
 
         public async Task<UserModel?> SignInAsync(string login, string password)
         {
-            while (login != "admin" && password != "admin")
+            UserModel? user = _userRepository.GetUser(login, password);
+            while (user == null)
             {
                 (login, password) = await _userView.ShowSignIn(false);
+                user = _userRepository.GetUser(login, password);
             }
-            return new UserModel { };
+            return user;
 
         }
 
         public bool SignUpAsync(string login, string password)
         {
-            //var newUserData = _userView.ShowSignUp();
-
-            return true;
+            UserModel? user = _userRepository.GetUser(login);
+            if (user != null)
+            {
+                return false;
+            }
+            user = new UserModel()
+            {
+                Login = login,
+                Password = password,
+                Role = RolesEnum.Buyer
+            };
+            return _userRepository.AddUser(user) ? true : throw new Exception("Użytkownik nie został dodany!");
         }
         public bool SignOut()
         {

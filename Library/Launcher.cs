@@ -1,5 +1,6 @@
 ﻿using KCKProjekt.Controllers;
 using Library.Interfaces;
+using Library.Repository;
 
 namespace Library;
 
@@ -8,7 +9,9 @@ public class Launcher(/*Io io,*/ IUserView _userView)
     private UserController _userController;
     public async Task RunAsync()
     {
-        _userController = new UserController(_userView);
+        ApplicationDbContext context = new ApplicationDbContext();
+        IUserRepository userRepository = new UserRepository(context);
+        _userController = new UserController(_userView, userRepository);
         var result = await _userController.SignInOrUpSelectionAsync();
 
 

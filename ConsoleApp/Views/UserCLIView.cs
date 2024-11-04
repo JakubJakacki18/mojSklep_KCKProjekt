@@ -1,4 +1,5 @@
-﻿using Library.Interfaces;
+﻿using Library.Data;
+using Library.Interfaces;
 using Terminal.Gui;
 
 
@@ -17,6 +18,17 @@ namespace ConsoleApp.Views
             }
         }
 
+        private void ShowSignUpErrorMessage(bool isValid)
+        {
+            if (isValid != true)
+            {
+                Application.Init();
+                MessageBox.Query("Błąd", "Użytkownik o tym loginie już istnieje", "OK");
+                Application.Shutdown();
+
+            }
+        }
+
         public Task<(string, string)> ShowSignIn(bool isValid)
         {
             string username = "";
@@ -25,7 +37,7 @@ namespace ConsoleApp.Views
             Application.Init();
             var top = Application.Top;
 
-            var win = new Window("Logowanie")
+            var win = new Window("Logowanie - " + ConstString.AppName)
             {
                 X = 0,
                 Y = 1,
@@ -91,13 +103,17 @@ namespace ConsoleApp.Views
             {
                 username = inputField.Text.ToString() ?? string.Empty;
                 password = passwordField.Text.ToString() ?? string.Empty;
-                Application.RequestStop(); // Zakończenie aplikacji
+                if (username == string.Empty || password == string.Empty)
+                {
+                    MessageBox.Query("Bład", "Login albo hasło nie zostało uzupełnione", "Ok");
+                }
+                else
+                {
+                    Application.RequestStop(); // Zakończenie aplikacji
+                }
             };
             win.Add(okButton, passwordSecretButton);
-
-
             Application.Run();
-            // Uruchomienie aplikacji
             Application.Shutdown();
 
 
@@ -116,9 +132,126 @@ namespace ConsoleApp.Views
             return Task.FromResult((username, password));
         }
 
-        public Task<(string, string)> ShowSignUp()
+        public Task<(string, string)> ShowSignUp(bool isValid)
         {
-            throw new NotImplementedException();
+            string username = "";
+            string password = "";
+            string confirmPassword = "";
+
+            ShowSignUpErrorMessage(isValid);
+            Application.Init();
+            var top = Application.Top;
+            var win = new Window("Rejestracja - " + ConstString.AppName)
+            {
+                X = 0,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+            };
+            top.Add(win);
+
+            // Etykieta dla pola tekstowego
+            var label = new Label("Wprowadź swój login:")
+            {
+                X = 1,
+                Y = 1,
+            };
+            win.Add(label);
+
+            // Pole tekstowe
+            var inputField = new TextField("")
+            {
+                X = 1,
+                Y = Pos.Top(label) + 1,
+                Width = 30
+            };
+            win.Add(inputField);
+
+            // Etykieta dla pola hasła
+            var passwordLabel = new Label("Wprowadź swoje hasło:")
+            {
+                X = 1,
+                Y = Pos.Top(inputField) + 2,
+            };
+            win.Add(passwordLabel);
+
+            // Pole do wprowadzania ukrytego hasła
+            var passwordField = new TextField("")
+            {
+                X = 1,
+                Y = Pos.Top(passwordLabel) + 1,
+                Width = 30,
+                Secret = true
+            };
+            var confirmPasswordLabel = new Label("Potwierdź swoje hasło:")
+            {
+                X = 1,
+                Y = Pos.Top(passwordField) + 2,
+            };
+            var confirmPasswordField = new TextField("")
+            {
+                X = 1,
+                Y = Pos.Top(confirmPasswordLabel) + 1,
+                Width = 30,
+                Secret = true
+            };
+            var passwordSecretButton = new Button("Wyświetl hasło")
+            {
+                X = Pos.Right(passwordField) + 1,
+                Y = Pos.Top(passwordField)
+            };
+            passwordSecretButton.Clicked += () =>
+            {
+                passwordField.Secret = !passwordField.Secret;
+                passwordSecretButton.Text = passwordField.Secret ? "Wyświetl hasło" : "Ukryj hasło";
+            };
+
+            win.Add(passwordField, confirmPasswordLabel, confirmPasswordField);
+
+            // Przycisk do potwierdzenia
+            var okButton = new Button("OK")
+            {
+                X = 1,
+                Y = Pos.Top(confirmPasswordField) + 2
+            };
+
+            void HandleSignUp()
+            {
+                {
+                    username = inputField.Text.ToString() ?? string.Empty;
+                    password = passwordField.Text.ToString() ?? string.Empty;
+                    confirmPassword = confirmPasswordField.Text.ToString() ?? string.Empty;
+                    if (username == string.Empty || password == string.Empty)
+                    {
+                        MessageBox.Query("Bład", "Login albo hasło nie zostało uzupełnione", "Ok");
+                        passwordField.Text = "";
+                    }
+                    else if (!password.Equals(confirmPassword))
+                    {
+                        MessageBox.Query("Bład", "Hasła nie są takie same", "Ok");
+                        confirmPasswordField.Text = "";
+                        passwordField.Text = "";
+                    }
+                    else
+
+                    {
+                        Application.RequestStop(); // Zakończenie aplikacji
+                    }
+                }
+            }
+
+            okButton.Clicked += HandleSignUp;
+            passwordField.KeyPress += (e) =>
+            {
+                if (e.KeyEvent.Key == Key.Enter)
+                {
+                    HandleSignUp();
+                }
+            };
+            win.Add(okButton, passwordSecretButton);
+            Application.Run();
+            Application.Shutdown();
+            return Task.FromResult((username, password));
         }
 
         public Task<bool> LandingPage()
@@ -144,7 +277,7 @@ namespace ConsoleApp.Views
 
             var top = Application.Top;
 
-            var win = new Window("Logowanie/Rejestracja - mójSklep")
+            var win = new Window("Logowanie/Rejestracja - " + ConstString.AppName)
             {
                 X = 0,
                 Y = 1,   // leave one row for menubar
