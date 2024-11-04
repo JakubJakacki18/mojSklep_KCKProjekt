@@ -2,8 +2,8 @@
 {
     public interface IUserView
     {
-        public (string, string) showSignIn();
-        public (string, string) showSignUp();
-        public bool LandingPage();
+        public Task<(string, string)> ShowSignIn(bool isValid = true);
+        public Task<(string, string)> ShowSignUp();
+        public Task<bool> LandingPage();
     }
 }

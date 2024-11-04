@@ -6,10 +6,10 @@ namespace Library;
 public class Launcher(/*Io io,*/ IUserView _userView)
 {
     private UserController _userController;
-    public void Run()
+    public async Task RunAsync()
     {
         _userController = new UserController(_userView);
-        var result = _userController.SignInOrUpSelection();
+        var result = await _userController.SignInOrUpSelectionAsync();
 
 
 

@@ -21,28 +21,25 @@ namespace WpfApp.Views
 
         }
 
-        public bool LandingPage()
-        {
-            return LandingPageAsync().Result;
-        }
-
-        public async Task<bool> LandingPageAsync()
+        public async Task<bool> LandingPage()
         {
             var landingPage = new LandingPage();
             _mainFrame.Navigate(landingPage);
             return await landingPage.WaitForUserChoiceAsync();
         }
 
-        public (string, string) showSignIn()
+        public async Task<(string, string)> ShowSignIn(bool isValid)
         {
-            _mainFrame.Navigate(new SignInPage());
-            return ("", "");
+            var signInPage = new SignInPage();
+            _mainFrame.Navigate(signInPage);
+            return await signInPage.WaitForSignIn();
 
         }
 
-        (string, string) showSignUp()
+        public async Task<(string, string)> ShowSignUp()
         {
-            throw new NotImplementedException();
+            //_mainFrame.Navigate(new SignUpPage());
+            return ("", "");
         }
 
         private void OnLoginCompleted(string username, string password)
@@ -57,9 +54,5 @@ namespace WpfApp.Views
         //	}
         //}
 
-        (string, string) IUserView.showSignUp()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

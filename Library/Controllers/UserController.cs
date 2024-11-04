@@ -12,41 +12,41 @@ namespace KCKProjekt.Controllers
             _userView = userView;
         }
 
-        public UserModel SignInOrUpSelection()
+        public async Task<UserModel> SignInOrUpSelectionAsync()
         {
-            var isSignInDesire = _userView.LandingPage();
+            var isSignInDesire = await _userView.LandingPage();
             (string, string) authenticationData;
             UserModel? result;
             if (!isSignInDesire)
             {
                 do
                 {
-                    authenticationData = _userView.showSignUp();
+                    authenticationData = await _userView.ShowSignUp();
 
-                } while (!SignUp(authenticationData.Item1, authenticationData.Item2));
+                } while (!SignUpAsync(authenticationData.Item1, authenticationData.Item2));
             }
 
             do
             {
-                authenticationData = _userView.showSignIn();
-                result = SignIn(authenticationData.Item1, authenticationData.Item2);
+                authenticationData = await _userView.ShowSignIn();
+                result = await SignInAsync(authenticationData.Item1, authenticationData.Item2);
             } while (result == null);
             return result;
         }
 
-        public UserModel? SignIn(string login, string password)
+        public async Task<UserModel?> SignInAsync(string login, string password)
         {
             while (login != "admin" && password != "admin")
             {
-                (login, password) = _userView.showSignIn();
+                (login, password) = await _userView.ShowSignIn(false);
             }
             return new UserModel { };
 
         }
 
-        public bool SignUp(string login, string password)
+        public bool SignUpAsync(string login, string password)
         {
-            //var newUserData = _userView.showSignUp();
+            //var newUserData = _userView.ShowSignUp();
 
             return true;
         }

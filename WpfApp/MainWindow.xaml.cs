@@ -19,7 +19,7 @@ namespace WpfApp
             //	return i % 2 == 0 ? input1.Text : input2.Text;
             //}
             //), new UserWPFView(MainFrame));
-            //launcher.Run();
+            //launcher.RunAsync();
             //new UserWPFView(MainFrame);
         }
 
@@ -33,7 +33,7 @@ namespace WpfApp
         private void MainFrame_Loaded(object sender, RoutedEventArgs e)
         {
             var launcher = new Launcher(new UserWPFView(MainFrame));
-            launcher.Run();
+            launcher.RunAsync();
         }
     }
 }

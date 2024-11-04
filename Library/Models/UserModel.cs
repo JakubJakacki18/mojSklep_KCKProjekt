@@ -4,9 +4,9 @@ namespace Library.Model
 {
     public class UserModel
     {
-        string Login { get; set; }
-        string Password { get; set; }
-        public RolesEnum Role { get; private set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public RolesEnum Role { get; set; }
     }
 
 
