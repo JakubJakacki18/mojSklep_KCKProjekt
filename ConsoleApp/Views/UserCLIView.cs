@@ -301,7 +301,7 @@ namespace ConsoleApp.Views
             };
             var signUpButton = new Button()
             {
-                Text = "Zarejestruj się!",
+                Text = "Za_rejestruj się!",
                 Y = Pos.Bottom(label) + 3,
 
                 // center the login button horizontally
@@ -339,6 +339,99 @@ namespace ConsoleApp.Views
         {
 
 
+        }
+
+        public int RoleSelection(RolesEnum roles)
+        {
+            if (roles == RolesEnum.PermissionBuyer)
+            {
+                return 0;
+            }
+
+            int val = -1;
+            Application.Init();
+            var top = Application.Top;
+            var bigWin = new Window("Wybór roli - " + ConstString.AppName)
+            {
+                X = 0,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+            };
+            var win = new Window()
+            {
+                X = Pos.Center(),
+                Y = Pos.Center(),
+                Width = 30,
+                Height = 11,
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
+            top.Add(bigWin);
+            bigWin.Add(win);
+            var label = new Label("Zaloguj się jako:")
+            {
+                X = Pos.Center(),
+                Y = Pos.Center() - 3,
+            };
+            win.Add(label);
+            if (roles.HasFlag(RolesEnum.Buyer))
+            {
+                var buyerButton = new Button()
+                {
+                    Text = "Klient sklepu",
+                    Y = Pos.Bottom(label) + 3,
+
+                    // center the login button horizontally
+                    X = Pos.Center(),
+                    IsDefault = false,
+                };
+                buyerButton.Clicked += () =>
+                {
+                    val = 0;
+                    Application.RequestStop();
+                };
+                win.Add(buyerButton);
+            }
+
+            if (roles.HasFlag(RolesEnum.Seller))
+            {
+                var sellerButton = new Button()
+                {
+                    Text = "Sprzedający",
+                    Y = Pos.Bottom(label) + 4,
+
+                    // center the login button horizontally
+                    X = Pos.Center(),
+                    IsDefault = false,
+                };
+                sellerButton.Clicked += () =>
+                {
+                    val = 1;
+                    Application.RequestStop();
+                };
+                win.Add(sellerButton);
+            }
+            if (roles.HasFlag(RolesEnum.Admin))
+            {
+                var adminButton = new Button()
+                {
+                    Text = "Administrator",
+                    Y = Pos.Bottom(label) + 5,
+
+                    // center the login button horizontally
+                    X = Pos.Center(),
+                    IsDefault = false,
+                };
+                adminButton.Clicked += () =>
+                {
+                    val = 2;
+                    Application.RequestStop();
+                };
+                win.Add(adminButton);
+            }
+            Application.Run();
+            Application.Shutdown();
+            return val;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Library.Interfaces;
+﻿using Library.Data;
+using Library.Interfaces;
 using System.Windows.Controls;
 using WpfApp.Views.UserWPFPages;
 
@@ -45,6 +46,16 @@ namespace WpfApp.Views
         private void OnLoginCompleted(string username, string password)
         {
 
+        }
+
+        public Task<(string, string)> ShowSignUp(bool isValid = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int RoleSelection(RolesEnum roles)
+        {
+            throw new NotImplementedException();
         }
         //      private void LandingPageReturn(object sender, NavigationEventArgs e)
         //      {

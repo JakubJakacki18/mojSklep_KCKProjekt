@@ -1,6 +1,4 @@
-﻿using Library;
-using System.Windows;
-using WpfApp.Views;
+﻿using System.Windows;
 
 namespace WpfApp
 {
@@ -32,8 +30,8 @@ namespace WpfApp
 
         private void MainFrame_Loaded(object sender, RoutedEventArgs e)
         {
-            var launcher = new Launcher(new UserWPFView(MainFrame));
-            launcher.RunAsync();
+            //var launcher = new Launcher(new UserWPFView(MainFrame),);
+            //launcher.RunAsync();
         }
     }
 }

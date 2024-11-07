@@ -22,13 +22,13 @@ namespace Library
                 {
                     Login = "admin",
                     Password = "admin",
-                    Role = RolesEnum.Admin
+                    Role = RolesEnum.PermissionAdmin
                 },
                 new UserModel
                 {
                     Login = "user",
                     Password = "user",
-                    Role = RolesEnum.Buyer
+                    Role = RolesEnum.PermissionBuyer
                 }
             );
 

@@ -2,11 +2,14 @@
 using Library.Interfaces;
 using Library.Model;
 
-namespace KCKProjekt.Controllers
+namespace Library.Controllers
 {
     public class UserController
     {
         private IUserView _userView;
+        private IBuyerView _buyerView;
+        private ISellerView _sellerView;
+        private IAdminView _adminView;
         private IUserRepository _userRepository;
         public UserController(IUserView userView, IUserRepository userRepository)
         {
@@ -83,6 +86,13 @@ namespace KCKProjekt.Controllers
         public RolesEnum GetRole(UserModel loggedUser)
         {
             return loggedUser.Role;
+        }
+
+        public int RoleSelecion(UserModel loggedUser)
+        {
+            var Roles = loggedUser.Role;
+            return _userView.RoleSelection(Roles);
+
         }
     }
 }
