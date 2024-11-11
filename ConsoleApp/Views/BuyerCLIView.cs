@@ -5,70 +5,16 @@ using Terminal.Gui;
 
 namespace ConsoleApp.Views
 {
-    public class BuyerCLIView : IBuyerView
+    public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-
-        private Window mainWindow;
-        private Toplevel top;
-
-        public bool ExitApp()
-        {
-            bool isExitWanted = false;
-            var win = new Window("Wyjście")
-            {
-                X = Pos.Center(),
-                Y = Pos.Center(),
-                Width = 50,
-                Height = 10,
-                ColorScheme = ColorTheme.RedThemePalette
-            };
-            var label = new Label("Czy chcesz wyjść ze sklepu?")
-            {
-                X = Pos.Center(),
-                Y = Pos.Center()
-            };
-            var yesButton = new Button("Tak")
-            {
-                X = Pos.Center() - 10,
-                Y = Pos.Bottom(label) + 1
-            };
-            yesButton.Clicked += () =>
-            {
-                isExitWanted = true;
-                Application.RequestStop();
-            };
-            var noButton = new Button("Nie")
-            {
-                X = Pos.Center() + 3,
-                Y = Pos.Top(yesButton)
-            };
-            noButton.Clicked += () =>
-            {
-                Application.RequestStop();
-            };
-
-
-            win.Add(label, yesButton, noButton);
-            OpenWindow(win);
-            return isExitWanted;
-        }
-
-        private void OpenWindow(Window win)
-        {
-            mainWindow.Add(win);
-            top.Add(mainWindow);
-            Application.Run(win);
-            Application.Shutdown();
-        }
-
         public void ShowAllProducts(List<ProductModel> products)
         {
             var win = new Window("Produkty")
             {
                 X = 0,
                 Y = 1,
-                Width = 80,
-                Height = 15,
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
 
@@ -78,29 +24,19 @@ namespace ConsoleApp.Views
             {
                 productNames.Add($"{product.Name} - {product.Price}"); // wyświetl nazwę i cenę
             }
-            var data = new List<string>
+            var listView = new ListView(productNames)
             {
-                "ID | Imię        | Nazwisko     | Wiek",
-                "---------------------------------------",
-                "1  | Jan         | Kowalski     | 30",
-                "2  | Anna        | Nowak        | 25",
-                "3  | Piotr       | Zieliński    | 40",
-                "4  | Katarzyna   | Wiśniewska   | 35"
-            };
-            var listView = new ListView(data)
-            {
-                X = Pos.Center(),
-                Y = Pos.Center(),
+                X = 0,
+                Y = 1,
                 Width = 40,
                 Height = Dim.Fill() - 2,
                 AllowsMarking = false
             };
 
-            // Wyświetlanie okna szczegółów po kliknięciu na element
-            //listView.OpenSelectedItem += (args) =>
-            //{
-            //    MessageBox.Query("Szczegóły produktu", products[args.Item].Description, "Ok");
-            //};
+            listView.OpenSelectedItem += (args) =>
+            {
+                MessageBox.Query("Szczegóły produktu", products[args.Item].Description, "Ok");
+            };
             var label = new Label("Lista produktów")
             {
                 X = Pos.Center(),

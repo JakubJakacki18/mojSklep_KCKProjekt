@@ -17,6 +17,13 @@ namespace Library
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasSequence<int>("ProductIds", schema: "shared")
+                .StartsAt(10000000)
+                .IncrementsBy(1);
+
+            modelBuilder.Entity<ProductModel>()
+                .Property(p => p.Id)
+                .HasDefaultValueSql("NEXT VALUE FOR shared.ProductIds");
             modelBuilder.Entity<UserModel>().HasData(
                 new UserModel
                 {

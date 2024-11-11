@@ -1,14 +1,37 @@
 ﻿using Library.Interfaces;
+using Library.Models;
 
 namespace Library.Controllers
 {
-    public class SellerController
+    public class SellerController(ISellerView sellerView, IProductRepository productRepository)
     {
-        private ISellerView _sellerView;
+        private ISellerView _sellerView = sellerView;
+        private IProductRepository _productRepository = productRepository;
 
-        public SellerController(ISellerView sellerView)
+
+
+        public void ShowMenu()
         {
-            _sellerView = sellerView;
+            bool isExitWanted = false;
+            do
+            {
+                switch (_sellerView.ShowMenu())
+                {
+                    case 1:
+                        AddProduct(_sellerView.AddProduct());
+
+                        break;
+                    /*case 2:
+                        _sellerView.ShowUserCart();
+                        break;
+                    case 3:
+                        _sellerView.ShowPaymentMethod();
+                        break;*/
+                    case 4:
+                        isExitWanted = _sellerView.ExitApp();
+                        break;
+                }
+            } while (!isExitWanted);
         }
 
         public void ShowInterface()
@@ -16,8 +39,17 @@ namespace Library.Controllers
             //_sellerView.ShowInterface();
         }
 
-        public void AddProduct()
+        public void AddProduct(ProductModel? product)
         {
+            var result = _productRepository.AddProduct(product);
+            if (result)
+            {
+                _sellerView.ShowMessage("Product added successfully");
+            }
+            else
+            {
+                _sellerView.ShowMessage("Product could not be added");
+            }
 
         }
 
