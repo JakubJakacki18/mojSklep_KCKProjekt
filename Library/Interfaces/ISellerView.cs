@@ -1,11 +1,13 @@
-﻿namespace Library.Interfaces
+﻿using Library.Models;
+
+namespace Library.Interfaces
 {
     public interface ISellerView
     {
-        public void AddProduct();
+        public ProductModel? AddProduct();
         public void EditProduct();
         bool ExitApp();
         public int ShowMenu();
-
-    }
+		void ShowMessage(string addProductStatus);
+	}
 }

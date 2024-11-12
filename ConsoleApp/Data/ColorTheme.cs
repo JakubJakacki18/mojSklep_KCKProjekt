@@ -1,6 +1,6 @@
 ﻿using Terminal.Gui;
 
-namespace ConsoleApp
+namespace ConsoleApp.Data
 {
     public class ColorTheme
     {

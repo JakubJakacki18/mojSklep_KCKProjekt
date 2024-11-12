@@ -23,9 +23,10 @@ public class Launcher(/*Io io,*/ IUserView _userView, IBuyerView _buyerView, ISe
                 buyerController.ShowMenu();
                 break;
             case 1:
-                //var sellerController = new SellerController(_sellerView, userRepository);
-                //await sellerController.RunAsync(loggedUser);
-                break;
+                var sellerController = new SellerController(_sellerView, productRepository);
+				sellerController.ShowMenu();
+				//await sellerController.RunAsync(loggedUser);
+				break;
             case 2:
                 //var adminController = new AdminController(_adminView, userRepository);
                 //await adminController.RunAsync(loggedUser);

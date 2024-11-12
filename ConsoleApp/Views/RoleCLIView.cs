@@ -1,4 +1,5 @@
-﻿using Terminal.Gui;
+﻿using ConsoleApp.Data;
+using Terminal.Gui;
 
 namespace ConsoleApp.Views
 {
@@ -11,14 +12,21 @@ namespace ConsoleApp.Views
 
 
 
-        protected void OpenWindow(Window win)
+        protected void OpenWindowAndShutdown(Window win)
         {
             mainWindow.Add(win);
             top.Add(mainWindow);
             Application.Run(win);
             Application.Shutdown();
         }
-        public bool ExitApp()
+
+		protected void OpenWindow(Window win)
+		{
+			mainWindow.Add(win);
+			top.Add(mainWindow);
+			Application.Run(win);
+		}
+		public bool ExitApp()
         {
             bool isExitWanted = false;
             var win = new Window("Wyjście")
@@ -56,10 +64,15 @@ namespace ConsoleApp.Views
 
 
             win.Add(label, yesButton, noButton);
-            OpenWindow(win);
+            OpenWindowAndShutdown(win);
             return isExitWanted;
         }
+		public void ShowMessage(string addProductStatus)
+		{
+			MessageBox.Query("Produkt", addProductStatus, "Ok");
+            
+            Application.Shutdown();   
+		}
 
-
-    }
+	}
 }

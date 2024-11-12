@@ -1,4 +1,5 @@
-﻿using Library.Interfaces;
+﻿using Library.Data;
+using Library.Interfaces;
 using Library.Models;
 
 namespace Library.Controllers
@@ -19,7 +20,6 @@ namespace Library.Controllers
                 {
                     case 1:
                         AddProduct(_sellerView.AddProduct());
-
                         break;
                     /*case 2:
                         _sellerView.ShowUserCart();
@@ -27,7 +27,7 @@ namespace Library.Controllers
                     case 3:
                         _sellerView.ShowPaymentMethod();
                         break;*/
-                    case 4:
+                    case 3:
                         isExitWanted = _sellerView.ExitApp();
                         break;
                 }
@@ -41,16 +41,16 @@ namespace Library.Controllers
 
         public void AddProduct(ProductModel? product)
         {
-            var result = _productRepository.AddProduct(product);
-            if (result)
+            if (product != null)
             {
-                _sellerView.ShowMessage("Product added successfully");
-            }
-            else
-            {
-                _sellerView.ShowMessage("Product could not be added");
-            }
-
+				var result = _productRepository.AddProduct(product);
+				if (result)
+				{
+					_sellerView.ShowMessage(ConstString.AddProductSuccess);
+                    return;
+				}
+			}
+                _sellerView.ShowMessage(ConstString.AddProductFail);
         }
 
         public void ChangeProduct()

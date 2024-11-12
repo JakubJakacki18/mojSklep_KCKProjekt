@@ -8,8 +8,9 @@ namespace Library.Repository
         private readonly ApplicationDbContext _context = context;
         public bool AddProduct(ProductModel product)
         {
-            throw new NotImplementedException();
-        }
+			_context.Products.Add(product);
+			return SaveChanges();
+		}
 
         public ProductModel? GetProduct(string name)
         {
@@ -33,7 +34,7 @@ namespace Library.Repository
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
-        }
+			return _context.SaveChanges() > 0;
+		}
     }
 }

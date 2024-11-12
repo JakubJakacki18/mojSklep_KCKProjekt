@@ -1,4 +1,5 @@
-﻿using Library.Data;
+﻿using ConsoleApp.Data;
+using Library.Data;
 using Library.Interfaces;
 using Terminal.Gui;
 
@@ -43,7 +44,8 @@ namespace ConsoleApp.Views
                 Y = 1,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
-            };
+				CanFocus = false
+			};
             top.Add(win);
 
             // Etykieta dla pola tekstowego
@@ -280,7 +282,7 @@ namespace ConsoleApp.Views
             var win = new Window("Logowanie/Rejestracja - " + ConstString.AppName)
             {
                 X = 0,
-                Y = 1,   // leave one row for menubar
+                Y = 1,  
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
             };
@@ -357,15 +359,15 @@ namespace ConsoleApp.Views
                 Y = 1,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
-            };
-            var win = new Window()
+			};
+            var win = new FrameView()
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
                 Width = 30,
                 Height = 11,
-                ColorScheme = ColorTheme.GrayThemePalette
-            };
+                ColorScheme = ColorTheme.GrayThemePalette,
+			};
             top.Add(bigWin);
             bigWin.Add(win);
             var label = new Label("Zaloguj się jako:")

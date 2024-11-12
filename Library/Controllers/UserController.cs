@@ -35,6 +35,7 @@ namespace Library.Controllers
             do
             {
                 authenticationData = await _userView.ShowSignIn();
+                
                 result = await SignInAsync(authenticationData.Item1, authenticationData.Item2);
             } while (result == null);
             return result;
@@ -61,6 +62,7 @@ namespace Library.Controllers
             }
             user = new UserModel()
             {
+                
                 Login = login,
                 Password = password,
                 Role = RolesEnum.Buyer
