@@ -8,6 +8,7 @@ namespace Library.Interfaces
         public void EditProduct();
         bool ExitApp();
         public int ShowMenu();
-		void ShowMessage(string addProductStatus);
-	}
+        void ShowMessage(string addProductStatus);
+        void ShowAllProducts(List<ProductModel> product);
+    }
 }

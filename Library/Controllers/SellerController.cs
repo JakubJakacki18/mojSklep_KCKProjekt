@@ -21,6 +21,9 @@ namespace Library.Controllers
                     case 1:
                         AddProduct(_sellerView.AddProduct());
                         break;
+                    case 2:
+                        ShowAllProducts();
+                        break;
                     /*case 2:
                         _sellerView.ShowUserCart();
                         break;
@@ -30,6 +33,8 @@ namespace Library.Controllers
                     case 3:
                         isExitWanted = _sellerView.ExitApp();
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             } while (!isExitWanted);
         }
@@ -43,14 +48,14 @@ namespace Library.Controllers
         {
             if (product != null)
             {
-				var result = _productRepository.AddProduct(product);
-				if (result)
-				{
-					_sellerView.ShowMessage(ConstString.AddProductSuccess);
+                var result = _productRepository.AddProduct(product);
+                if (result)
+                {
+                    _sellerView.ShowMessage(ConstString.AddProductSuccess);
                     return;
-				}
-			}
-                _sellerView.ShowMessage(ConstString.AddProductFail);
+                }
+            }
+            _sellerView.ShowMessage(ConstString.AddProductFail);
         }
 
         public void ChangeProduct()
@@ -62,7 +67,11 @@ namespace Library.Controllers
 
         }
         public void ShowDetailsOfProduct() { }
-        public void ShowAllProducts() { }
+
+        public void ShowAllProducts()
+        {
+            _sellerView.ShowAllProducts(_productRepository.GetProducts().ToList());
+        }
 
 
     }

@@ -1,4 +1,5 @@
-﻿using ConsoleApp.Data;
+﻿using Colorful;
+using ConsoleApp.Data;
 using Library.Data;
 using Library.Interfaces;
 using Terminal.Gui;
@@ -44,8 +45,8 @@ namespace ConsoleApp.Views
                 Y = 1,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
-				CanFocus = false
-			};
+                CanFocus = false
+            };
             top.Add(win);
 
             // Etykieta dla pola tekstowego
@@ -282,16 +283,42 @@ namespace ConsoleApp.Views
             var win = new Window("Logowanie/Rejestracja - " + ConstString.AppName)
             {
                 X = 0,
-                Y = 1,  
+                Y = 1,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
             };
             top.Add(win);
-            var label = new Label("Chcesz przejść do logowania czy rejestracji?")
+            string asciiArtText = String.Empty;
+            try
+            {
+                Figlet figlet = new Figlet();
+                asciiArtText = figlet.ToAscii(ConstString.AppName).ToString();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+
+            var titleLabel = new Label(asciiArtText)
             {
                 X = Pos.Center(),
                 Y = 1,
             };
+            win.Add(titleLabel);
+            var signFrame = new FrameView()
+            {
+                X = Pos.Center(),
+                Y = Pos.Center(),
+                Width = 50,
+                Height = 9,
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
+            var label = new Label("Chcesz przejść do logowania czy rejestracji?")
+            {
+                X = Pos.Center(),
+                Y = 1
+            };
+
             var signInButton = new Button()
             {
                 Text = "Zaloguj się!",
@@ -324,9 +351,12 @@ namespace ConsoleApp.Views
                 desire = false;
                 Application.RequestStop(); // Zakończ aplikację
             };
-            win.Add(label);
-            win.Add(signInButton);
-            win.Add(signUpButton);
+            win.Add(signFrame);
+            signFrame.Add(label);
+            signFrame.Add(signInButton);
+            signFrame.Add(signUpButton);
+
+
 
             Application.Run();
             Application.Shutdown();
@@ -337,8 +367,12 @@ namespace ConsoleApp.Views
             return Task.FromResult(desire.Value);
         }
 
-        public void LogAs()
+        private void ShowProggresBar()
         {
+            var progresBar = new ProgressBar()
+            {
+
+            };
 
 
         }
@@ -359,7 +393,7 @@ namespace ConsoleApp.Views
                 Y = 1,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
-			};
+            };
             var win = new FrameView()
             {
                 X = Pos.Center(),
@@ -367,7 +401,7 @@ namespace ConsoleApp.Views
                 Width = 30,
                 Height = 11,
                 ColorScheme = ColorTheme.GrayThemePalette,
-			};
+            };
             top.Add(bigWin);
             bigWin.Add(win);
             var label = new Label("Zaloguj się jako:")
