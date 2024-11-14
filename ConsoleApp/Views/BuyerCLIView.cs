@@ -1,4 +1,5 @@
 ﻿using ConsoleApp.Data;
+using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
 using Library.Models;
@@ -9,8 +10,9 @@ namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-        public void ShowAllProducts(List<ProductModel> products)
+        public Object? ShowAllProducts(List<ProductModel> products)
         {
+            Object result = null;
             var win = new Window("Produkty")
             {
                 X = 0,
@@ -84,10 +86,108 @@ namespace ConsoleApp.Views
 
             listView.OpenSelectedItem += (args) =>
             {
-                MessageBox.Query("Szczegóły produktu", products[args.Item].Description, "Ok");
+                var windowDetails = new Window("Szczegóły produktu")
+                {
+                    X = 0,
+                    Y = 1,
+                    Width = Dim.Fill(1),
+                    Height = Dim.Fill(1),
+                    ColorScheme = ColorTheme.GrayThemePalette
+                };
+
+                var idLabel = new Label("Kod kreskowy: " + products[args.Item].Id)
+                {
+                    X = Pos.Center(),
+                    Y = 0
+                };
+
+                var nameLabel = new Label("Nazwa: " + products[args.Item].Name)
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(idLabel)
+                };
+                var descriptionLabel = new Label("Opis: " + products[args.Item].Description)
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(nameLabel)
+                };
+                var priceLabel = new Label("Cena: " + products[args.Item].Price)
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(descriptionLabel)
+                };
+                var quantityLabel = new Label("Ilość dostęnych sztuk: " + products[args.Item].Quantity)
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(priceLabel)
+                };
+                var quantityQuestionLabel = new Label("Ile sztuk chcesz dodać do koszyka?")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(quantityLabel) + 2
+                };
+                var quantityQuestionTextField = new TextField("")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(quantityQuestionLabel),
+                    Width = 30,
+
+                };
+                var priceToPayLabel = new Label("")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(quantityQuestionTextField)
+                };
+                var addToCartButton = new Button("Dodaj do koszyka")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(priceToPayLabel) + 1
+                };
+                addToCartButton.Clicked += () =>
+                {
+                    if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
+                    {
+                        if (quantity > 0 && quantity <= products[args.Item].Quantity)
+                        {
+                            // Add to cart
+                            MessageBox.Query("Dodano do koszyka", "Dodano produkt do koszyka", "Ok");
+                            Application.RequestStop();
+                        }
+                        else
+                        {
+                            MessageBox.ErrorQuery("Błąd", "Niepoprawna ilość produktów, popraw wartość", "Ok");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.ErrorQuery("Błąd", "Niepoprawna ilość produktów, popraw wartość", "Ok");
+                    }
+                };
+                var rejectAddingToCartButton = new Button("Zrezygnuj z dodawania do koszyka")
+                {
+                    X = Pos.Right(addToCartButton),
+                    Y = Pos.Top(addToCartButton)
+                };
+
+                TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
+                quantityQuestionTextField.TextChanged += (_) =>
+                {
+                    if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
+                    {
+                        priceToPayLabel.Text = $"Cena do zapłaty: {quantity * products[args.Item].Price} {ConstString.Currency}";
+
+                    }
+                };
+
+                windowDetails.Add(idLabel, nameLabel, descriptionLabel, priceLabel, quantityLabel, quantityQuestionLabel, quantityQuestionTextField, priceToPayLabel, addToCartButton, rejectAddingToCartButton);
+                win.Add(windowDetails);
+
+
+
             };
             win.Add(listView);
             OpenWindowAndShutdown(win);
+            return result;
 
         }
 

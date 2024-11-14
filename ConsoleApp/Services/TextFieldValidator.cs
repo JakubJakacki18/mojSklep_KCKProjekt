@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using Terminal.Gui;
 
 namespace ConsoleApp.Services
@@ -17,7 +12,7 @@ namespace ConsoleApp.Services
            {
                int originalCursorPosition = textField.CursorPosition;
                string text = textField.Text.ToString() ?? string.Empty;
-               bool hasLeadingZero = text.StartsWith("0") && text.Length > 1 && text[1].ToString() != decimalSeparator;
+               bool hasLeadingZero = text.StartsWith("0") && text.Length > 1;
                if (!int.TryParse(text, out _) && text != "" || hasLeadingZero)
                {
                    textField.Text = text.Substring(0, text.Length - 1);
