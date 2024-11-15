@@ -6,5 +6,6 @@
         public const string AddProductSuccess = "Dodano produkt";
         public const string AddProductFail = "Nie dodano produktu";
         public const string Currency = "zł";
-    }
+        public const string AddToCartSuccess = "Dodano produkt do koszyka";
+	}
 }

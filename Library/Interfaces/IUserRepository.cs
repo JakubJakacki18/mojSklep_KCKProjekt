@@ -1,4 +1,5 @@
 ﻿using Library.Model;
+using Library.Models;
 
 namespace Library.Interfaces
 {
@@ -10,5 +11,6 @@ namespace Library.Interfaces
         public UserModel? GetUser(string login);
         public UserModel? GetUser(string login, string password);
         public bool SaveChanges();
-    }
+        public bool AddProductToCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
+	}
 }

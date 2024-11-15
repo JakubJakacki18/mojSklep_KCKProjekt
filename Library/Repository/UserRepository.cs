@@ -1,5 +1,6 @@
 ﻿using Library.Interfaces;
 using Library.Model;
+using Library.Models;
 
 namespace Library.Repository
 {
@@ -50,5 +51,11 @@ namespace Library.Repository
             }
             return null;
         }
-    }
+
+		public bool AddProductToCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
+		{
+			currentLoggedInUser.ShoppingCart.ProductsInCart.Add(cartProduct);
+			return SaveChanges();
+		}
+	}
 }

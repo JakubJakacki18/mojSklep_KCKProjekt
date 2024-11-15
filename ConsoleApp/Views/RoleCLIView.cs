@@ -1,4 +1,5 @@
 ﻿using ConsoleApp.Data;
+using Library.Data;
 using Terminal.Gui;
 
 namespace ConsoleApp.Views
@@ -69,9 +70,23 @@ namespace ConsoleApp.Views
         }
 		public void ShowMessage(string addProductStatus)
 		{
-			MessageBox.Query("Produkt", addProductStatus, "Ok");
-            
+            if(top==null)
+                InitializeWindow();
+			MessageBox.Query("", addProductStatus, "Ok");
             Application.Shutdown();   
+		}
+
+		protected void InitializeWindow()
+		{
+			Application.Init();
+			top = Application.Top;
+			mainWindow = new Window("Sklep internetowy - " + ConstString.AppName)
+			{
+				X = 0,
+				Y = 1,
+				Width = Dim.Fill(),
+				Height = Dim.Fill()
+			};
 		}
 
 	}

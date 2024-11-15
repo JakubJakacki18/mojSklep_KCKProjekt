@@ -228,7 +228,11 @@ namespace ConsoleApp.Views
 
         public void ShowAllProducts(List<ProductModel> products)
         {
-            var win = new Window("Produkty")
+          
+            if (top == null)
+                InitializeWindow();
+
+			var win = new Window("Produkty")
             {
                 X = 0,
                 Y = 1,
@@ -306,11 +310,6 @@ namespace ConsoleApp.Views
             };
             win.Add(listView);
             OpenWindowAndShutdown(win);
-        }
-
-        public void ShowMessage(string addProductStatus)
-        {
-            throw new NotImplementedException();
         }
     }
 }

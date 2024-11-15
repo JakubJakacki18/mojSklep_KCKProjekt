@@ -10,9 +10,9 @@ namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-        public Object? ShowAllProducts(List<ProductModel> products)
+		public Object? ShowAllProducts(List<ProductModel> products)
         {
-            Object result = null;
+            Object? result = null;
             var win = new Window("Produkty")
             {
                 X = 0,
@@ -22,9 +22,27 @@ namespace ConsoleApp.Views
                 ColorScheme = ColorTheme.GrayThemePalette
             };
 
-
-
-            var productNames = products.Select(p => new string[]
+			if (products.Count == 0)
+			{
+				var nullLabel = new Label("Brak produktów w bazie")
+				{
+					X = Pos.Center(),
+					Y = Pos.Center()
+				};
+                var exitNullButton = new Button("Zamknij")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(nullLabel) + 1
+				};
+				exitNullButton.Clicked += () =>
+				{
+					Application.RequestStop();
+				};
+				win.Add(nullLabel, exitNullButton);
+				OpenWindowAndShutdown(win);
+				return result;
+			}
+			var productNames = products.Select(p => new string[]
             {
                 p.Id.ToString(),
                 p.Name,
@@ -57,7 +75,8 @@ namespace ConsoleApp.Views
                 Y = 0
             };
             win.Add(label);
-            string tableHeader = ((Func<string>)(() =>
+			
+			string tableHeader = ((Func<string>)(() =>
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append(" | ");
@@ -75,7 +94,8 @@ namespace ConsoleApp.Views
             };
             win.Add(tableHeaderLabel);
 
-            var listView = new ListView(table)
+
+			var listView = new ListView(table)
             {
                 X = Pos.Center(),
                 Y = 2,
@@ -84,109 +104,128 @@ namespace ConsoleApp.Views
                 AllowsMarking = false
             };
 
-            listView.OpenSelectedItem += (args) =>
+
+			listView.OpenSelectedItem += (args) =>
             {
-                var windowDetails = new Window("Szczegóły produktu")
-                {
-                    X = 0,
-                    Y = 1,
-                    Width = Dim.Fill(1),
-                    Height = Dim.Fill(1),
-                    ColorScheme = ColorTheme.GrayThemePalette
-                };
+				var windowDetails = new Window("Szczegóły produktu")
+				{
+					X = 0,
+					Y = 1,
+					Width = Dim.Fill(1),
+					Height = Dim.Fill(1),
+					ColorScheme = ColorTheme.GrayThemePalette
+				};
+				var idLabel = new Label("Kod kreskowy: " + products[args.Item].Id)
+				{
+					X = Pos.Center(),
+					Y = 1
+				};
+				var nameLabel = new Label("Nazwa: " + products[args.Item].Name)
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(idLabel)
+				};
+				var descriptionLabel = new Label("Opis: " + products[args.Item].Description)
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(nameLabel)
+				};
+				var priceLabel = new Label("Cena: " + products[args.Item].Price)
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(descriptionLabel)
+				};
+				var quantityLabel = new Label("Ilość dostęnych sztuk: " + products[args.Item].Quantity)
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(priceLabel)
+				};
+				var quantityQuestionLabel = new Label("Ile sztuk chcesz dodać do koszyka?")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(quantityLabel) + 2
+				};
+				var quantityQuestionTextField = new TextField("")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(quantityQuestionLabel),
+					Width = 30,
 
-                var idLabel = new Label("Kod kreskowy: " + products[args.Item].Id)
-                {
-                    X = Pos.Center(),
-                    Y = 0
-                };
+				};
+				var priceToPayLabel = new Label("")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(quantityQuestionTextField)
+				};
+				var addToCartButton = new Button("Dodaj do koszyka")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(priceToPayLabel) + 1
+				};
+				addToCartButton.Clicked += () =>
+				{
+					if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity) && (quantity > 0 && quantity <= products[args.Item].Quantity))
+					{
+						MessageBox.Query("Dodano do koszyka", "Dodano produkt do koszyka", "Ok");
+						result = new CartProductModel()
+						{
+							OriginalProduct = products[args.Item],
+							Quantity = quantity
+						};
+						Application.RequestStop();
+					}
+					else
+					{
+						MessageBox.ErrorQuery("Błąd", "Niepoprawna ilość produktów, popraw wartość", "Ok");
+					}
+				};
+				var rejectAddingToCartButton = new Button("Zrezygnuj z dodawania do koszyka")
+				{
+					X = Pos.Right(addToCartButton),
+					Y = Pos.Top(addToCartButton)
+				};
+				rejectAddingToCartButton.Clicked += () =>
+				{
+					win.Remove(windowDetails);
+				};
 
-                var nameLabel = new Label("Nazwa: " + products[args.Item].Name)
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(idLabel)
-                };
-                var descriptionLabel = new Label("Opis: " + products[args.Item].Description)
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(nameLabel)
-                };
-                var priceLabel = new Label("Cena: " + products[args.Item].Price)
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(descriptionLabel)
-                };
-                var quantityLabel = new Label("Ilość dostęnych sztuk: " + products[args.Item].Quantity)
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(priceLabel)
-                };
-                var quantityQuestionLabel = new Label("Ile sztuk chcesz dodać do koszyka?")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(quantityLabel) + 2
-                };
-                var quantityQuestionTextField = new TextField("")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(quantityQuestionLabel),
-                    Width = 30,
+				TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
+				quantityQuestionTextField.TextChanged += (_) =>
+				{
+					if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
+					{
+						priceToPayLabel.Text = $"Cena do zapłaty: {quantity * products[args.Item].Price} {ConstString.Currency}";
 
-                };
-                var priceToPayLabel = new Label("")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(quantityQuestionTextField)
-                };
-                var addToCartButton = new Button("Dodaj do koszyka")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Bottom(priceToPayLabel) + 1
-                };
-                addToCartButton.Clicked += () =>
-                {
-                    if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
-                    {
-                        if (quantity > 0 && quantity <= products[args.Item].Quantity)
-                        {
-                            // Add to cart
-                            MessageBox.Query("Dodano do koszyka", "Dodano produkt do koszyka", "Ok");
-                            Application.RequestStop();
-                        }
-                        else
-                        {
-                            MessageBox.ErrorQuery("Błąd", "Niepoprawna ilość produktów, popraw wartość", "Ok");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.ErrorQuery("Błąd", "Niepoprawna ilość produktów, popraw wartość", "Ok");
-                    }
-                };
-                var rejectAddingToCartButton = new Button("Zrezygnuj z dodawania do koszyka")
-                {
-                    X = Pos.Right(addToCartButton),
-                    Y = Pos.Top(addToCartButton)
-                };
+					}
+				};
 
-                TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
-                quantityQuestionTextField.TextChanged += (_) =>
-                {
-                    if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
-                    {
-                        priceToPayLabel.Text = $"Cena do zapłaty: {quantity * products[args.Item].Price} {ConstString.Currency}";
-
-                    }
-                };
-
-                windowDetails.Add(idLabel, nameLabel, descriptionLabel, priceLabel, quantityLabel, quantityQuestionLabel, quantityQuestionTextField, priceToPayLabel, addToCartButton, rejectAddingToCartButton);
-                win.Add(windowDetails);
+				windowDetails.Add(idLabel,
+					nameLabel,
+					descriptionLabel,
+					priceLabel,
+					quantityLabel,
+					quantityQuestionLabel,
+					quantityQuestionTextField,
+					priceToPayLabel,
+					addToCartButton,
+					rejectAddingToCartButton);
+				win.Add(windowDetails);
 
 
 
-            };
+			};
             win.Add(listView);
-            OpenWindowAndShutdown(win);
+			var exitButton = new Button("Zamknij")
+			{
+				Y = Pos.Top(listView),
+				X = Pos.Right(listView) + 1
+			};
+			exitButton.Clicked += () =>
+			{
+				Application.RequestStop();
+			};
+			win.Add(exitButton);
+			OpenWindowAndShutdown(win);
             return result;
 
         }
@@ -195,7 +234,7 @@ namespace ConsoleApp.Views
         {
 
         }
-        public int ShowMenu()
+		public int ShowMenu()
         {
             //Console.WriteLine("1. View Books");
             //Console.WriteLine("2. View Authors");
@@ -208,17 +247,9 @@ namespace ConsoleApp.Views
             //Console.WriteLine("9. Checkout");
             //Console.WriteLine("10. Logout");
             // Inicjalizacja aplikacji
-            Application.Init();
-            top = Application.Top;
-            mainWindow = new Window("Sklep internetowy - " + ConstString.AppName)
-            {
-                X = 0, // Położenie okna w poziomie
-                Y = 1, // Położenie okna w pionie
-                Width = Dim.Fill(), // Rozciągnięcie okna na całą szerokość
-                Height = Dim.Fill() // Rozciągnięcie okna na całą wysokość
-            };
-            // Stworzenie okna dialogowego, które będzie pełniło rolę menu
-            var menuWindow = new FrameView("Menu")
+            InitializeWindow();
+			// Stworzenie okna dialogowego, które będzie pełniło rolę menu
+			var menuWindow = new FrameView("Menu")
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),

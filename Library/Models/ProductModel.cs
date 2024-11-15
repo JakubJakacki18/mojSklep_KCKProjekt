@@ -13,8 +13,10 @@ namespace Library.Models
         public int shelfRow { get; set; }
         public int shelfColumn { get; set; }
 
+		public ICollection<CartProductModel> CartProducts { get; set; } = [];
 
 
 
-    }
+
+	}
 }
