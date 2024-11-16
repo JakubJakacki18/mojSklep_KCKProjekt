@@ -1,4 +1,5 @@
-﻿using Library.Models;
+﻿using Library.Data;
+using Library.Models;
 
 namespace Library.Interfaces
 {
@@ -9,7 +10,7 @@ namespace Library.Interfaces
         public void ShowInterface();
         public int ShowMenu();
         void ShowPaymentMethod();
-        void ShowUserCart();
-		void ShowMessage(string addProductStatus);
-	}
+        (CartActionEnum actionEnum, CartProductModel? cartProduct) ShowUserCart(List<CartProductModel> cartProducts);
+        void ShowMessage(string addProductStatus);
+    }
 }

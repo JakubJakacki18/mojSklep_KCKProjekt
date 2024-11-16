@@ -1,6 +1,7 @@
 ﻿using Library.Interfaces;
 using Library.Model;
 using Library.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Repository
 {
@@ -52,10 +53,34 @@ namespace Library.Repository
             return null;
         }
 
-		public bool AddProductToCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
-		{
-			currentLoggedInUser.ShoppingCart.ProductsInCart.Add(cartProduct);
-			return SaveChanges();
-		}
-	}
+        public bool AddProductToCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
+        {
+            try
+            {
+
+
+                var userWithCart = _context.Users
+                    .Include(u => u.ShoppingCart)
+                    .ThenInclude(sc => sc.ProductsInCart)
+                    .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
+                if (userWithCart == null)
+                {
+                    throw new Exception("User with cart is not found");
+                }
+
+                userWithCart.ShoppingCart.ProductsInCart.Add(cartProduct);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            //currentLoggedInUser.ShoppingCart.ProductsInCart.Add(cartProduct);
+            return SaveChanges();
+        }
+
+
+        public IEnumerable<CartProductModel> GetCart(UserModel currentLoggedInUser)
+            => currentLoggedInUser.ShoppingCart.ProductsInCart;
+    }
 }

@@ -1,15 +1,39 @@
 ﻿using Library.Data;
 using Library.Interfaces;
+using Library.Model;
 using Library.Models;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Library.Controllers
 {
-    public class BuyerController(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
+    public class BuyerController
     {
-        private IBuyerView _buyerView = buyerView;
-        private IUserRepository _userRepository = userRepository;
-        private IProductRepository _productRepository = productRepository;
+        private IBuyerView _buyerView;
+        private IUserRepository _userRepository;
+        private IProductRepository _productRepository;
+        private UserModel currentLoggedInUser;
+
+        public static BuyerController Initialize(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
+        {
+            return _instance = new BuyerController(buyerView, userRepository, productRepository);
+        }
+        public static BuyerController getInstance()
+        {
+            if (_instance == null)
+            {
+                throw new Exception("BuyerController not initialized");
+            }
+
+            return _instance;
+        }
+        private BuyerController(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
+        {
+            currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
+            _buyerView = buyerView;
+            _userRepository = userRepository;
+            _productRepository = productRepository;
+        }
+
+        private static BuyerController _instance;
 
         public void ShowMenu()
         {
@@ -26,14 +50,12 @@ namespace Library.Controllers
                             if (result is CartProductModel cartProduct)
                             {
                                 AddProductToCart(cartProduct);
-                                _buyerView.ShowMessage(ConstString.AddToCartSuccess);
                             }
-						} while (result is CartProductModel);
-						break;
+                        } while (result is CartProductModel);
+                        break;
                     case 2:
-                        
+                        _buyerView.ShowUserCart(_userRepository.GetCart(currentLoggedInUser).ToList());
 
-                        _buyerView.ShowUserCart();
                         break;
                     case 3:
                         _buyerView.ShowPaymentMethod();
@@ -45,9 +67,18 @@ namespace Library.Controllers
             } while (!isExitWanted);
         }
         private void AddProductToCart(CartProductModel cartProduct)
-		{
-			_userRepository.AddProductToCart(cartProduct,currentLoggedInUser);
+        {
+            bool result = _userRepository.AddProductToCart(cartProduct, currentLoggedInUser);
+            if (!result)
+            {
+                _buyerView.ShowMessage(ConstString.AddToCartFail);
+            }
+            else
+            {
+                _buyerView.ShowMessage(ConstString.AddToCartSuccess);
+            }
 
-		}
-	}
+
+        }
+    }
 }

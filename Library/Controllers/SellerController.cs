@@ -1,14 +1,37 @@
 ﻿using Library.Data;
 using Library.Interfaces;
+using Library.Model;
 using Library.Models;
 
 namespace Library.Controllers
 {
-    public class SellerController(ISellerView sellerView, IProductRepository productRepository)
+    public class SellerController
     {
-        private ISellerView _sellerView = sellerView;
-        private IProductRepository _productRepository = productRepository;
+        private static SellerController _instance;
+        private ISellerView _sellerView;
+        private UserModel currentLoggedInUser;
+        private IProductRepository _productRepository;
 
+
+        public static SellerController Initialize(ISellerView sellerView, IProductRepository productRepository)
+        {
+            return _instance = new SellerController(sellerView, productRepository);
+        }
+        public static SellerController getInstance()
+        {
+            if (_instance == null)
+            {
+                throw new Exception("SellerController not initialized");
+            }
+
+            return _instance;
+        }
+        private SellerController(ISellerView sellerView, IProductRepository productRepository)
+        {
+            currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
+            _sellerView = sellerView;
+            _productRepository = productRepository;
+        }
 
 
         public void ShowMenu()
