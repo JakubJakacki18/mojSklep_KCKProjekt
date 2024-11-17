@@ -3,6 +3,8 @@ using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
 using Library.Models;
+using System.Data;
+using System.Diagnostics;
 using System.Text;
 using Terminal.Gui;
 
@@ -10,14 +12,15 @@ namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-        public Object? ShowAllProducts(List<ProductModel> products)
+        public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
         {
-            Object? result = null;
-            var win = new Window("Produkty")
+            InitializeWindow();
+			Object? result = null;
+            var win = new FrameView("Produkty")
             {
                 X = 0,
                 Y = 1,
-                Width = Dim.Fill(1),
+                Width=Dim.Percent(70),
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
@@ -36,8 +39,8 @@ namespace ConsoleApp.Views
                 };
                 exitNullButton.Clicked += () => { Application.RequestStop(); };
                 win.Add(nullLabel, exitNullButton);
-                OpenWindowAndShutdown(win);
-                return result;
+				OpenFrameAndShutdown(win);
+				return result;
             }
 
             var productNames = products.Select(p => new string[]
@@ -212,8 +215,36 @@ namespace ConsoleApp.Views
 
 
 
-            };
-            win.Add(listView);
+			};
+			var cartFrame = new FrameView("Podgląd koszyka")
+			{
+				X = Pos.Right(win),
+				Y = Pos.Top(win),
+				Width = Dim.Fill(1),
+				Height = Dim.Fill(1)
+			};
+
+			var cartTable = new TableView()
+			{
+				X = 0,
+				Y = 0,
+				Width = Dim.Fill(1),
+				Height = Dim.Fill(1),
+				CanFocus = false
+			};
+			var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość" };
+			var dt = new DataTable();
+			foreach (var columnName in columnNames)
+			{
+				dt.Columns.Add(columnName);
+			}
+			foreach (var product in productsFromCart)
+			{
+				dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name, product.Quantity);
+			}
+			cartTable.Table = dt;
+			cartFrame.Add(cartTable);
+			win.Add(listView);
             var exitButton = new Button("Zamknij")
             {
                 Y = Pos.Top(listView),
@@ -221,7 +252,7 @@ namespace ConsoleApp.Views
             };
             exitButton.Clicked += () => { Application.RequestStop(); };
             win.Add(exitButton);
-            OpenWindowAndShutdown(win);
+            OpenFrameAndShutdown(win,cartFrame);
             return result;
 
         }
@@ -232,21 +263,11 @@ namespace ConsoleApp.Views
         }
 
         public int ShowMenu()
+        
         {
-            //Console.WriteLine("1. View Books");
-            //Console.WriteLine("2. View Authors");
-            //Console.WriteLine("3. View Genres");
-            //Console.WriteLine("4. View Publishers");
-            //Console.WriteLine("5. View Orders");
-            //Console.WriteLine("6. View Cart");
-            //Console.WriteLine("7. Add to Cart");
-            //Console.WriteLine("8. Remove from Cart");
-            //Console.WriteLine("9. Checkout");
-            //Console.WriteLine("10. Logout");
-            // Inicjalizacja aplikacji
             InitializeWindow();
             // Stworzenie okna dialogowego, które będzie pełniło rolę menu
-            var menuWindow = new FrameView("Menu")
+            var menuFrame = new FrameView("Menu")
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
@@ -299,11 +320,9 @@ namespace ConsoleApp.Views
                 selection = 4;
                 Application.RequestStop();
             };
-            menuWindow.Add(showProductListButton, showCartButton, finalizeShoppingButton, exitShopButton);
-            top.Add(mainWindow);
+            menuFrame.Add(showProductListButton, showCartButton, finalizeShoppingButton, exitShopButton);
             mainWindow.Add(GetMenuBar());
-            mainWindow.Add(menuWindow);
-            Application.Run();
+            OpenFrameAndShutdown(menuFrame);
             return selection;
         }
 
@@ -315,8 +334,9 @@ namespace ConsoleApp.Views
 
         public (CartActionEnum, CartProductModel?) ShowUserCart(List<CartProductModel> cartProducts)
         {
-            (CartActionEnum, CartProductModel?) result = (CartActionEnum.Exit, null);
-            var win = new Window("Koszyk")
+            InitializeWindow();
+			(CartActionEnum, CartProductModel?) result = (CartActionEnum.Exit, null);
+            var frame = new FrameView("Koszyk")
             {
                 X = 0,
                 Y = 1,
@@ -332,7 +352,7 @@ namespace ConsoleApp.Views
             if (cartProducts.Count == 0)
             {
                 headerLabel.Text = "Twój koszyk jest pusty";
-                win.Add(headerLabel);
+                frame.Add(headerLabel);
                 var exitNullButton = new Button("Zamknij")
                 {
                     X = Pos.Center(),
@@ -342,8 +362,8 @@ namespace ConsoleApp.Views
                 {
                     Application.RequestStop();
                 };
-                win.Add(exitNullButton);
-                OpenWindowAndShutdown(win);
+                frame.Add(exitNullButton);
+                OpenFrameAndShutdown(frame);
                 return result;
             }
             var productNames = cartProducts.Select(p => new string[]
@@ -381,7 +401,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 0
             };
-            win.Add(label);
+            frame.Add(label);
 
             string tableHeader = ((Func<string>)(() =>
             {
@@ -399,7 +419,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 1
             };
-            win.Add(tableHeaderLabel);
+            frame.Add(tableHeaderLabel);
 
 
             var listView = new ListView(table)
@@ -493,7 +513,7 @@ namespace ConsoleApp.Views
                 };
                 rejectChangesButton.Clicked += () =>
                 {
-                    win.Remove(windowDetails);
+                    frame.Remove(windowDetails);
                 };
 
                 TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
@@ -517,12 +537,12 @@ namespace ConsoleApp.Views
                     priceToPayLabel,
                     changeQuantityInCartButton,
                     rejectChangesButton);
-                win.Add(windowDetails);
+                frame.Add(windowDetails);
 
 
 
             };
-            win.Add(listView);
+            frame.Add(listView);
             var exitButton = new Button("Zamknij")
             {
                 Y = Pos.Top(listView),
@@ -532,13 +552,8 @@ namespace ConsoleApp.Views
             {
                 Application.RequestStop();
             };
-            win.Add(exitButton);
-
-
-
-
-
-            OpenWindowAndShutdown(win);
+            frame.Add(exitButton);
+            OpenFrameAndShutdown(frame);
             return result;
 
         }

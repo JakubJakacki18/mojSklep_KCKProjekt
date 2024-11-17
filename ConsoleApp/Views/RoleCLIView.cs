@@ -17,9 +17,24 @@ namespace ConsoleApp.Views
         {
             mainWindow.Add(win);
             top.Add(mainWindow);
-            Application.Run(win);
+            Application.Run(top);
             Application.Shutdown();
         }
+
+        protected void OpenFrameAndShutdown(params FrameView[] frames)
+		{
+			if (mainWindow == null || top == null)
+			{
+				throw new InvalidOperationException("InitializeWindow() musi być wywołane przed OpenFrameAndShutdown().");
+			}
+			foreach (var f in frames)
+			{
+				mainWindow.Add(f);
+			}
+            top.Add(mainWindow);
+			Application.Run(top);
+			Application.Shutdown();
+		}
 
 		protected void OpenWindow(Window win)
 		{
@@ -29,6 +44,7 @@ namespace ConsoleApp.Views
 		}
 		public bool ExitApp()
         {
+			InitializeWindow();
             bool isExitWanted = false;
             var win = new Window("Wyjście")
             {
@@ -70,10 +86,9 @@ namespace ConsoleApp.Views
         }
 		public void ShowMessage(string addProductStatus)
 		{
-            if(top==null)
-                InitializeWindow();
+            Application.Init();
 			MessageBox.Query("", addProductStatus, "Ok");
-            Application.Shutdown();   
+            Application.Shutdown();
 		}
 
 		protected void InitializeWindow()

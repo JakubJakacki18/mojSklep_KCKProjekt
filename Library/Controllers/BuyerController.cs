@@ -45,7 +45,7 @@ namespace Library.Controllers
                         object? result;
                         do
                         {
-                            result = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList());
+                            result = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList(),_userRepository.GetCart(_currentLoggedInUser).ToList());
                             if (result is CartProductModel cartProduct)
                             {
                                 AddProductToCart(cartProduct);
