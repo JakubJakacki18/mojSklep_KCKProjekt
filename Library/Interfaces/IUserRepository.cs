@@ -1,5 +1,4 @@
-﻿using Library.Model;
-using Library.Models;
+﻿using Library.Models;
 
 namespace Library.Interfaces
 {
@@ -13,5 +12,7 @@ namespace Library.Interfaces
         public bool SaveChanges();
         public bool AddProductToCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
         IEnumerable<CartProductModel> GetCart(UserModel currentLoggedInUser);
+        bool IsProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
+        bool UpdateProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
     }
 }

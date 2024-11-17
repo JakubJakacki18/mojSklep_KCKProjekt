@@ -1,6 +1,6 @@
 ﻿using Library.Data;
 using Library.Interfaces;
-using Library.Model;
+using Library.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Library.Controllers
@@ -60,7 +60,7 @@ namespace Library.Controllers
                 authenticationData = await _userView.ShowSignIn();
                 try
                 {
-                    
+
                     result = await SignInAsync(authenticationData.Item1, authenticationData.Item2);
                 }
                 catch (SqlException exception)

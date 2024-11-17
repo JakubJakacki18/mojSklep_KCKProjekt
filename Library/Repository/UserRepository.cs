@@ -1,17 +1,12 @@
 ﻿using Library.Interfaces;
-using Library.Model;
 using Library.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
-        public UserRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context = context;
 
         public IQueryable<UserModel> GetUsers()
         {
@@ -37,7 +32,17 @@ namespace Library.Repository
 
         public bool SaveChanges()
         {
-            return _context.SaveChanges() > 0;
+            bool result = false;
+            try
+            {
+                result = _context.SaveChanges() > 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return result;
         }
 
         public UserModel? GetUser(string login, string password)
@@ -57,30 +62,45 @@ namespace Library.Repository
         {
             try
             {
-
-
-                var userWithCart = _context.Users
-                    .Include(u => u.ShoppingCart)
-                    .ThenInclude(sc => sc.ProductsInCart)
-                    .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
-                if (userWithCart == null)
-                {
-                    throw new Exception("User with cart is not found");
-                }
-
-                userWithCart.ShoppingCart.ProductsInCart.Add(cartProduct);
+                UserModelWithCart(currentLoggedInUser)?.ProductsInCart.Add(cartProduct);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
 
-            //currentLoggedInUser.ShoppingCart.ProductsInCart.Add(cartProduct);
             return SaveChanges();
         }
 
 
         public IEnumerable<CartProductModel> GetCart(UserModel currentLoggedInUser)
-            => currentLoggedInUser.ShoppingCart.ProductsInCart;
+            => UserModelWithCartAndOriginalProduct(currentLoggedInUser)?.ProductsInCart ?? new List<CartProductModel>();
+
+        public bool IsProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
+        {
+            UserModel? user = UserModelWithCartAndOriginalProduct(currentLoggedInUser);
+            return user?.ProductsInCart.Any(p => p.OriginalProduct.Id == cartProduct.OriginalProduct.Id) ?? false;
+        }
+
+        public bool UpdateProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
+        {
+            UserModel? user = UserModelWithCartAndOriginalProduct(currentLoggedInUser);
+            CartProductModel? product = user?.ProductsInCart.FirstOrDefault(p => p.OriginalProduct.Id == cartProduct.OriginalProduct.Id);
+            if (product != null)
+            {
+                product.Quantity = cartProduct.Quantity;
+
+            }
+            return SaveChanges();
+        }
+
+        private UserModel? UserModelWithCart(UserModel currentLoggedInUser)
+            => _context.Users.Include(p => p.ProductsInCart)
+                .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
+
+        private UserModel? UserModelWithCartAndOriginalProduct(UserModel currentLoggedInUser)
+            => _context.Users.Include(p => p.ProductsInCart).ThenInclude(c => c.OriginalProduct)
+                .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
     }
+
 }

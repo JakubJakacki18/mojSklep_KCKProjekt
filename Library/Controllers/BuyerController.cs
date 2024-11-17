@@ -1,16 +1,15 @@
 ﻿using Library.Data;
 using Library.Interfaces;
-using Library.Model;
 using Library.Models;
 
 namespace Library.Controllers
 {
     public class BuyerController
     {
-        private IBuyerView _buyerView;
-        private IUserRepository _userRepository;
-        private IProductRepository _productRepository;
-        private UserModel currentLoggedInUser;
+        private readonly IBuyerView _buyerView;
+        private readonly IUserRepository _userRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly UserModel _currentLoggedInUser;
 
         public static BuyerController Initialize(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
         {
@@ -27,7 +26,7 @@ namespace Library.Controllers
         }
         private BuyerController(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
         {
-            currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
+            _currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
             _buyerView = buyerView;
             _userRepository = userRepository;
             _productRepository = productRepository;
@@ -54,7 +53,7 @@ namespace Library.Controllers
                         } while (result is CartProductModel);
                         break;
                     case 2:
-                        _buyerView.ShowUserCart(_userRepository.GetCart(currentLoggedInUser).ToList());
+                        _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
 
                         break;
                     case 3:
@@ -68,7 +67,9 @@ namespace Library.Controllers
         }
         private void AddProductToCart(CartProductModel cartProduct)
         {
-            bool result = _userRepository.AddProductToCart(cartProduct, currentLoggedInUser);
+            bool result = _userRepository.IsProductInCart(cartProduct, _currentLoggedInUser)
+                ? _userRepository.UpdateProductInCart(cartProduct, _currentLoggedInUser)
+                : _userRepository.AddProductToCart(cartProduct, _currentLoggedInUser);
             if (!result)
             {
                 _buyerView.ShowMessage(ConstString.AddToCartFail);

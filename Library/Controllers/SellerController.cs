@@ -1,6 +1,5 @@
 ﻿using Library.Data;
 using Library.Interfaces;
-using Library.Model;
 using Library.Models;
 
 namespace Library.Controllers
