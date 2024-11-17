@@ -101,6 +101,18 @@ namespace Library.Repository
         private UserModel? UserModelWithCartAndOriginalProduct(UserModel currentLoggedInUser)
             => _context.Users.Include(p => p.ProductsInCart).ThenInclude(c => c.OriginalProduct)
                 .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
-    }
+
+		public bool RemoveProductFromCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
+		{
+			UserModel? user = UserModelWithCartAndOriginalProduct(currentLoggedInUser);
+			CartProductModel? product = user?.ProductsInCart.FirstOrDefault(p => p.OriginalProduct.Id == cartProduct.OriginalProduct.Id);
+			if (product != null)
+			{
+				user?.ProductsInCart.Remove(product);
+			}
+            return SaveChanges();
+
+		}
+	}
 
 }

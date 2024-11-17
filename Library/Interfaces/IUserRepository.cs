@@ -14,5 +14,6 @@ namespace Library.Interfaces
         IEnumerable<CartProductModel> GetCart(UserModel currentLoggedInUser);
         bool IsProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
         bool UpdateProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
-    }
+		bool RemoveProductFromCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
+	}
 }

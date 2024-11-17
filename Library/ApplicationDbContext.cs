@@ -12,7 +12,8 @@ namespace Library
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KCKDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"); // Dla SQL Server
-        }
+			optionsBuilder.EnableSensitiveDataLogging();
+		}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasSequence<int>("ProductIds", schema: "shared")
@@ -42,7 +43,7 @@ namespace Library
                 .HasOne(cp => cp.User)  // Każdy CartProductModel ma jednego UserModel
                 .WithMany(u => u.ProductsInCart)  // UserModel może mieć wiele CartProductModel
                 .HasForeignKey(cp => cp.UserId)  // Ustawienie klucza obcego
-                .OnDelete(DeleteBehavior.NoAction);  // Ustalamy kaskadowe usuwanie
+                .OnDelete(DeleteBehavior.Cascade);  // Ustalamy kaskadowe usuwanie
 
 
 

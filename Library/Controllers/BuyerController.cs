@@ -42,19 +42,37 @@ namespace Library.Controllers
                 switch (_buyerView.ShowMenu())
                 {
                     case 1:
-                        object? result;
+                        object? resultShowAllProducts;
                         do
                         {
-                            result = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList(),_userRepository.GetCart(_currentLoggedInUser).ToList());
-                            if (result is CartProductModel cartProduct)
+                            resultShowAllProducts = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList(),_userRepository.GetCart(_currentLoggedInUser).ToList());
+                            if (resultShowAllProducts is CartProductModel cartProduct)
                             {
                                 AddProductToCart(cartProduct);
                             }
-                        } while (result is CartProductModel);
+                        } while (resultShowAllProducts is CartProductModel);
                         break;
                     case 2:
-                        _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
+                        (CartActionEnum, CartProductModel?) resultShowUserCart;
+                        
+                        do
+                        {
+                            bool isSuccess = false;
+							resultShowUserCart= _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
+                            if (resultShowUserCart.Item2 == null)
+                                continue;
+							if (resultShowUserCart.Item1 == CartActionEnum.Remove)
+							{
+								isSuccess =_userRepository.RemoveProductFromCart(resultShowUserCart.Item2, _currentLoggedInUser);
+								_buyerView.ShowMessage((isSuccess) ? ConstString.RemoveFromCartSuccess : ConstString.RemoveFromCartFail);
+							}
+                            if(resultShowUserCart.Item1 == CartActionEnum.Update)
+                            {
+                                isSuccess =_userRepository.UpdateProductInCart(resultShowUserCart.Item2, _currentLoggedInUser);
+								_buyerView.ShowMessage((isSuccess) ? ConstString.UpdateInCartSuccess : ConstString.UpdateInCartFail);
 
+							}
+						} while (resultShowUserCart.Item1 != CartActionEnum.Exit);
                         break;
                     case 3:
                         _buyerView.ShowPaymentMethod();
@@ -70,16 +88,7 @@ namespace Library.Controllers
             bool result = _userRepository.IsProductInCart(cartProduct, _currentLoggedInUser)
                 ? _userRepository.UpdateProductInCart(cartProduct, _currentLoggedInUser)
                 : _userRepository.AddProductToCart(cartProduct, _currentLoggedInUser);
-            if (!result)
-            {
-                _buyerView.ShowMessage(ConstString.AddToCartFail);
-            }
-            else
-            {
-                _buyerView.ShowMessage(ConstString.AddToCartSuccess);
-            }
-
-
+            _buyerView.ShowMessage((result) ? ConstString.AddToCartSuccess : ConstString.AddToCartFail);
         }
     }
 }

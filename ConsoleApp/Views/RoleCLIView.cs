@@ -103,6 +103,25 @@ namespace ConsoleApp.Views
 				Height = Dim.Fill()
 			};
 		}
+		private MenuBar GetMenuBar()
+		{
+			return new MenuBar(new MenuBarItem[]
+			{
+				new MenuBarItem("_Plik", new MenuItem[]
+				{
+					new MenuItem("_Nowy", "", () => MessageBox.Query("Nowy", "Utworzono nowy plik.", "Ok")),
+					new MenuItem("_Otwórz", "", () => MessageBox.Query("Otwórz", "Otwieranie pliku...", "Ok")),
+					new MenuItem("_Zamknij", "", () => Application.RequestStop())
+				}),
+				new MenuBarItem("Konto", new MenuItem[]
+				{
+					new MenuItem("Informacje o użytkowniku", "",
+						() => MessageBox.Query("O programie", "To jest przykładowa aplikacja.", "Ok")),
+					new MenuItem("Wyloguj się!", "",
+						() => MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Ok"))
 
+				})
+			});
+		}
 	}
 }

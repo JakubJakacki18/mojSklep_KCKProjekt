@@ -3,8 +3,8 @@
     public enum CartActionEnum
     {
         Exit,
-        EditProduct,
-        RemoveProduct,
+        Update,
+        Remove,
 
     }
 }

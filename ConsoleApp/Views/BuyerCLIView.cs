@@ -3,6 +3,7 @@ using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
 using Library.Models;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
@@ -321,7 +322,6 @@ namespace ConsoleApp.Views
                 Application.RequestStop();
             };
             menuFrame.Add(showProductListButton, showCartButton, finalizeShoppingButton, exitShopButton);
-            mainWindow.Add(GetMenuBar());
             OpenFrameAndShutdown(menuFrame);
             return selection;
         }
@@ -489,17 +489,26 @@ namespace ConsoleApp.Views
                     X = Pos.Center(),
                     Y = Pos.Bottom(quantityQuestionTextField)
                 };
-                var changeQuantityInCartButton = new Button("Zmień ilość")
+                var buttonContainer = new View()
                 {
                     X = Pos.Center(),
-                    Y = Pos.Bottom(priceToPayLabel) + 1
+                    Y = Pos.Bottom(priceToPayLabel) + 1,
+                    Width=Dim.Sized(54+12),
+                    Height=1
+                };
+                var changeQuantityInCartButton = new Button("Zmień ilość")
+                {
+                    X = 0,
+                    Y = 0,
                 };
                 changeQuantityInCartButton.Clicked += () =>
                 {
                     if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity) && (quantity > 0 && quantity <= cartProducts[args.Item].OriginalProduct.Quantity))
                     {
-                        //MessageBox.Query("Dodano do koszyka", "Dodano produkt do koszyka", "Ok");
-                        Application.RequestStop();
+                        var cartProduct = cartProducts[args.Item];
+                        cartProduct.Quantity= quantity;
+						result = (CartActionEnum.Update, cartProduct);
+						Application.RequestStop();
                     }
                     else
                     {
@@ -515,17 +524,29 @@ namespace ConsoleApp.Views
                 {
                     frame.Remove(windowDetails);
                 };
-
-                TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
+				var removeProductFromCartButton = new Button("Usuń z koszyka")
+				{
+					X = Pos.Right(rejectChangesButton),
+					Y = Pos.Top(rejectChangesButton)
+				};
+				removeProductFromCartButton.Clicked += () =>
+				{
+                    var answer=MessageBox.Query("Usuwanie produktu z koszyka","Czy jesteś pewien, że chcesz usunąć produkt z koszyka?","Tak","Nie");
+                    if (answer == 0)
+                    {
+                        result = (CartActionEnum.Remove, cartProducts[args.Item]);
+                        Application.RequestStop();
+                    }
+				};
+				TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
                 quantityQuestionTextField.TextChanged += (_) =>
                 {
                     if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
                     {
                         priceToPayLabel.Text = $"Cena do zapłaty: {quantity * cartProducts[args.Item].OriginalProduct.Price} {ConstString.Currency}";
-
                     }
                 };
-
+                buttonContainer.Add(changeQuantityInCartButton,rejectChangesButton,removeProductFromCartButton);
                 windowDetails.Add(idLabel,
                     nameLabel,
                     descriptionLabel,
@@ -535,12 +556,8 @@ namespace ConsoleApp.Views
                     quantityQuestionLabel,
                     quantityQuestionTextField,
                     priceToPayLabel,
-                    changeQuantityInCartButton,
-                    rejectChangesButton);
+                    buttonContainer);
                 frame.Add(windowDetails);
-
-
-
             };
             frame.Add(listView);
             var exitButton = new Button("Zamknij")
@@ -555,7 +572,6 @@ namespace ConsoleApp.Views
             frame.Add(exitButton);
             OpenFrameAndShutdown(frame);
             return result;
-
         }
 
         private string DescriptionLimiter(string? description)
@@ -567,31 +583,9 @@ namespace ConsoleApp.Views
             }
             if (description.Length > ConstIntegers.MaxLengthOfDescription)
             {
-
                 return $"{description.Substring(0, ConstIntegers.MaxLengthOfDescription - 3)}...";
             }
             return description;
-        }
-
-        private MenuBar GetMenuBar()
-        {
-            return new MenuBar(new MenuBarItem[]
-            {
-                new MenuBarItem("_Plik", new MenuItem[]
-                {
-                    new MenuItem("_Nowy", "", () => MessageBox.Query("Nowy", "Utworzono nowy plik.", "Ok")),
-                    new MenuItem("_Otwórz", "", () => MessageBox.Query("Otwórz", "Otwieranie pliku...", "Ok")),
-                    new MenuItem("_Zamknij", "", () => Application.RequestStop())
-                }),
-                new MenuBarItem("Konto", new MenuItem[]
-                {
-                    new MenuItem("Informacje o użytkowniku", "",
-                        () => MessageBox.Query("O programie", "To jest przykładowa aplikacja.", "Ok")),
-                    new MenuItem("Wyloguj się!", "",
-                        () => MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Ok"))
-
-                })
-            });
         }
     }
 }
