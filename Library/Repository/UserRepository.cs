@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Repository
 {
-    public class UserRepository(ApplicationDbContext context) : IUserRepository
+	public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
         private readonly ApplicationDbContext _context = context;
 
@@ -102,6 +102,7 @@ namespace Library.Repository
             => _context.Users.Include(p => p.ProductsInCart).ThenInclude(c => c.OriginalProduct)
                 .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
 
+
 		public bool RemoveProductFromCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
 		{
 			UserModel? user = UserModelWithCartAndOriginalProduct(currentLoggedInUser);
@@ -112,6 +113,13 @@ namespace Library.Repository
 			}
             return SaveChanges();
 
+		}
+
+		public bool RemoveAllProductsFromCart(UserModel currentLoggedInUser)
+		{
+			UserModel? user = UserModelWithCartAndOriginalProduct(currentLoggedInUser);
+            user?.ProductsInCart.Clear();
+            return SaveChanges();
 		}
 	}
 

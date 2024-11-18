@@ -174,7 +174,7 @@ namespace ConsoleApp.Views
                     product = new ProductModel
                     {
                         Name = productName.Text.ToString(),
-                        Price = double.Parse(productPrice.Text.ToString()),
+                        Price = decimal.Parse(productPrice.Text.ToString()),
                         Description = productDescription.Text.ToString(),
                         Quantity = int.Parse(productQuantity.Text.ToString()),
                         shelfRow = int.Parse(productShelfRow.Text.ToString()),

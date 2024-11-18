@@ -1,6 +1,6 @@
 ﻿namespace Library.Data
 {
-    public enum PayementMethodEnum
+    public enum PaymentMethodEnum
     {
         card,
         cash,

@@ -14,5 +14,7 @@
 
 		public const string RemoveFromCartSuccess = "Pomyślnie usunięto produkt z koszyka";
         public const string RemoveFromCartFail = "Nie udało się usunąć produktu z koszyka";
+		public const string RemoveAllProductsFromCartSuccess = "Pomyślnie usunięto wszystkie produkty z koszyka";
+		public const string RemoveAllProductsFromCartFail = "Nie udało się usunąć wszystkich produktów z koszyka";
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using Library.Data;
 using Library.Interfaces;
 using Library.Models;
-
+using System;
 namespace Library.Controllers
 {
     public class BuyerController
@@ -10,8 +10,9 @@ namespace Library.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
         private readonly UserModel _currentLoggedInUser;
+		private static BuyerController? _instance;
 
-        public static BuyerController Initialize(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
+		public static BuyerController Initialize(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
         {
             return _instance = new BuyerController(buyerView, userRepository, productRepository);
         }
@@ -32,7 +33,7 @@ namespace Library.Controllers
             _productRepository = productRepository;
         }
 
-        private static BuyerController _instance;
+        
 
         public void ShowMenu()
         {
@@ -54,26 +55,13 @@ namespace Library.Controllers
                         break;
                     case 2:
                         (CartActionEnum, CartProductModel?) resultShowUserCart;
-                        
-                        do
-                        {
-                            bool isSuccess = false;
-							resultShowUserCart= _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
-                            if (resultShowUserCart.Item2 == null)
-                                continue;
-							if (resultShowUserCart.Item1 == CartActionEnum.Remove)
-							{
-								isSuccess =_userRepository.RemoveProductFromCart(resultShowUserCart.Item2, _currentLoggedInUser);
-								_buyerView.ShowMessage((isSuccess) ? ConstString.RemoveFromCartSuccess : ConstString.RemoveFromCartFail);
-							}
-                            if(resultShowUserCart.Item1 == CartActionEnum.Update)
-                            {
-                                isSuccess =_userRepository.UpdateProductInCart(resultShowUserCart.Item2, _currentLoggedInUser);
-								_buyerView.ShowMessage((isSuccess) ? ConstString.UpdateInCartSuccess : ConstString.UpdateInCartFail);
-
-							}
-						} while (resultShowUserCart.Item1 != CartActionEnum.Exit);
-                        break;
+						do
+						{
+							resultShowUserCart = _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
+                            UserCartAction(resultShowUserCart);
+						}
+						while (resultShowUserCart.Item1 != CartActionEnum.Exit);
+						break;
                     case 3:
                         _buyerView.ShowPaymentMethod();
                         break;
@@ -90,5 +78,50 @@ namespace Library.Controllers
                 : _userRepository.AddProductToCart(cartProduct, _currentLoggedInUser);
             _buyerView.ShowMessage((result) ? ConstString.AddToCartSuccess : ConstString.AddToCartFail);
         }
-    }
+
+        private void UserCartAction((CartActionEnum, CartProductModel?) resultShowUserCart)
+		{
+			var action = resultShowUserCart.Item1;
+			var product = resultShowUserCart.Item2;
+			bool isSuccess = false;
+			switch (action)
+			{
+				case CartActionEnum.Buy:
+					isSuccess = _userRepository.BuyProducts(_currentLoggedInUser);
+					break;
+
+				case CartActionEnum.RemoveAll:
+					isSuccess = _userRepository.RemoveAllProductsFromCart(_currentLoggedInUser);
+					_buyerView.ShowMessage(isSuccess ? ConstString.RemoveAllProductsFromCartSuccess : ConstString.RemoveAllProductsFromCartFail);
+					break;
+
+				case CartActionEnum.Remove when product != null:
+					isSuccess = _userRepository.RemoveProductFromCart(product, _currentLoggedInUser);
+					_buyerView.ShowMessage(isSuccess ? ConstString.RemoveFromCartSuccess : ConstString.RemoveFromCartFail);
+					break;
+
+				case CartActionEnum.Update when product != null:
+					isSuccess = _userRepository.UpdateProductInCart(product, _currentLoggedInUser);
+					_buyerView.ShowMessage(isSuccess ? ConstString.UpdateInCartSuccess : ConstString.UpdateInCartFail);
+					break;
+
+				case CartActionEnum.Exit:
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+        private void BuyProducts()
+		{
+            var result = _buyerView.ShowPaymentMethod();
+            var ShoppingCartModel = new ShoppingCartModel() 
+            {
+                PaymentMethod = result.Item1,
+				CartProducts = _userRepository.GetCart(_currentLoggedInUser).ToList()
+			}
+
+		}
+	}
 }

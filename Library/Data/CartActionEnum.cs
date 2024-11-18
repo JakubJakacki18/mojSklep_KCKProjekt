@@ -5,6 +5,8 @@
         Exit,
         Update,
         Remove,
+        Buy,
+        RemoveAll,
 
     }
 }

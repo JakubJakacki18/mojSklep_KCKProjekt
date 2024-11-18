@@ -328,7 +328,8 @@ namespace ConsoleApp.Views
 
         public void ShowPaymentMethod()
         {
-            throw new NotImplementedException();
+            InitializeWindow();
+            OpenFrameAndShutdown();
         }
 
 
@@ -427,8 +428,8 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 2,
                 Width = table[0].Length,
-                Height = Dim.Fill() - 2,
-                AllowsMarking = false
+                Height = Dim.Percent(80),
+				AllowsMarking = false
             };
 
 
@@ -560,17 +561,58 @@ namespace ConsoleApp.Views
                 frame.Add(windowDetails);
             };
             frame.Add(listView);
-            var exitButton = new Button("Zamknij")
+			string summaryText = ((Func<string>)(() =>
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.Append("Łączna kwota: ");
+                decimal sum = 0m;
+                sum = cartProducts.Sum(p => p.Quantity * p.OriginalProduct.Price);
+                sb.Append(sum.ToString());
+                sb.Append(ConstString.Currency);
+				return sb.ToString();
+			}))();
+			var summary = new Label(summaryText)
             {
-                Y = Pos.Top(listView),
-                X = Pos.Right(listView) + 1
-            };
-            exitButton.Clicked += () =>
+                Y=Pos.Bottom(listView) + 1,
+                X= Pos.Left(listView)
+			};
+            var finalizeShoppingButton = new Button("Zapłać za zakupy")
             {
-                Application.RequestStop();
-            };
-            frame.Add(exitButton);
-            OpenFrameAndShutdown(frame);
+                Y = Pos.Bottom(summary),
+				X = Pos.Left(summary)
+			};
+			finalizeShoppingButton.Clicked += () =>
+            { 
+				result = (CartActionEnum.Buy, null);
+				Application.RequestStop();
+			};
+            var removeAllProductsFromCart = new Button("Wyczyść koszyk")
+            {
+                Y = Pos.Top(finalizeShoppingButton),
+				X = Pos.Right(finalizeShoppingButton) + 1
+			};
+            removeAllProductsFromCart.Clicked += () =>
+            {
+				var answer = MessageBox.Query("Koszyk", "Czy chcesz usunąć wszystkie produkty z koszyka?", "Tak", "Nie");
+                if (answer == 0) 
+                {
+                    result= (CartActionEnum.RemoveAll, null);
+					Application.RequestStop();
+				}
+			};
+			var exitButton = new Button("Zamknij")
+			{
+				Y = Pos.Top(removeAllProductsFromCart),
+				X = Pos.Right(removeAllProductsFromCart) + 1
+			};
+			exitButton.Clicked += () =>
+			{
+				Application.RequestStop();
+			};
+			
+			frame.Add(summary);
+			frame.Add(finalizeShoppingButton,removeAllProductsFromCart,exitButton);
+			OpenFrameAndShutdown(frame);
             return result;
         }
 
