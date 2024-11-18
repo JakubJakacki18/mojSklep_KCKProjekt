@@ -283,7 +283,7 @@ namespace ConsoleApp.Views
             var win = new Window("Logowanie/Rejestracja - " + ConstString.AppName)
             {
                 X = 0,
-                Y = 1,
+                Y = 0,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
             };
@@ -390,7 +390,7 @@ namespace ConsoleApp.Views
             var bigWin = new Window("Wybór roli - " + ConstString.AppName)
             {
                 X = 0,
-                Y = 1,
+                Y = 0,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
             };
@@ -399,7 +399,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = Pos.Center(),
                 Width = 30,
-                Height = 11,
+                Height = 10,
                 ColorScheme = ColorTheme.GrayThemePalette,
             };
             top.Add(bigWin);
@@ -410,33 +410,30 @@ namespace ConsoleApp.Views
                 Y = Pos.Center() - 3,
             };
             win.Add(label);
-            if (roles.HasFlag(RolesEnum.Buyer))
-            {
-                var buyerButton = new Button()
-                {
-                    Text = "Klient sklepu",
-                    Y = Pos.Bottom(label) + 3,
+			//if (roles.HasFlag(RolesEnum.Admin))
+			//{
+			//    var adminButton = new Button()
+			//    {
+			//        Text = "Administrator",
+			//        Y = Pos.Bottom(label) + 5,
 
-                    // center the login button horizontally
-                    X = Pos.Center(),
-                    IsDefault = false,
-                };
-                buyerButton.Clicked += () =>
-                {
-                    val = 0;
-                    Application.RequestStop();
-                };
-                win.Add(buyerButton);
-            }
-
-            if (roles.HasFlag(RolesEnum.Seller))
+			//        // center the login button horizontally
+			//        X = Pos.Center(),
+			//        IsDefault = false,
+			//    };
+			//    adminButton.Clicked += () =>
+			//    {
+			//        val = 2;
+			//        Application.RequestStop();
+			//    };
+			//    win.Add(adminButton);
+			//}
+			if (roles.HasFlag(RolesEnum.Seller))
             {
                 var sellerButton = new Button()
                 {
                     Text = "Sprzedający",
-                    Y = Pos.Bottom(label) + 4,
-
-                    // center the login button horizontally
+                    Y = Pos.Bottom(label) + 3,
                     X = Pos.Center(),
                     IsDefault = false,
                 };
@@ -447,25 +444,24 @@ namespace ConsoleApp.Views
                 };
                 win.Add(sellerButton);
             }
-            if (roles.HasFlag(RolesEnum.Admin))
-            {
-                var adminButton = new Button()
-                {
-                    Text = "Administrator",
-                    Y = Pos.Bottom(label) + 5,
+			if (roles.HasFlag(RolesEnum.Buyer))
+			{
+				var buyerButton = new Button()
+				{
+					Text = "Klient sklepu",
+					Y = Pos.Bottom(label)+4,
+					X = Pos.Center(),
+					IsDefault = false,
+				};
+				buyerButton.Clicked += () =>
+				{
+					val = 0;
+					Application.RequestStop();
+				};
+				win.Add(buyerButton);
+			}
 
-                    // center the login button horizontally
-                    X = Pos.Center(),
-                    IsDefault = false,
-                };
-                adminButton.Clicked += () =>
-                {
-                    val = 2;
-                    Application.RequestStop();
-                };
-                win.Add(adminButton);
-            }
-            Application.Run();
+			Application.Run();
             Application.Shutdown();
             return val;
         }

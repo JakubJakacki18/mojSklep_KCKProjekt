@@ -218,7 +218,35 @@ namespace ConsoleApp.Views
             (ShowProductsSellerActionEnum, ProductModel?) result = (ShowProductsSellerActionEnum.exit,null);
 
 			InitializeWindow();
-			var win = new FrameView("Produkty")
+
+			if (products.Count == 0)
+			{
+				var nullFrame = new FrameView("Lista produktów")
+				{
+					X = 0,
+					Y = 0,
+					Width = Dim.Fill(1),
+					Height = Dim.Fill(1),
+					ColorScheme = ColorTheme.GrayThemePalette
+				};
+
+				var nullLabel = new Label("Twój koszyk jest pusty")
+				{
+					X = Pos.Center(),
+					Y = Pos.Center()
+				};
+				var exitNullButton = new Button("Zamknij")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(nullLabel) + 1
+				};
+				exitNullButton.Clicked += () => { Application.RequestStop(); };
+				nullFrame.Add(nullLabel, exitNullButton);
+				OpenFrameAndShutdown(nullFrame);
+				return result;
+			}
+
+			var win = new FrameView("Lista produktów")
             {
                 X = 0,
                 Y = 0,
@@ -400,7 +428,7 @@ namespace ConsoleApp.Views
 				};
                 rejectChangesButton.Clicked += () =>
 				{
-                    win.Remove(editProductLabel);
+                    win.Remove(editProductWindow);
 				};
                 var removeProductButton = new Button("Usuń produkt")
 				{
@@ -474,7 +502,16 @@ namespace ConsoleApp.Views
 				win.Add(editProductWindow);
 
             };
-            win.Add(listView);
+            var closeButton = new Button("Zamknij")
+            {
+               X=Pos.Right(listView)+1,     
+               Y=Pos.Top(listView)+1,
+            };
+            closeButton.Clicked += () =>
+			{
+				Application.RequestStop();
+			};
+			win.Add(listView,closeButton);
             OpenFrameAndShutdown(win);
             return result;
         }

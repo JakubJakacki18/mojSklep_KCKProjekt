@@ -9,7 +9,7 @@ namespace Library.Controllers
     {
         private IUserView _userView;
         private IUserRepository _userRepository;
-        public UserModel CurrentLoggedInUser { get; private set; }
+        public UserModel? CurrentLoggedInUser { get; private set; }
         public static UserController Initialize(IUserView userView, IUserRepository userRepository)
         {
             _instance = new UserController(userView, userRepository);
@@ -101,20 +101,19 @@ namespace Library.Controllers
             };
             return _userRepository.AddUser(user) ? true : throw new Exception("Użytkownik nie został dodany!");
         }
-        public bool SignOut()
+        public void Logout()
         {
-            // some logic
-            return true;
-        }
+            CurrentLoggedInUser = null;
+		}
         public bool ChangePassword(string login, string password)
         {
             // some logic
-            return true;
+            return false;
         }
         public bool DeleteAccount(string login)
         {
             // some logic
-            return true;
+            return false;
         }
 
         public RolesEnum GetRole(UserModel loggedUser)

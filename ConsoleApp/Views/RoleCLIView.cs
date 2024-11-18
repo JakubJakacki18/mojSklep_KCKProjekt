@@ -1,4 +1,5 @@
 ﻿using ConsoleApp.Data;
+using Library.Controllers;
 using Library.Data;
 using Terminal.Gui;
 
@@ -102,23 +103,26 @@ namespace ConsoleApp.Views
 				Width = Dim.Fill(),
 				Height = Dim.Fill()
 			};
+			top.Add(GetMenuBar());
 		}
 		private MenuBar GetMenuBar()
 		{
 			return new MenuBar(new MenuBarItem[]
 			{
-				new MenuBarItem("_Plik", new MenuItem[]
-				{
-					new MenuItem("_Nowy", "", () => MessageBox.Query("Nowy", "Utworzono nowy plik.", "Ok")),
-					new MenuItem("_Otwórz", "", () => MessageBox.Query("Otwórz", "Otwieranie pliku...", "Ok")),
-					new MenuItem("_Zamknij", "", () => Application.RequestStop())
-				}),
 				new MenuBarItem("Konto", new MenuItem[]
-				{
-					new MenuItem("Informacje o użytkowniku", "",
-						() => MessageBox.Query("O programie", "To jest przykładowa aplikacja.", "Ok")),
-					new MenuItem("Wyloguj się!", "",
-						() => MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Ok"))
+                {
+                    new MenuItem("Informacje o użytkowniku", "",
+                        () => MessageBox.Query("O programie", ConstString.AppName+"\nAutor: Jakub Jakacki\nWersja: alpha 0.0.1", "Ok")),
+                    new MenuItem("Wyloguj się!", "",
+                        () => {
+                            int result = MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Tak","Nie");
+                            if(result==0)
+                            {
+                                UserController.GetInstance().Logout();
+                                Application.RequestStop();
+                            }
+						}),
+
 
 				})
 			});

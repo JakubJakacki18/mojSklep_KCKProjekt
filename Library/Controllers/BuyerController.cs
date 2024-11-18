@@ -9,7 +9,8 @@ namespace Library.Controllers
         private readonly IBuyerView _buyerView;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
-        private readonly UserModel _currentLoggedInUser;
+        private readonly UserController _userController;
+		private UserModel? currentLoggedInUser;
 		private static BuyerController? _instance;
 
 		public static BuyerController Initialize(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
@@ -27,7 +28,8 @@ namespace Library.Controllers
         }
         private BuyerController(IBuyerView buyerView, IUserRepository userRepository, IProductRepository productRepository)
         {
-            _currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
+			_userController = UserController.GetInstance();
+			currentLoggedInUser = _userController.CurrentLoggedInUser;
             _buyerView = buyerView;
             _userRepository = userRepository;
             _productRepository = productRepository;
@@ -40,13 +42,18 @@ namespace Library.Controllers
             bool isExitWanted = false;
             do
             {
+				currentLoggedInUser = _userController.CurrentLoggedInUser;
+				if (currentLoggedInUser == null)
+                {
+                    return;
+                }
                 switch (_buyerView.ShowMenu())
                 {
                     case 1:
                         object? resultShowAllProducts;
                         do
                         {
-                            resultShowAllProducts = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList(),_userRepository.GetCart(_currentLoggedInUser).ToList());
+                            resultShowAllProducts = _buyerView.ShowAllProducts(_productRepository.GetProducts().ToList(),_userRepository.GetCart(currentLoggedInUser).ToList());
                             if (resultShowAllProducts is CartProductModel cartProduct)
                             {
                                 AddProductToCart(cartProduct);
@@ -57,7 +64,7 @@ namespace Library.Controllers
                         (CartActionEnum, CartProductModel?) resultShowUserCart;
 						do
 						{
-							resultShowUserCart = _buyerView.ShowUserCart(_userRepository.GetCart(_currentLoggedInUser).ToList());
+							resultShowUserCart = _buyerView.ShowUserCart(_userRepository.GetCart(currentLoggedInUser).ToList());
                             UserCartAction(resultShowUserCart);
 						}
 						while (resultShowUserCart.Item1 != CartActionEnum.Exit);
@@ -66,21 +73,21 @@ namespace Library.Controllers
                         BuyProducts();
 						break;
                     case 4:
-                        _buyerView.ShowShoppingHistory(_userRepository.GetShoppingCartHistory(_currentLoggedInUser).ToList());
+                        _buyerView.ShowShoppingHistory(_userRepository.GetShoppingCartHistory(currentLoggedInUser).ToList());
                         break;
                     case 5:
 						isExitWanted = _buyerView.ExitApp();
 						break;
 					default:
-						throw new ArgumentOutOfRangeException();
+                        break;
 				}
             } while (!isExitWanted);
         }
         private void AddProductToCart(CartProductModel cartProduct)
         {
-            bool result = _userRepository.IsProductInCart(cartProduct, _currentLoggedInUser)
-                ? _userRepository.UpdateProductInCart(cartProduct, _currentLoggedInUser)
-                : _userRepository.AddProductToCart(cartProduct, _currentLoggedInUser);
+            bool result = _userRepository.IsProductInCart(cartProduct, currentLoggedInUser)
+                ? _userRepository.UpdateProductInCart(cartProduct, currentLoggedInUser)
+                : _userRepository.AddProductToCart(cartProduct, currentLoggedInUser);
             _buyerView.ShowMessage((result) ? ConstString.AddToCartSuccess : ConstString.AddToCartFail);
         }
 
@@ -96,17 +103,17 @@ namespace Library.Controllers
 					break;
 
 				case CartActionEnum.RemoveAll:
-					isSuccess = _userRepository.RemoveAllProductsFromCart(_currentLoggedInUser);
+					isSuccess = _userRepository.RemoveAllProductsFromCart(currentLoggedInUser);
 					_buyerView.ShowMessage(isSuccess ? ConstString.RemoveAllProductsFromCartSuccess : ConstString.RemoveAllProductsFromCartFail);
 					break;
 
 				case CartActionEnum.Remove when product != null:
-					isSuccess = _userRepository.RemoveProductFromCart(product, _currentLoggedInUser);
+					isSuccess = _userRepository.RemoveProductFromCart(product, currentLoggedInUser);
 					_buyerView.ShowMessage(isSuccess ? ConstString.RemoveFromCartSuccess : ConstString.RemoveFromCartFail);
 					break;
 
 				case CartActionEnum.Update when product != null:
-					isSuccess = _userRepository.UpdateProductInCart(product, _currentLoggedInUser);
+					isSuccess = _userRepository.UpdateProductInCart(product, currentLoggedInUser);
 					_buyerView.ShowMessage(isSuccess ? ConstString.UpdateInCartSuccess : ConstString.UpdateInCartFail);
 					break;
 
@@ -120,7 +127,7 @@ namespace Library.Controllers
 
         private void BuyProducts()
 		{
-			var cartContent = _userRepository.GetCart(_currentLoggedInUser).ToList();
+			var cartContent = _userRepository.GetCart(currentLoggedInUser).ToList();
             if (cartContent.Count == 0)
 			{
 				_buyerView.ShowMessage("Koszyk jest pusty");
@@ -143,13 +150,14 @@ namespace Library.Controllers
                     UserId = cartProduct.UserId,
                     User = cartProduct.User
                 }).ToList(),
-				User = _currentLoggedInUser,
+				User = currentLoggedInUser,
                 Date = DateTime.Now,
                 TotalPrice = cartContent.Sum(p => p.Quantity * p.OriginalProduct.Price),
             };
 			bool isSuccessChangeQuantity = _productRepository.UpdateProductsQuantity(cartContent);
-			bool isSuccessBuyProducts = _userRepository.BuyProducts(_currentLoggedInUser, shoppingCarthHistoryModel);
+			bool isSuccessBuyProducts = _userRepository.BuyProducts(currentLoggedInUser, shoppingCarthHistoryModel);
 			_buyerView.ShowMessage((isSuccessChangeQuantity&& isSuccessBuyProducts) ? ConstString.BuyProductsSuccess : ConstString.BuyProductsFail);
+            
 		}
 
 

@@ -7,12 +7,13 @@ namespace Library.Controllers
     public class SellerController
     {
         private static SellerController _instance;
-        private ISellerView _sellerView;
-        private UserModel currentLoggedInUser;
-        private IProductRepository _productRepository;
+        private readonly ISellerView _sellerView;
+        private UserModel? currentLoggedInUser;
+        private readonly IProductRepository _productRepository;
+        private readonly UserController _userController;
 
 
-        public static SellerController Initialize(ISellerView sellerView, IProductRepository productRepository)
+		public static SellerController Initialize(ISellerView sellerView, IProductRepository productRepository)
         {
             return _instance = new SellerController(sellerView, productRepository);
         }
@@ -27,7 +28,8 @@ namespace Library.Controllers
         }
         private SellerController(ISellerView sellerView, IProductRepository productRepository)
         {
-            currentLoggedInUser = UserController.GetInstance().CurrentLoggedInUser;
+			_userController = UserController.GetInstance();
+			currentLoggedInUser = _userController.CurrentLoggedInUser;
             _sellerView = sellerView;
             _productRepository = productRepository;
         }
@@ -35,10 +37,16 @@ namespace Library.Controllers
 
         public void ShowMenu()
         {
-            bool isExitWanted = false;
+
+			bool isExitWanted = false;
             do
             {
-                switch (_sellerView.ShowMenu())
+				currentLoggedInUser = _userController.CurrentLoggedInUser;
+				if (currentLoggedInUser == null)
+				{
+					return;
+				}
+				switch (_sellerView.ShowMenu())
                 {
                     case 1:
                         AddProduct(_sellerView.AddProduct());
@@ -56,7 +64,7 @@ namespace Library.Controllers
                         isExitWanted = _sellerView.ExitApp();
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        break;
                 }
             } while (!isExitWanted);
         }
@@ -89,13 +97,13 @@ namespace Library.Controllers
             if (productModel != null)
             {
 				var result = _productRepository.RemoveProduct(productModel);
-				if (result)
-				{
-					_sellerView.ShowMessage(ConstString.RemoveProductSuccess);
-					return;
-				}
+				_sellerView.ShowMessage((result) ? ConstString.RemoveProductSuccess : ConstString.RemoveProductFail);
 			}
-        }
+			else
+			{
+				_sellerView.ShowMessage(ConstString.RemoveProductFail);
+			}
+		}
             public void ShowDetailsOfProduct() { }
 
         public void ShowAllProducts()
@@ -124,12 +132,11 @@ namespace Library.Controllers
 		{
 			if (product != null)
 			{
-				_productRepository.SaveChanges();
-				//_sellerView.ShowMessage(ConstString.EditProductSuccess);
+                _sellerView.ShowMessage(_productRepository.SaveChanges() ? ConstString.EditProductSuccess : ConstString.EditProductFail);
 			}
 			else
 			{
-				//_sellerView.ShowMessage(ConstString.EditProductFail);
+				_sellerView.ShowMessage(ConstString.EditProductFail);
 			}
 		}
 
