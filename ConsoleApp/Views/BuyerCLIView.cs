@@ -1,12 +1,15 @@
-﻿using ConsoleApp.Data;
+﻿using Azure.Core;
+using ConsoleApp.Data;
 using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
 using Library.Models;
+using NStack;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 using Terminal.Gui;
 
 namespace ConsoleApp.Views
@@ -311,26 +314,32 @@ namespace ConsoleApp.Views
                 Application.RequestStop();
 
             };
-            var exitShopButton = new Button($"_{iter++}. Wyjdź z {ConstString.AppName}")
+			var showHistoryButton = new Button($"_{iter++}. Pokaż historie zakupów")
+			{
+				X = Pos.Center(),
+				Y = 4
+			};
+			showHistoryButton.Clicked += () =>
+			{
+				selection = 4;
+				Application.RequestStop();
+			};
+			var exitShopButton = new Button($"_{iter++}. Wyjdź z {ConstString.AppName}")
             {
                 X = Pos.Center(),
-                Y = 4
+                Y = 5
             };
             exitShopButton.Clicked += () =>
             {
-                selection = 4;
+                selection = 5;
                 Application.RequestStop();
             };
-            menuFrame.Add(showProductListButton, showCartButton, finalizeShoppingButton, exitShopButton);
+            menuFrame.Add(showProductListButton, showCartButton, finalizeShoppingButton, showHistoryButton, exitShopButton);
             OpenFrameAndShutdown(menuFrame);
             return selection;
         }
 
-        public void ShowPaymentMethod()
-        {
-            InitializeWindow();
-            OpenFrameAndShutdown();
-        }
+       
 
 
         public (CartActionEnum, CartProductModel?) ShowUserCart(List<CartProductModel> cartProducts)
@@ -629,5 +638,328 @@ namespace ConsoleApp.Views
             }
             return description;
         }
-    }
+
+        public PaymentMethodEnum ShowPaymentMethod(List<CartProductModel> productsFromCart)
+        {
+            PaymentMethodEnum paymentMethod = PaymentMethodEnum.None;
+            InitializeWindow();
+            var paymentMethodFrame = new FrameView("Dokonaj zakupu")
+            {
+                X = 0,
+                Y = 1,
+                Width = Dim.Percent(50),
+                Height =Dim.Fill(1),
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
+            var paymentMethodLabel = new Label("Wybierz sposób płatności: ")
+            {
+                X = 1,
+                Y = 1
+            };
+            ustring[] options =
+            {
+                ustring.Make("Gotówka"),
+                ustring.Make("Kartą"),
+                ustring.Make("Blikiem")
+            };
+            var radioPayementMethodButton = new RadioGroup()
+            {
+                X = Pos.Left(paymentMethodLabel),
+                Y = Pos.Bottom(paymentMethodLabel),
+                RadioLabels = options,
+                SelectedItem = 0
+            };
+			var confirmPaymentMethodButton = new Button("Kup teraz")
+			{
+				X = Pos.Center(),
+				Y = Pos.Bottom(radioPayementMethodButton) + 1
+			};
+            var continueShoppingButton = new Button("Kontynuuj zakupy")
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(confirmPaymentMethodButton)
+            };
+           
+            confirmPaymentMethodButton.Clicked += () => 
+            {
+                
+                var paymentMethodWindow = new Window("Potwierdzenie zakupu")
+				{
+					X = 0,
+					Y = 1,
+					Width = 50,
+					Height = 9,
+					ColorScheme = ColorTheme.RedThemePalette
+				};
+               
+                var isUserSureLabel = new Label("Czy na pewno chcesz dokonać zakupu?")
+                {
+                    X = Pos.Center(),
+                    Y = 1
+                };
+                var yesButton = new Button("Tak")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(isUserSureLabel)+1
+				};
+                yesButton.Clicked += () => 
+                {
+					paymentMethod = (PaymentMethodEnum)radioPayementMethodButton.SelectedItem;
+					Application.RequestStop(); 
+                };
+				var noButton = new Button("Nie")
+                {
+					X = Pos.Center(),
+					Y = Pos.Bottom(yesButton)
+				};
+                noButton.Clicked += () =>
+                {
+                    paymentMethodFrame.Remove(paymentMethodWindow);
+                };
+				paymentMethodFrame.Add(paymentMethodWindow);
+                paymentMethodWindow.Add(isUserSureLabel, yesButton, noButton);
+			};
+            continueShoppingButton.Clicked += () => 
+            {
+                Application.RequestStop();
+            }; 
+
+			var summaryCartFrame = new FrameView("Zawartość koszyka")
+			{
+				X = Pos.Right(paymentMethodFrame),
+				Y = Pos.Top(paymentMethodFrame),
+				Width = Dim.Percent(50),
+				Height = Dim.Fill(1),
+				ColorScheme = ColorTheme.GrayThemePalette
+			};
+
+			var cartTable = new TableView()
+			{
+				X = Pos.Center(),
+				Y = 1,
+				Width = Dim.Fill(1),
+				Height = Dim.Percent(80),
+				CanFocus = false
+			};
+			var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość","Cena","Suma" };
+			var dt = new DataTable();
+			foreach (var columnName in columnNames)
+			{
+				dt.Columns.Add(columnName);
+			}
+			foreach (var product in productsFromCart)
+			{
+				dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name, product.Quantity,product.OriginalProduct.Price,product.OriginalProduct.Price*product.Quantity);
+			}
+			cartTable.Table = dt;
+
+			string summaryText = ((Func<string>)(() =>
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.Append("Łączna kwota: ");
+				decimal sum = 0m;
+				sum = productsFromCart.Sum(p => p.Quantity * p.OriginalProduct.Price);
+				sb.Append(sum.ToString());
+				sb.Append(ConstString.Currency);
+				return sb.ToString();
+			}))();
+
+
+			var priceToPayLabel = new Label(summaryText) 
+            {
+                X=Pos.Center(),
+                Y=Pos.Bottom(cartTable),
+            };
+
+			summaryCartFrame.Add(cartTable,priceToPayLabel);
+
+
+
+
+
+
+			paymentMethodFrame.Add(paymentMethodLabel, radioPayementMethodButton, confirmPaymentMethodButton, continueShoppingButton);
+			OpenFrameAndShutdown(paymentMethodFrame,summaryCartFrame);
+			return paymentMethod;
+		}
+
+		public void ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
+		{
+            InitializeWindow();
+            var historyFrame = new FrameView("Historia zakupów")
+			{
+				X = 0,
+				Y = 0,
+				Width = Dim.Fill(1),
+				Height = Dim.Fill(1),
+				ColorScheme = ColorTheme.GrayThemePalette
+			};
+			if (shoppingCartHistories.Count == 0)
+			{
+				var nullLabel = new Label("Brak historii zakupów w bazie")
+				{
+					X = Pos.Center(),
+					Y = Pos.Center()
+				};
+				var exitNullButton = new Button("Zamknij")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(nullLabel) + 1
+				};
+				exitNullButton.Clicked += () => { Application.RequestStop(); };
+				historyFrame.Add(nullLabel, exitNullButton);
+				OpenFrameAndShutdown(historyFrame);
+                return;
+			}
+
+            var productNames = shoppingCartHistories.Select(p => new string[]
+            {
+                p.Date.ToString(),
+                p.TotalPrice.ToString("0.00"),
+                (p.PaymentMethod != null) ? GetEnumDescription((PaymentMethodEnum)p.PaymentMethod) : "",
+                p.CartProducts.Count.ToString()
+
+            }).ToList();
+			string[] header = { "Data", "Suma", "Płatność", "Ilość zakupionych produktów" };
+			int[] columnWidths = header.Select(h => h.Length).ToArray();
+			for (int col = 0; col < productNames[0].Length; col++)
+			{
+				columnWidths[col] = Math.Max(columnWidths[col], productNames.Max(row => row[col].Length));
+			}
+
+			string[] table = productNames.Select(p =>
+			{
+				StringBuilder s = new();
+				for (int i = 0; i < p.Length; i++)
+				{
+					s.Append(" | ");
+					s.Append(p[i].PadRight(columnWidths[i]));
+				}
+
+				s.Append(" | ");
+				return s.ToString();
+
+			}).ToArray();
+
+			var label = new Label("Wpisy historii")
+			{
+				X = Pos.Center(),
+				Y = 0
+			};
+			historyFrame.Add(label);
+
+			string tableHeader = ((Func<string>)(() =>
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.Append(" | ");
+				for (int j = 0; j < header.Length; j++)
+				{
+					sb.Append(header[j].PadRight(columnWidths[j]));
+					sb.Append(" | ");
+				}
+
+				return sb.ToString();
+			}))();
+			var tableHeaderLabel = new Label(tableHeader)
+			{
+				X = Pos.Center(),
+				Y = 1
+			};
+			historyFrame.Add(tableHeaderLabel);
+
+
+			var listView = new ListView(table)
+			{
+				X = Pos.Center(),
+				Y = 2,
+				Width = table[0].Length,
+				Height = Dim.Fill() - 2,
+				AllowsMarking = false
+			};
+            listView.OpenSelectedItem += (args) =>
+            {
+				var windowDetails = new Window("Szczegóły wpisu")
+				{
+					X = 0,
+					Y = 1,
+					Width = Dim.Fill(1),
+					Height = Dim.Fill(1),
+					ColorScheme = ColorTheme.GrayThemePalette
+				};
+                var dateLabel = new Label("Zakupiono: " + shoppingCartHistories[args.Item].Date.ToString()) 
+                {
+                    X=Pos.Center(),
+                    Y=1,
+                };
+                var totalPriceLabel = new Label("Za kwotę: " + shoppingCartHistories[args.Item].TotalPrice.ToString()) 
+                {
+					X = Pos.Center(),
+					Y =Pos.Bottom(dateLabel)
+                };
+                PaymentMethodEnum? paymentEnum = shoppingCartHistories[args.Item].PaymentMethod;
+                string paymentMethodString = (paymentEnum != null) ? GetEnumDescription((PaymentMethodEnum)paymentEnum) : ""; 
+				var paymentMethodLabel = new Label("Metoda płatności"+paymentMethodString)
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(totalPriceLabel)
+				};
+				var quantityOfProductsLabel = new Label("Ilość produktów: "+ shoppingCartHistories[args.Item].CartProducts.Count.ToString())
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(paymentMethodLabel)
+				};
+				var cartTable = new TableView()
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(quantityOfProductsLabel)+2,
+					Width = Dim.Fill(1),
+					Height = Dim.Percent(60),
+					CanFocus = false
+				};
+				var columnNames = new string[] { "Kod kreskowy", "Nazwa","Opis", "Ilość", "Cena", "Suma" };
+				var dt = new DataTable();
+				foreach (var columnName in columnNames)
+				{
+					dt.Columns.Add(columnName);
+				}
+				foreach (var product in shoppingCartHistories[args.Item].CartProducts)
+				{
+					dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name,DescriptionLimiter(product.OriginalProduct.Description), product.Quantity, product.OriginalProduct.Price, product.OriginalProduct.Price * product.Quantity);
+				}
+				cartTable.Table = dt;
+                var closeDetailsButton= new Button("Zamknij szczegóły")
+                {
+					X = Pos.Center(),
+                    Y= Pos.Bottom(cartTable),
+				};
+                closeDetailsButton.Clicked += () =>
+                {
+                    historyFrame.Remove(windowDetails);
+                };
+                windowDetails.Add(dateLabel,totalPriceLabel,paymentMethodLabel,quantityOfProductsLabel, cartTable, closeDetailsButton);
+                historyFrame.Add(windowDetails);
+               
+			};
+            var closeButton = new Button("Zamknij historie zakupów")
+            {
+                X=Pos.Left(listView),
+                Y=Pos.Bottom(listView)+1
+            };
+            closeButton.Clicked += () => 
+            {
+                Application.RequestStop();
+            };
+            historyFrame.Add(listView,closeButton);
+			OpenFrameAndShutdown(historyFrame);
+		}
+
+        private string GetEnumDescription(PaymentMethodEnum value)
+		{
+			var field = value.GetType().GetField(value.ToString());
+            if (field == null)
+                return value.ToString();
+			var attribute = System.Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+			return attribute == null ? value.ToString() : attribute.Description;
+		}
+	}
 }

@@ -9,8 +9,9 @@ namespace Library.Interfaces
         Object? ShowAllProducts(List<ProductModel> products,List<CartProductModel> productsFromCart);
         public void ShowInterface();
         public int ShowMenu();
-        void ShowPaymentMethod();
+        PaymentMethodEnum ShowPaymentMethod(List<CartProductModel> productsFromCart);
         (CartActionEnum actionEnum, CartProductModel? cartProduct) ShowUserCart(List<CartProductModel> cartProducts);
-        void ShowMessage(string addProductStatus);
+        void ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories);
+		void ShowMessage(string addProductStatus);
     }
 }

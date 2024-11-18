@@ -102,6 +102,10 @@ namespace Library.Repository
             => _context.Users.Include(p => p.ProductsInCart).ThenInclude(c => c.OriginalProduct)
                 .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
 
+		private UserModel? UserModelWithCartHistoryAndOriginalProduct(UserModel currentLoggedInUser)
+			=> _context.Users.Include(s => s.ShoppingCartHistories).ThenInclude(c => c.CartProducts).ThenInclude(o => o.OriginalProduct)
+				.FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
+
 
 		public bool RemoveProductFromCart(CartProductModel cartProduct, UserModel currentLoggedInUser)
 		{
@@ -121,6 +125,15 @@ namespace Library.Repository
             user?.ProductsInCart.Clear();
             return SaveChanges();
 		}
+
+		public bool BuyProducts(UserModel currentLoggedInUser, ShoppingCartHistoryModel shoppingCartHistory)
+		{
+			currentLoggedInUser.ShoppingCartHistories.Add(shoppingCartHistory);
+			return SaveChanges() ? RemoveAllProductsFromCart(currentLoggedInUser) : false;
+		}
+
+        public IEnumerable<ShoppingCartHistoryModel> GetShoppingCartHistory(UserModel currentLoggedInUser) 
+            =>UserModelWithCartHistoryAndOriginalProduct(currentLoggedInUser)?.ShoppingCartHistories ?? new List<ShoppingCartHistoryModel>();
 	}
 
 }

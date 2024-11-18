@@ -36,5 +36,19 @@ namespace Library.Repository
         {
 			return _context.SaveChanges() > 0;
 		}
-    }
+
+		public bool UpdateProductsQuantity(List<CartProductModel> cartContent)
+		{
+			foreach (var cartProduct in cartContent)
+			{
+				var product = _context.Products.FirstOrDefault(p => p.Id == cartProduct.ProductId);
+				if (product != null)
+				{
+                    if(product.Quantity- cartProduct.Quantity>0)
+					    product.Quantity -= cartProduct.Quantity;
+				}
+			}
+			return SaveChanges();
+		}
+	}
 }

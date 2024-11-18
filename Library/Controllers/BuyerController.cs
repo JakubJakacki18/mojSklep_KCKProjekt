@@ -63,12 +63,17 @@ namespace Library.Controllers
 						while (resultShowUserCart.Item1 != CartActionEnum.Exit);
 						break;
                     case 3:
-                        _buyerView.ShowPaymentMethod();
-                        break;
+                        BuyProducts();
+						break;
                     case 4:
-                        isExitWanted = _buyerView.ExitApp();
+                        _buyerView.ShowShoppingHistory(_userRepository.GetShoppingCartHistory(_currentLoggedInUser).ToList());
                         break;
-                }
+                    case 5:
+						isExitWanted = _buyerView.ExitApp();
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
             } while (!isExitWanted);
         }
         private void AddProductToCart(CartProductModel cartProduct)
@@ -87,7 +92,7 @@ namespace Library.Controllers
 			switch (action)
 			{
 				case CartActionEnum.Buy:
-					isSuccess = _userRepository.BuyProducts(_currentLoggedInUser);
+                    BuyProducts();
 					break;
 
 				case CartActionEnum.RemoveAll:
@@ -115,13 +120,33 @@ namespace Library.Controllers
 
         private void BuyProducts()
 		{
-            var result = _buyerView.ShowPaymentMethod();
-            var ShoppingCartModel = new ShoppingCartModel() 
+			var cartContent = _userRepository.GetCart(_currentLoggedInUser).ToList();
+			var result = _buyerView.ShowPaymentMethod(cartContent);
+           
+            if (result == PaymentMethodEnum.None)
             {
-                PaymentMethod = result.Item1,
-				CartProducts = _userRepository.GetCart(_currentLoggedInUser).ToList()
-			}
-
+                return;
+            }
+            var shoppingCarthHistoryModel = new ShoppingCartHistoryModel()
+            {
+                PaymentMethod = result,
+                CartProducts = cartContent.Select(cartProduct => new CartProductModel
+                {
+                    ProductId = cartProduct.ProductId,
+                    OriginalProduct = cartProduct.OriginalProduct,
+                    Quantity = cartProduct.Quantity,
+                    UserId = cartProduct.UserId,
+                    User = cartProduct.User
+                }).ToList(),
+				User = _currentLoggedInUser,
+                Date = DateTime.Now,
+                TotalPrice = cartContent.Sum(p => p.Quantity * p.OriginalProduct.Price),
+            };
+			bool isSuccessChangeQuantity = _productRepository.UpdateProductsQuantity(cartContent);
+			bool isSuccessBuyProducts = _userRepository.BuyProducts(_currentLoggedInUser, shoppingCarthHistoryModel);
+			_buyerView.ShowMessage((isSuccessChangeQuantity&& isSuccessBuyProducts) ? ConstString.BuyProductsSuccess : ConstString.BuyProductsFail);
 		}
+
+
 	}
 }

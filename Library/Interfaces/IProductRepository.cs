@@ -10,5 +10,6 @@ namespace Library.Interfaces
         public ProductModel? GetProduct(string name);
         public ProductModel? GetProduct(int id);
         public bool SaveChanges();
-    }
+		bool UpdateProductsQuantity(List<CartProductModel> cartContent);
+	}
 }

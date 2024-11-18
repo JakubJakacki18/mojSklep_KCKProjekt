@@ -27,10 +27,6 @@ namespace Library
 
 
 
-            modelBuilder.Entity<CartProductModel>()
-        .HasIndex(cp => new { cp.ProductId, cp.ShoppingCartId })
-        .IsUnique();
-
             // ProductModel <-> CartProductModel: One-to-Many (każdy produkt może mieć wiele kopii w różnych koszykach)
             modelBuilder.Entity<CartProductModel>()
                 .HasOne(cp => cp.OriginalProduct)
@@ -43,16 +39,7 @@ namespace Library
                 .HasOne(cp => cp.User)  // Każdy CartProductModel ma jednego UserModel
                 .WithMany(u => u.ProductsInCart)  // UserModel może mieć wiele CartProductModel
                 .HasForeignKey(cp => cp.UserId)  // Ustawienie klucza obcego
-                .OnDelete(DeleteBehavior.Cascade);  // Ustalamy kaskadowe usuwanie
-
-
-
-            // ShoppingCartModel <-> ShoppingCartHistoryModel: One-to-Many
-            modelBuilder.Entity<ShoppingCartHistoryModel>()
-                    .HasOne(sh => sh.ShoppingCart)
-                    .WithMany()
-                    .HasForeignKey(sh => sh.ShoppingCartId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);  // Ustalamy kaskadowe usuwanie
 
             // UserModel <-> ShoppingCartHistoryModel: One-to-Many
             modelBuilder.Entity<ShoppingCartHistoryModel>()

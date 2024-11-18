@@ -16,6 +16,7 @@ namespace Library.Interfaces
         bool UpdateProductInCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
 		bool RemoveProductFromCart(CartProductModel cartProduct, UserModel currentLoggedInUser);
 		bool RemoveAllProductsFromCart(UserModel currentLoggedInUser);
-		bool BuyProducts(UserModel currentLoggedInUser);
+		bool BuyProducts(UserModel currentLoggedInUser, ShoppingCartHistoryModel shoppingCarthHistoryModel);
+        IEnumerable<ShoppingCartHistoryModel> GetShoppingCartHistory(UserModel currentLoggedInUser);
 	}
 }
