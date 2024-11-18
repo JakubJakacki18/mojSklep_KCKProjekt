@@ -29,10 +29,19 @@ namespace Library.Repository
 
         public bool RemoveProduct(ProductModel product)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                _context.Products.Remove(product);
+                return SaveChanges();
 
-        public bool SaveChanges()
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+			public bool SaveChanges()
         {
 			return _context.SaveChanges() > 0;
 		}

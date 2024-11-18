@@ -32,7 +32,7 @@ namespace Library
                 .HasOne(cp => cp.OriginalProduct)
                 .WithMany(p => p.CartProducts)
                 .HasForeignKey(cp => cp.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // UserModel <-> CartProductModel: One-to-Many (koszyk może mieć wiele kopii różnych produktów)
             modelBuilder.Entity<CartProductModel>()

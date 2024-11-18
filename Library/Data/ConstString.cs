@@ -18,5 +18,6 @@
 		public const string RemoveAllProductsFromCartFail = "Nie udało się usunąć wszystkich produktów z koszyka";
 		public const string BuyProductsSuccess = "Produkty zostały kupione!";
 		public const string BuyProductsFail = "Nie udało się kupić produktów";
+		internal static string RemoveProductSuccess;
 	}
 }

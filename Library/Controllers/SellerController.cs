@@ -84,16 +84,56 @@ namespace Library.Controllers
         {
         }
 
-        public void RemoveProduct()
+        public void RemoveProduct(ProductModel? productModel)
         {
-
+            if (productModel != null)
+            {
+				var result = _productRepository.RemoveProduct(productModel);
+				if (result)
+				{
+					_sellerView.ShowMessage(ConstString.RemoveProductSuccess);
+					return;
+				}
+			}
         }
-        public void ShowDetailsOfProduct() { }
+            public void ShowDetailsOfProduct() { }
 
         public void ShowAllProducts()
         {
-            _sellerView.ShowAllProducts(_productRepository.GetProducts().ToList());
-        }
+            (ShowProductsSellerActionEnum, ProductModel?) result;
+            do
+            {
+                result = _sellerView.ShowAllProductsAndEdit(_productRepository.GetProducts().ToList());
+                switch(result.Item1)
+                {
+					case ShowProductsSellerActionEnum.exit:
+						return;
+					case ShowProductsSellerActionEnum.update:
+						EditProduct(result.Item2);
+						break;
+					case ShowProductsSellerActionEnum.delete:
+						RemoveProduct(result.Item2);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			} while (result.Item1!=ShowProductsSellerActionEnum.exit);
+		}
+
+		public void EditProduct(ProductModel? product)
+		{
+			if (product != null)
+			{
+				_productRepository.SaveChanges();
+				//_sellerView.ShowMessage(ConstString.EditProductSuccess);
+			}
+			else
+			{
+				//_sellerView.ShowMessage(ConstString.EditProductFail);
+			}
+		}
+
+	
 
 
     }

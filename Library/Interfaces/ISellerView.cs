@@ -1,4 +1,5 @@
-﻿using Library.Models;
+﻿using Library.Data;
+using Library.Models;
 
 namespace Library.Interfaces
 {
@@ -9,6 +10,6 @@ namespace Library.Interfaces
         bool ExitApp();
         public int ShowMenu();
         void ShowMessage(string addProductStatus);
-        void ShowAllProducts(List<ProductModel> product);
+		(ShowProductsSellerActionEnum, ProductModel?) ShowAllProductsAndEdit(List<ProductModel> product);
     }
 }

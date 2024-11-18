@@ -225,7 +225,9 @@ namespace ConsoleApp.Views
 				X = Pos.Right(win),
 				Y = Pos.Top(win),
 				Width = Dim.Fill(1),
-				Height = Dim.Fill(1)
+				Height = Dim.Fill(1),
+
+				ColorScheme = ColorTheme.GrayThemePalette
 			};
 
 			var cartTable = new TableView()
@@ -643,7 +645,33 @@ namespace ConsoleApp.Views
         {
             PaymentMethodEnum paymentMethod = PaymentMethodEnum.None;
             InitializeWindow();
-            var paymentMethodFrame = new FrameView("Dokonaj zakupu")
+			if (productsFromCart.Count == 0)
+			{
+                var nullFrame = new FrameView("Koszyk")
+                {
+                    X = 0,
+                    Y = 0,
+                    Width = Dim.Fill(1),
+                    Height = Dim.Fill(1),
+                    ColorScheme = ColorTheme.GrayThemePalette
+                };
+
+				var nullLabel = new Label("Twój koszyk jest pusty")
+				{
+					X = Pos.Center(),
+					Y = Pos.Center()
+				};
+				var exitNullButton = new Button("Zamknij")
+				{
+					X = Pos.Center(),
+					Y = Pos.Bottom(nullLabel) + 1
+				};
+                exitNullButton.Clicked+=() => { Application.RequestStop(); };
+				nullFrame.Add(nullLabel, exitNullButton);
+				OpenFrameAndShutdown(nullFrame);
+				return paymentMethod;
+			}
+			var paymentMethodFrame = new FrameView("Dokonaj zakupu")
             {
                 X = 0,
                 Y = 1,
@@ -685,8 +713,8 @@ namespace ConsoleApp.Views
                 
                 var paymentMethodWindow = new Window("Potwierdzenie zakupu")
 				{
-					X = 0,
-					Y = 1,
+					X = Pos.Center(),
+					Y = Pos.Center(),
 					Width = 50,
 					Height = 9,
 					ColorScheme = ColorTheme.RedThemePalette

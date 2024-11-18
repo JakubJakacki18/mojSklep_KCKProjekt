@@ -121,6 +121,11 @@ namespace Library.Controllers
         private void BuyProducts()
 		{
 			var cartContent = _userRepository.GetCart(_currentLoggedInUser).ToList();
+            if (cartContent.Count == 0)
+			{
+				_buyerView.ShowMessage("Koszyk jest pusty");
+				return;
+			}
 			var result = _buyerView.ShowPaymentMethod(cartContent);
            
             if (result == PaymentMethodEnum.None)

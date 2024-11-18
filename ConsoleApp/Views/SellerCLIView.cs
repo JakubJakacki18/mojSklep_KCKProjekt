@@ -14,18 +14,7 @@ namespace ConsoleApp.Views
 
         public int ShowMenu()
         {
-            Application.Init();
-            top = Application.Top;
-            mainWindow = new Window("Sklep internetowy - " + ConstString.AppName)
-            {
-                X = 0, // Położenie okna w poziomie
-                Y = 1, // Położenie okna w pionie
-                Width = Dim.Fill(), // Rozciągnięcie okna na całą szerokość
-                Height = Dim.Fill(), // Rozciągnięcie okna na całą wysokość
-                CanFocus = false
-            };
-
-            // Stworzenie okna dialogowego, które będzie pełniło rolę menu
+            InitializeWindow();
             var menuWindow = new FrameView("Menu")
             {
                 X = Pos.Center(),
@@ -47,7 +36,7 @@ namespace ConsoleApp.Views
                 Application.RequestStop();
 
             };
-            var showAllProducts = new Button($"_{iter++}. Przejrzyj produkty")
+            var showAllProducts = new Button($"_{iter++}. Przejrzyj i edytuj produkty")
             {
                 X = Pos.Center(),
                 Y = 2
@@ -69,21 +58,19 @@ namespace ConsoleApp.Views
                 Application.RequestStop();
             };
             menuWindow.Add(addNewProductButton, showAllProducts, exitShopButton);
-            top.Add(mainWindow);
-            //mainWindow.Add(GetMenuBar());
-            mainWindow.Add(menuWindow);
-            Application.Run();
-            return selection;
+            OpenFrameAndShutdown(menuWindow);
+			return selection;
         }
 
 
         public ProductModel? AddProduct()
         {
+            InitializeWindow();
             ProductModel? product = null;
-            var win = new Window("Dodaj produkt")
+            var win = new FrameView("Dodaj produkt")
             {
                 X = 0,
-                Y = 1,
+                Y = 0,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
@@ -217,7 +204,7 @@ namespace ConsoleApp.Views
                 addProductButton,
                 rejectProductButton
                 );
-            OpenWindow(win);
+            OpenFrameAndShutdown(win);
             return product;
         }
 
@@ -226,16 +213,15 @@ namespace ConsoleApp.Views
             throw new NotImplementedException();
         }
 
-        public void ShowAllProducts(List<ProductModel> products)
+        public (ShowProductsSellerActionEnum,ProductModel?) ShowAllProductsAndEdit(List<ProductModel> products)
         {
-          
-            if (top == null)
-                InitializeWindow();
+            (ShowProductsSellerActionEnum, ProductModel?) result = (ShowProductsSellerActionEnum.exit,null);
 
-			var win = new Window("Produkty")
+			InitializeWindow();
+			var win = new FrameView("Produkty")
             {
                 X = 0,
-                Y = 1,
+                Y = 0,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
@@ -306,10 +292,191 @@ namespace ConsoleApp.Views
 
             listView.OpenSelectedItem += (args) =>
             {
-                MessageBox.Query("Szczegóły produktu", products[args.Item].Description, "Ok");
+                var editProductWindow = new Window()
+                {
+                    X = 0,
+                    Y = 0,
+                    Width = Dim.Fill(1),
+                    Height = Dim.Fill(1),
+                    ColorScheme = ColorTheme.GrayThemePalette
+				}; 
+                var editProductLabel = new Label("Edytuj produkt")
+				{
+					X = Pos.Center(),
+					Y = 0
+				};
+				var product = products[args.Item];
+				var productNameLabel = new Label("Nazwa produktu")
+				{
+					X = 1,
+					Y = 1
+				};
+				var productName = new TextField(product.Name)
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productNameLabel),
+					Width = 30
+				};
+				var productDescriptionLabel = new Label("Opis produktu")
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productName)
+				};
+				var productDescription = new TextView()
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productDescriptionLabel),
+					Width = 40,
+					Height = 3,
+                    Text= product.Description
+				};
+				var productPriceLabel = new Label("Cena produktu")
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productDescription),
+				};
+				var productPrice = new TextField(product.Price.ToString())
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productPriceLabel),
+					Width = 30
+				};
+				var productQuantityLabel = new Label("Ilość produktu")
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productPrice),
+				};
+				var productQuantity = new TextField(product.Quantity.ToString())
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productQuantityLabel),
+					Width = 30
+				};
+				var productShelfRowLabel = new Label("Umieszczenie w magazynie - Rząd")
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productQuantity),
+				};
+				var productShelfRow = new TextField(product.shelfRow.ToString())
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productShelfRowLabel),
+					Width = 30
+				};
+				var productShelfColumnLabel = new Label("Umieszczenie w magazynie - Kolumna")
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productShelfRow),
+				};
+				var productShelfColumn = new TextField(product.shelfColumn.ToString())
+				{
+					X = Pos.Left(productNameLabel),
+					Y = Pos.Bottom(productShelfColumnLabel),
+					Width = 30
+				};
+
+                var saveProductButton = new Button("Zapisz zmian")
+                {
+                    X = Pos.Left(productNameLabel),
+				    Y = Pos.Bottom(productShelfColumn) + 1
+
+				};
+                saveProductButton.Clicked += () => 
+                {
+					product.Name = productName.Text.ToString();
+					product.Price = decimal.Parse(productPrice.Text.ToString());
+					product.Description = productDescription.Text.ToString();
+					product.Quantity = int.Parse(productQuantity.Text.ToString());
+					product.shelfRow = int.Parse(productShelfRow.Text.ToString());
+					product.shelfColumn = int.Parse(productShelfColumn.Text.ToString());
+
+					result = (ShowProductsSellerActionEnum.update, product);
+					Application.RequestStop();
+				};
+                var rejectChangesButton = new Button("Odrzuć zmiany") 
+                {
+					X= Pos.Right(saveProductButton) + 1,
+					Y = Pos.Top(saveProductButton)
+				};
+                rejectChangesButton.Clicked += () =>
+				{
+                    win.Remove(editProductLabel);
+				};
+                var removeProductButton = new Button("Usuń produkt")
+				{
+					X = Pos.Right(rejectChangesButton) + 1,
+					Y = Pos.Top(rejectChangesButton)
+				};
+                removeProductButton.Clicked += () =>
+				{
+					var paymentMethodWindow = new Window("Potwierdzenie usunięcia")
+					{
+						X = Pos.Center(),
+						Y = Pos.Center(),
+						Width = 50,
+						Height = 9,
+						ColorScheme = ColorTheme.RedThemePalette
+					};
+
+					var isUserSureLabel = new Label("Czy na pewno chcesz usunąć produkt?")
+					{
+						X = Pos.Center(),
+						Y = 1
+					};
+					var yesButton = new Button("Tak")
+					{
+						X = Pos.Center(),
+						Y = Pos.Bottom(isUserSureLabel) + 1
+					};
+					yesButton.Clicked += () =>
+					{
+						result = (ShowProductsSellerActionEnum.delete, product);
+						Application.RequestStop();
+					};
+					var noButton = new Button("Nie")
+					{
+						X = Pos.Center(),
+						Y = Pos.Bottom(yesButton)
+					};
+					noButton.Clicked += () =>
+					{
+						editProductWindow.Remove(paymentMethodWindow);
+					};
+					editProductWindow.Add(paymentMethodWindow);
+					paymentMethodWindow.Add(isUserSureLabel, yesButton, noButton);
+				};
+
+				TextFieldValidator.AllowOnlyDoubles(productPrice);
+				TextFieldValidator.AllowOnlyIntegers(productQuantity);
+				TextFieldValidator.AllowOnlyIntegers(productShelfRow);
+				TextFieldValidator.AllowOnlyIntegers(productShelfColumn);
+
+
+
+				editProductWindow.Add(editProductLabel, 
+                    productNameLabel, 
+                    productName, 
+                    productDescriptionLabel, 
+                    productDescription, 
+                    productPriceLabel, 
+                    productPrice, 
+                    productQuantityLabel,
+                    productQuantity, 
+                    productShelfRowLabel,
+					productShelfRow,
+					productShelfColumnLabel,
+					productShelfColumn,
+					saveProductButton,
+					rejectChangesButton,
+                    removeProductButton
+
+					);
+				win.Add(editProductWindow);
+
             };
             win.Add(listView);
-            OpenWindowAndShutdown(win);
+            OpenFrameAndShutdown(win);
+            return result;
         }
     }
 }
