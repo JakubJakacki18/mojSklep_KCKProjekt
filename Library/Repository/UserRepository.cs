@@ -104,7 +104,7 @@ namespace Library.Repository
                 .FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
 
 		private UserModel? UserModelWithCartHistoryAndOriginalProduct(UserModel currentLoggedInUser)
-			=> _context.Users.Include(s => s.ShoppingCartHistories).ThenInclude(c => c.CartProducts).ThenInclude(o => o.OriginalProduct)
+			=> _context.Users.Include(s => s.ShoppingCartHistories).ThenInclude(c => c.PurchasedProducts)/*.ThenInclude(o => o.OriginalProduct)*/
 				.FirstOrDefault(u => u.UserId == currentLoggedInUser.UserId);
 
 

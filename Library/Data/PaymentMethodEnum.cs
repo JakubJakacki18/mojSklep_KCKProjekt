@@ -11,5 +11,6 @@ namespace Library.Data
 		[Description("Blik")]
 		blik = 2,
 		None = 3,
+		Exit = 4
 	}
 }

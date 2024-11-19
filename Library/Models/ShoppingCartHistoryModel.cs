@@ -14,6 +14,6 @@ namespace Library.Models
         public int UserId { get; set; }
         public UserModel User { get; set; }
 		public PaymentMethodEnum? PaymentMethod { get; set; }
-		public virtual ICollection<CartProductModel> CartProducts { get; set; } = [];
+		public virtual ICollection<PurchasedProductModel> PurchasedProducts { get; set; } = [];
 	}
 }

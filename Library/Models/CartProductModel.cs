@@ -8,7 +8,7 @@ namespace Library.Models
         public int CartId { get; set; }
         public int Quantity { get; set; }
         public int? UserId { get; set; }
-        public UserModel? User { get; set; }
+        public UserModel User { get; set; }
 
 
         public int ProductId { get; set; }

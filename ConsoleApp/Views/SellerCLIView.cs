@@ -236,7 +236,7 @@ namespace ConsoleApp.Views
 					ColorScheme = ColorTheme.GrayThemePalette
 				};
 
-				var nullLabel = new Label("Twój koszyk jest pusty")
+				var nullLabel = new Label("Sklep jest pusty")
 				{
 					X = Pos.Center(),
 					Y = Pos.Center()
@@ -497,6 +497,8 @@ namespace ConsoleApp.Views
 					};
 					editProductWindow.Add(paymentMethodWindow);
 					paymentMethodWindow.Add(isUserSureLabel, yesButton, noButton);
+					paymentMethodWindow.SetFocus();
+
 				};
 
 				TextFieldValidator.AllowOnlyDoubles(productPrice);
@@ -523,10 +525,11 @@ namespace ConsoleApp.Views
 					rejectChangesButton,
                     removeProductButton
 
-					);
-				win.Add(editProductWindow);
+                    );
+                win.Add(editProductWindow);
+				editProductWindow.SetFocus();
 
-            };
+			};
             var closeButton = new Button("Zamknij")
             {
                X=Pos.Left(listView),     

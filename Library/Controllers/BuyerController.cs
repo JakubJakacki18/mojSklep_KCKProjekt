@@ -65,12 +65,12 @@ namespace Library.Controllers
 						do
 						{
 							resultShowUserCart = _buyerView.ShowUserCart(_userRepository.GetCart(currentLoggedInUser).ToList());
-                            UserCartAction(resultShowUserCart);
+                            isExitWanted =UserCartAction(resultShowUserCart);
 						}
-						while (resultShowUserCart.Item1 != CartActionEnum.Exit);
+						while (resultShowUserCart.Item1 != CartActionEnum.Exit && isExitWanted==false);
 						break;
                     case 3:
-                        BuyProducts();
+                        _ =BuyProducts();
 						break;
                     case 4:
                         _buyerView.ShowShoppingHistory(_userRepository.GetShoppingCartHistory(currentLoggedInUser).ToList());
@@ -94,17 +94,17 @@ namespace Library.Controllers
             _buyerView.ShowMessage((result) ? ConstString.AddToCartSuccess : ConstString.AddToCartFail);
         }
 
-        private void UserCartAction((CartActionEnum, CartProductModel?) resultShowUserCart)
+        private bool UserCartAction((CartActionEnum, CartProductModel?) resultShowUserCart)
 		{
 			if (currentLoggedInUser == null)
 				throw new Exception("User is not logged in");
 			var action = resultShowUserCart.Item1;
 			var product = resultShowUserCart.Item2;
-			bool isSuccess = false;
+            bool isSuccess, isLogout =false ;
 			switch (action)
 			{
 				case CartActionEnum.Buy:
-                    BuyProducts();
+                    isLogout = !BuyProducts();
 					break;
 
 				case CartActionEnum.RemoveAll:
@@ -128,9 +128,10 @@ namespace Library.Controllers
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+			return isLogout;
 		}
 
-        private void BuyProducts()
+        private bool BuyProducts()
 		{
 			if (currentLoggedInUser == null)
 				throw new Exception("User is not logged in");
@@ -138,21 +139,27 @@ namespace Library.Controllers
             if (cartContent.Count == 0)
 			{
 				_buyerView.ShowMessage("Koszyk jest pusty");
-				return;
+				return true; 
 			}
 			var result = _buyerView.ShowPaymentMethod(cartContent);
            
             if (result == PaymentMethodEnum.None)
             {
-                return;
-            }
-            var shoppingCarthHistoryModel = new ShoppingCartHistoryModel()
+				return true;
+			}
+            if (result == PaymentMethodEnum.Exit)
+			{
+                return false;
+			}
+			var shoppingCarthHistoryModel = new ShoppingCartHistoryModel()
             {
                 PaymentMethod = result,
-                CartProducts = cartContent.Select(cartProduct => new CartProductModel
-                {
-                    ProductId = cartProduct.ProductId,
-                    OriginalProduct = cartProduct.OriginalProduct,
+                PurchasedProducts = cartContent.Select(cartProduct => new PurchasedProductModel()
+				{
+                    ProductId = cartProduct.OriginalProduct.Id,
+					Price = cartProduct.OriginalProduct.Price,
+					Description = cartProduct.OriginalProduct.Description,
+					Name = cartProduct.OriginalProduct.Name,
                     Quantity = cartProduct.Quantity,
                     UserId = cartProduct.UserId,
                     User = cartProduct.User
@@ -164,6 +171,7 @@ namespace Library.Controllers
 			bool isSuccessChangeQuantity = _productRepository.UpdateProductsQuantity(cartContent);
 			bool isSuccessBuyProducts = _userRepository.BuyProducts(currentLoggedInUser, shoppingCarthHistoryModel);
 			_buyerView.ShowMessage((isSuccessChangeQuantity&& isSuccessBuyProducts) ? ConstString.BuyProductsSuccess : ConstString.BuyProductsFail);
+            return true;
             
 		}
 

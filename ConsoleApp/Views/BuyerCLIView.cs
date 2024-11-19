@@ -31,7 +31,8 @@ namespace ConsoleApp.Views
 
             if (products.Count == 0)
             {
-                var nullLabel = new Label("Brak produktów w bazie")
+                win.Width= Dim.Fill(1);
+				var nullLabel = new Label("Brak produktów w bazie")
                 {
                     X = Pos.Center(),
                     Y = Pos.Center()
@@ -215,6 +216,8 @@ namespace ConsoleApp.Views
                     addToCartButton,
                     rejectAddingToCartButton);
                 win.Add(windowDetails);
+				windowDetails.SetFocus();
+				quantityQuestionTextField.SetFocus();
 
 
 
@@ -330,6 +333,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 5
             };
+            
             exitShopButton.Clicked += () =>
             {
                 selection = 5;
@@ -355,19 +359,20 @@ namespace ConsoleApp.Views
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
-            var headerLabel = new Label()
-            {
-                X = Pos.Center(),
-                Y = 1
-            };
+            
             if (cartProducts.Count == 0)
             {
-                headerLabel.Text = "Twój koszyk jest pusty";
-                frame.Add(headerLabel);
+				var nullHeaderLabel = new Label()
+				{
+					X = Pos.Center(),
+					Y = Pos.Center(),
+				};
+				nullHeaderLabel.Text = "Twój koszyk jest pusty";
+                frame.Add(nullHeaderLabel);
                 var exitNullButton = new Button("Zamknij")
                 {
                     X = Pos.Center(),
-                    Y = Pos.Bottom(headerLabel) + 1
+                    Y = Pos.Bottom(nullHeaderLabel) + 1
                 };
                 exitNullButton.Clicked += () =>
                 {
@@ -451,9 +456,11 @@ namespace ConsoleApp.Views
                     Y = 1,
                     Width = Dim.Fill(1),
                     Height = Dim.Fill(1),
-                    ColorScheme = ColorTheme.GrayThemePalette
+                    ColorScheme = ColorTheme.GrayThemePalette,
+                    
                 };
-                var idLabel = new Label("Kod kreskowy: " + cartProducts[args.Item].OriginalProduct.Id)
+                
+				var idLabel = new Label("Kod kreskowy: " + cartProducts[args.Item].OriginalProduct.Id)
                 {
                     X = Pos.Center(),
                     Y = 1
@@ -493,8 +500,8 @@ namespace ConsoleApp.Views
                     X = Pos.Center(),
                     Y = Pos.Bottom(quantityQuestionLabel),
                     Width = 30,
-
                 };
+                
                 var priceToPayLabel = new Label("")
                 {
                     X = Pos.Center(),
@@ -569,7 +576,10 @@ namespace ConsoleApp.Views
                     priceToPayLabel,
                     buttonContainer);
                 frame.Add(windowDetails);
-            };
+				windowDetails.SetFocus();
+				quantityQuestionTextField.SetFocus();
+
+			};
             frame.Add(listView);
 			string summaryText = ((Func<string>)(() =>
 			{
@@ -628,7 +638,7 @@ namespace ConsoleApp.Views
 
         public PaymentMethodEnum ShowPaymentMethod(List<CartProductModel> productsFromCart)
         {
-            PaymentMethodEnum paymentMethod = PaymentMethodEnum.None;
+            PaymentMethodEnum paymentMethod = PaymentMethodEnum.Exit;
             InitializeWindow();
 			if (productsFromCart.Count == 0)
 			{
@@ -731,12 +741,14 @@ namespace ConsoleApp.Views
                 };
 				paymentMethodFrame.Add(paymentMethodWindow);
                 paymentMethodWindow.Add(isUserSureLabel, yesButton, noButton);
+                paymentMethodWindow.SetFocus();
 			};
             continueShoppingButton.Clicked += () => 
             {
-                Application.RequestStop();
+				paymentMethod = PaymentMethodEnum.None;
+				Application.RequestStop();
             }; 
-
+            
 			var summaryCartFrame = new FrameView("Zawartość koszyka")
 			{
 				X = Pos.Right(paymentMethodFrame),
@@ -821,7 +833,7 @@ namespace ConsoleApp.Views
 				};
 				exitNullButton.Clicked += () => { Application.RequestStop(); };
 				historyFrame.Add(nullLabel, exitNullButton);
-				OpenFrameAndShutdown(historyFrame);
+                OpenFrameAndShutdown(historyFrame);
                 return;
 			}
 
@@ -830,7 +842,7 @@ namespace ConsoleApp.Views
                 p.Date.ToString(),
                 p.TotalPrice.ToString("0.00"),
                 (p.PaymentMethod != null) ? GetEnumDescription((PaymentMethodEnum)p.PaymentMethod) : "",
-                p.CartProducts.Count.ToString()
+                p.PurchasedProducts.Count.ToString()
 
             }).ToList();
 			string[] header = { "Data", "Suma", "Płatność", "Ilość zakupionych produktów" };
@@ -916,7 +928,7 @@ namespace ConsoleApp.Views
 					X = Pos.Center(),
 					Y = Pos.Bottom(totalPriceLabel)
 				};
-				var quantityOfProductsLabel = new Label("Ilość produktów: "+ shoppingCartHistories[args.Item].CartProducts.Count.ToString())
+				var quantityOfProductsLabel = new Label("Ilość produktów: "+ shoppingCartHistories[args.Item].PurchasedProducts.Count.ToString())
 				{
 					X = Pos.Center(),
 					Y = Pos.Bottom(paymentMethodLabel)
@@ -935,9 +947,9 @@ namespace ConsoleApp.Views
 				{
 					dt.Columns.Add(columnName);
 				}
-				foreach (var product in shoppingCartHistories[args.Item].CartProducts)
+				foreach (var product in shoppingCartHistories[args.Item].PurchasedProducts)
 				{
-					dt.Rows.Add(product.OriginalProduct.Id, DescriptionLimiter(product.OriginalProduct.Name,ConstIntegers.MaxLengthOfName),DescriptionLimiter(product.OriginalProduct.Description), product.Quantity, product.OriginalProduct.Price, product.OriginalProduct.Price * product.Quantity);
+				dt.Rows.Add(product.ProductId, DescriptionLimiter(product.Name,ConstIntegers.MaxLengthOfName),DescriptionLimiter(product.Description), product.Quantity, product.Price, product.Price * product.Quantity);
 				}
 				cartTable.Table = dt;
                 var closeDetailsButton= new Button("Zamknij szczegóły")
