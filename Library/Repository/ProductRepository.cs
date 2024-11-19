@@ -53,7 +53,7 @@ namespace Library.Repository
 				var product = _context.Products.FirstOrDefault(p => p.Id == cartProduct.ProductId);
 				if (product != null)
 				{
-                    if(product.Quantity- cartProduct.Quantity>0)
+                    if(product.Quantity- cartProduct.Quantity>=0)
 					    product.Quantity -= cartProduct.Quantity;
 				}
 			}

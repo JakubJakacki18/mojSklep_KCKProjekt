@@ -5,7 +5,7 @@ using Library.Repository;
 
 namespace Library;
 
-public class Launcher(/*Io io,*/ IUserView _userView, IBuyerView _buyerView, ISellerView _sellerView, IAdminView _adminView)
+public class Launcher(/*Io io,*/ IUserView _userView, IBuyerView _buyerView, ISellerView _sellerView/*, IAdminView _adminView*/)
 {
 
     public async Task RunAsync()

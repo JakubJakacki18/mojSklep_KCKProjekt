@@ -3,6 +3,7 @@ using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
 using Library.Models;
+using Spectre.Console;
 using System.Text;
 using Terminal.Gui;
 
@@ -109,7 +110,7 @@ namespace ConsoleApp.Views
                 Y = Pos.Bottom(productPriceLabel),
                 Width = 30
             };
-            var productQuantityLabel = new Label("Ilość produktu")
+            var productQuantityLabel = new Label("Ilość produktu na stanie")
             {
                 X = Pos.Left(productNameLabel),
                 Y = Pos.Bottom(productPrice),
@@ -158,15 +159,20 @@ namespace ConsoleApp.Views
                 bool success = false;
                 try
                 {
-                    product = new ProductModel
+					product = new ProductModel
+					{
+						Name = productName.Text?.ToString()?? "",
+						Price = decimal.Parse(productPrice.Text?.ToString() ?? ""),
+						Description = productDescription.Text.ToString(),
+						Quantity = int.Parse(productQuantity.Text?.ToString() ?? ""),
+						shelfRow = int.Parse(productShelfRow.Text?.ToString() ?? ""),
+						shelfColumn = int.Parse(productShelfColumn.Text?.ToString() ?? "")
+					};
+					if (decimal.Parse(productPrice.Text?.ToString() ?? "0" ) == 0) 
                     {
-                        Name = productName.Text.ToString(),
-                        Price = decimal.Parse(productPrice.Text.ToString()),
-                        Description = productDescription.Text.ToString(),
-                        Quantity = int.Parse(productQuantity.Text.ToString()),
-                        shelfRow = int.Parse(productShelfRow.Text.ToString()),
-                        shelfColumn = int.Parse(productShelfColumn.Text.ToString())
-                    };
+						MessageBox.ErrorQuery("Błąd", "Cena produktu nie może wynosić 0", "Ok");
+                       
+					}
                     success = true;
                 }
                 catch
@@ -258,8 +264,8 @@ namespace ConsoleApp.Views
             var productNames = products.Select(p => new string[]
             {
                 p.Id.ToString(),
-                p.Name,
-                p.Description ?? "",
+                DescriptionLimiter(p.Name,ConstIntegers.MaxLengthOfName),
+                DescriptionLimiter(p.Description),
                 p.Price.ToString("0.00"),
                 p.Quantity.ToString(),
                 p.shelfRow.ToString(),
@@ -314,7 +320,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 2,
                 Width = table[0].Length,
-                Height = Dim.Fill() - 2,
+                Height = Dim.Percent(80),
                 AllowsMarking = false
             };
 
@@ -403,7 +409,7 @@ namespace ConsoleApp.Views
 					Width = 30
 				};
 
-                var saveProductButton = new Button("Zapisz zmian")
+                var saveProductButton = new Button("Zapisz zmiany")
                 {
                     X = Pos.Left(productNameLabel),
 				    Y = Pos.Bottom(productShelfColumn) + 1
@@ -411,15 +417,34 @@ namespace ConsoleApp.Views
 				};
                 saveProductButton.Clicked += () => 
                 {
-					product.Name = productName.Text.ToString();
-					product.Price = decimal.Parse(productPrice.Text.ToString());
-					product.Description = productDescription.Text.ToString();
-					product.Quantity = int.Parse(productQuantity.Text.ToString());
-					product.shelfRow = int.Parse(productShelfRow.Text.ToString());
-					product.shelfColumn = int.Parse(productShelfColumn.Text.ToString());
+					bool success = false;
+					try
+					{
+						product = new ProductModel
+						{
+							Name = productName.Text?.ToString() ?? "",
+							Price = decimal.Parse(productPrice.Text?.ToString() ?? ""),
+							Description = productDescription.Text.ToString(),
+							Quantity = int.Parse(productQuantity.Text?.ToString() ?? ""),
+							shelfRow = int.Parse(productShelfRow.Text?.ToString() ?? ""),
+							shelfColumn = int.Parse(productShelfColumn.Text?.ToString() ?? "")
+						};
+						if (decimal.Parse(productPrice.Text?.ToString() ?? "0") == 0)
+						{
+							MessageBox.ErrorQuery("Błąd", "Cena produktu nie może wynosić 0", "Ok");
 
-					result = (ShowProductsSellerActionEnum.update, product);
-					Application.RequestStop();
+						}
+						success = true;
+					}
+					catch
+					{
+						MessageBox.ErrorQuery("Błąd", "Niepoprawne dane", "Ok");
+					}
+                    if (success)
+                    {
+						result = (ShowProductsSellerActionEnum.update, product);
+						Application.RequestStop();
+                    }
 				};
                 var rejectChangesButton = new Button("Odrzuć zmiany") 
                 {
@@ -504,8 +529,8 @@ namespace ConsoleApp.Views
             };
             var closeButton = new Button("Zamknij")
             {
-               X=Pos.Right(listView)+1,     
-               Y=Pos.Top(listView)+1,
+               X=Pos.Left(listView),     
+               Y=Pos.Bottom(listView)+1,
             };
             closeButton.Clicked += () =>
 			{

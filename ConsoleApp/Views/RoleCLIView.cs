@@ -7,12 +7,8 @@ namespace ConsoleApp.Views
 {
     public abstract class RoleCLIView
     {
-
-
         protected Window mainWindow;
         protected Toplevel top;
-
-
 
         protected void OpenWindowAndShutdown(Window win)
         {
@@ -36,13 +32,6 @@ namespace ConsoleApp.Views
 			Application.Run(top);
 			Application.Shutdown();
 		}
-
-		protected void OpenWindow(Window win)
-		{
-			mainWindow.Add(win);
-			top.Add(mainWindow);
-			Application.Run(win);
-		}
 		public bool ExitApp()
         {
 			InitializeWindow();
@@ -54,6 +43,7 @@ namespace ConsoleApp.Views
                 Width = 50,
                 Height = 10,
                 ColorScheme = ColorTheme.RedThemePalette
+
             };
             var label = new Label("Czy chcesz wyjść ze sklepu?")
             {
@@ -111,9 +101,9 @@ namespace ConsoleApp.Views
 			{
 				new MenuBarItem("Konto", new MenuItem[]
                 {
-                    new MenuItem("Informacje o użytkowniku", "",
-                        () => MessageBox.Query("O programie", ConstString.AppName+"\nAutor: Jakub Jakacki\nWersja: alpha 0.0.1", "Ok")),
-                    new MenuItem("Wyloguj się!", "",
+                    new MenuItem("Informacje o użytkowniku", "",() => MessageBox.Query("Informacje o użytkowniku", "Nazwa użytkownika: "+UserController.GetInstance().CurrentLoggedInUser?.Login ?? "" , "Ok")),
+
+					new MenuItem("Wyloguj się!", "",
                         () => {
                             int result = MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Tak","Nie");
                             if(result==0)
@@ -124,8 +114,23 @@ namespace ConsoleApp.Views
 						}),
 
 
-				})
+				}),
+                new MenuBarItem("O programie", "", () => MessageBox.Query("O programie", ConstString.AppName+"\nAutor: Jakub Jakacki\nWersja: alpha 0.0.1", "Ok")),
 			});
 		}
+		protected string DescriptionLimiter(string? description, int maxLength = ConstIntegers.MaxLengthOfDescription)
+		{
+			//p.OriginalProduct.Description?.Substring(0, Math.Min(p.OriginalProduct.Description.Length, 20)) ?? "";
+			if (description == null)
+			{
+				return "";
+			}
+			if (description.Length > maxLength)
+			{
+				return $"{description.Substring(0, maxLength - 3)}...";
+			}
+			return description;
+		}
+
 	}
 }

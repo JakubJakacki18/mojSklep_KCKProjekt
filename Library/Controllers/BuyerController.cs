@@ -83,9 +83,12 @@ namespace Library.Controllers
 				}
             } while (!isExitWanted);
         }
+
         private void AddProductToCart(CartProductModel cartProduct)
         {
-            bool result = _userRepository.IsProductInCart(cartProduct, currentLoggedInUser)
+            if(currentLoggedInUser==null)
+                throw new Exception("User is not logged in");
+			bool result = _userRepository.IsProductInCart(cartProduct, currentLoggedInUser)
                 ? _userRepository.UpdateProductInCart(cartProduct, currentLoggedInUser)
                 : _userRepository.AddProductToCart(cartProduct, currentLoggedInUser);
             _buyerView.ShowMessage((result) ? ConstString.AddToCartSuccess : ConstString.AddToCartFail);
@@ -93,6 +96,8 @@ namespace Library.Controllers
 
         private void UserCartAction((CartActionEnum, CartProductModel?) resultShowUserCart)
 		{
+			if (currentLoggedInUser == null)
+				throw new Exception("User is not logged in");
 			var action = resultShowUserCart.Item1;
 			var product = resultShowUserCart.Item2;
 			bool isSuccess = false;
@@ -127,6 +132,8 @@ namespace Library.Controllers
 
         private void BuyProducts()
 		{
+			if (currentLoggedInUser == null)
+				throw new Exception("User is not logged in");
 			var cartContent = _userRepository.GetCart(currentLoggedInUser).ToList();
             if (cartContent.Count == 0)
 			{

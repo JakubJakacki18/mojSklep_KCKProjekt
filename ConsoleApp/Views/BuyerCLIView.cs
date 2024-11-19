@@ -16,7 +16,7 @@ namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-        public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
+		public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
         {
             InitializeWindow();
 			Object? result = null;
@@ -50,8 +50,8 @@ namespace ConsoleApp.Views
             var productNames = products.Select(p => new string[]
             {
                 p.Id.ToString(),
-                p.Name,
-                DescriptionLimiter(p.Description),
+				DescriptionLimiter(p.Name,ConstIntegers.MaxLengthOfName),
+				DescriptionLimiter(p.Description),
                 p.Price.ToString("0.00")
             }).ToList();
             string[] header = { "Kod kreskowy", "Nazwa", "Opis", "Cena" };
@@ -107,7 +107,7 @@ namespace ConsoleApp.Views
                 X = Pos.Center(),
                 Y = 2,
                 Width = table[0].Length,
-                Height = Dim.Fill() - 2,
+                Height = Dim.Percent(80),
                 AllowsMarking = false
             };
 
@@ -167,14 +167,13 @@ namespace ConsoleApp.Views
                 var addToCartButton = new Button("Dodaj do koszyka")
                 {
                     X = Pos.Center(),
-                    Y = Pos.Bottom(priceToPayLabel) + 1
+                    Y = Pos.Bottom(priceToPayLabel) + 2
                 };
                 addToCartButton.Clicked += () =>
                 {
                     if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity) &&
                         (quantity > 0 && quantity <= products[args.Item].Quantity))
                     {
-                        MessageBox.Query("Dodano do koszyka", "Dodano produkt do koszyka", "Ok");
                         result = new CartProductModel()
                         {
                             OriginalProduct = products[args.Item],
@@ -189,8 +188,8 @@ namespace ConsoleApp.Views
                 };
                 var rejectAddingToCartButton = new Button("Zrezygnuj z dodawania do koszyka")
                 {
-                    X = Pos.Right(addToCartButton),
-                    Y = Pos.Top(addToCartButton)
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(addToCartButton)
                 };
                 rejectAddingToCartButton.Clicked += () => { win.Remove(windowDetails); };
 
@@ -246,15 +245,15 @@ namespace ConsoleApp.Views
 			}
 			foreach (var product in productsFromCart)
 			{
-				dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name, product.Quantity);
+				dt.Rows.Add(product.OriginalProduct.Id, DescriptionLimiter(product.OriginalProduct.Name,ConstIntegers.MaxLengthOfName), product.Quantity);
 			}
 			cartTable.Table = dt;
 			cartFrame.Add(cartTable);
 			win.Add(listView);
             var exitButton = new Button("Zamknij")
             {
-                Y = Pos.Top(listView),
-                X = Pos.Right(listView) + 1
+                Y = Pos.Bottom(listView)+1,
+                X = Pos.Left(listView)
             };
             exitButton.Clicked += () => { Application.RequestStop(); };
             win.Add(exitButton);
@@ -381,7 +380,7 @@ namespace ConsoleApp.Views
             var productNames = cartProducts.Select(p => new string[]
         {
                 p.OriginalProduct.Id.ToString(),
-                p.OriginalProduct.Name,
+                DescriptionLimiter(p.OriginalProduct.Name,ConstIntegers.MaxLengthOfName),
                 /*p.OriginalProduct.Description?.Substring(0,Math.Min(p.OriginalProduct.Description.Length,20)) ?? "",*/
                 DescriptionLimiter(p.OriginalProduct.Description),
                 p.OriginalProduct.Price.ToString("0.00"),
@@ -625,20 +624,6 @@ namespace ConsoleApp.Views
 			frame.Add(finalizeShoppingButton,removeAllProductsFromCart,exitButton);
 			OpenFrameAndShutdown(frame);
             return result;
-        }
-
-        private string DescriptionLimiter(string? description)
-        {
-            //p.OriginalProduct.Description?.Substring(0, Math.Min(p.OriginalProduct.Description.Length, 20)) ?? "";
-            if (description == null)
-            {
-                return "";
-            }
-            if (description.Length > ConstIntegers.MaxLengthOfDescription)
-            {
-                return $"{description.Substring(0, ConstIntegers.MaxLengthOfDescription - 3)}...";
-            }
-            return description;
         }
 
         public PaymentMethodEnum ShowPaymentMethod(List<CartProductModel> productsFromCart)
@@ -926,7 +911,7 @@ namespace ConsoleApp.Views
                 };
                 PaymentMethodEnum? paymentEnum = shoppingCartHistories[args.Item].PaymentMethod;
                 string paymentMethodString = (paymentEnum != null) ? GetEnumDescription((PaymentMethodEnum)paymentEnum) : ""; 
-				var paymentMethodLabel = new Label("Metoda płatności"+paymentMethodString)
+				var paymentMethodLabel = new Label("Metoda płatności: "+paymentMethodString)
 				{
 					X = Pos.Center(),
 					Y = Pos.Bottom(totalPriceLabel)
@@ -952,7 +937,7 @@ namespace ConsoleApp.Views
 				}
 				foreach (var product in shoppingCartHistories[args.Item].CartProducts)
 				{
-					dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name,DescriptionLimiter(product.OriginalProduct.Description), product.Quantity, product.OriginalProduct.Price, product.OriginalProduct.Price * product.Quantity);
+					dt.Rows.Add(product.OriginalProduct.Id, DescriptionLimiter(product.OriginalProduct.Name,ConstIntegers.MaxLengthOfName),DescriptionLimiter(product.OriginalProduct.Description), product.Quantity, product.OriginalProduct.Price, product.OriginalProduct.Price * product.Quantity);
 				}
 				cartTable.Table = dt;
                 var closeDetailsButton= new Button("Zamknij szczegóły")

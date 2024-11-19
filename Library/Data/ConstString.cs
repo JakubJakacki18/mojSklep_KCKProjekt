@@ -19,8 +19,9 @@
 		public const string BuyProductsSuccess = "Produkty zostały kupione!";
 		public const string BuyProductsFail = "Nie udało się kupić produktów";
 		public const string RemoveProductSuccess = "Produkt został pomyślnie usunięty";
+		public const string RemoveProductFail = "Nie udało się usunąć produktu";
 		public const string EditProductFail = "Zmiany nie zostały zatwierdzone";
 		public const string EditProductSuccess = "Zmiany w produkcie zostały zatwierdzone";
-		internal static string RemoveProductFail;
+
 	}
 }
