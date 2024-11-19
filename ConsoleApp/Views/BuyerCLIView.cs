@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using ConsoleApp.Data;
+﻿using ConsoleApp.Data;
 using ConsoleApp.Services;
 using Library.Data;
 using Library.Interfaces;
@@ -7,32 +6,30 @@ using Library.Models;
 using NStack;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks.Dataflow;
 using Terminal.Gui;
 
 namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-		public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
+        public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
         {
             InitializeWindow();
-			Object? result = null;
+            Object? result = null;
             var win = new FrameView("Produkty")
             {
                 X = 0,
                 Y = 1,
-                Width=Dim.Percent(70),
+                Width = Dim.Percent(70),
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
 
             if (products.Count == 0)
             {
-                win.Width= Dim.Fill(1);
-				var nullLabel = new Label("Brak produktów w bazie")
+                win.Width = Dim.Fill(1);
+                var nullLabel = new Label("Brak produktów w bazie")
                 {
                     X = Pos.Center(),
                     Y = Pos.Center()
@@ -43,16 +40,23 @@ namespace ConsoleApp.Views
                     Y = Pos.Bottom(nullLabel) + 1
                 };
                 exitNullButton.Clicked += () => { Application.RequestStop(); };
+                win.KeyPress += (e) =>
+                {
+                    if (e.KeyEvent.Key == Key.Esc)
+                    {
+                        Application.RequestStop();
+                    }
+                };
                 win.Add(nullLabel, exitNullButton);
-				OpenFrameAndShutdown(win);
-				return result;
+                OpenFrameAndShutdown(win);
+                return result;
             }
 
             var productNames = products.Select(p => new string[]
             {
                 p.Id.ToString(),
-				DescriptionLimiter(p.Name,ConstIntegers.MaxLengthOfName),
-				DescriptionLimiter(p.Description),
+                DescriptionLimiter(p.Name,ConstIntegers.MaxLengthOfName),
+                DescriptionLimiter(p.Description),
                 p.Price.ToString("0.00")
             }).ToList();
             string[] header = { "Kod kreskowy", "Nazwa", "Opis", "Cena" };
@@ -216,51 +220,58 @@ namespace ConsoleApp.Views
                     addToCartButton,
                     rejectAddingToCartButton);
                 win.Add(windowDetails);
-				windowDetails.SetFocus();
-				quantityQuestionTextField.SetFocus();
+                windowDetails.SetFocus();
+                quantityQuestionTextField.SetFocus();
 
 
 
-			};
-			var cartFrame = new FrameView("Podgląd koszyka")
-			{
-				X = Pos.Right(win),
-				Y = Pos.Top(win),
-				Width = Dim.Fill(1),
-				Height = Dim.Fill(1),
+            };
+            var cartFrame = new FrameView("Podgląd koszyka")
+            {
+                X = Pos.Right(win),
+                Y = Pos.Top(win),
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(1),
 
-				ColorScheme = ColorTheme.GrayThemePalette
-			};
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
 
-			var cartTable = new TableView()
-			{
-				X = 0,
-				Y = 0,
-				Width = Dim.Fill(1),
-				Height = Dim.Fill(1),
-				CanFocus = false
-			};
-			var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość" };
-			var dt = new DataTable();
-			foreach (var columnName in columnNames)
-			{
-				dt.Columns.Add(columnName);
-			}
-			foreach (var product in productsFromCart)
-			{
-				dt.Rows.Add(product.OriginalProduct.Id, DescriptionLimiter(product.OriginalProduct.Name,ConstIntegers.MaxLengthOfName), product.Quantity);
-			}
-			cartTable.Table = dt;
-			cartFrame.Add(cartTable);
-			win.Add(listView);
+            var cartTable = new TableView()
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(1),
+                CanFocus = false
+            };
+            var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość" };
+            var dt = new DataTable();
+            foreach (var columnName in columnNames)
+            {
+                dt.Columns.Add(columnName);
+            }
+            foreach (var product in productsFromCart)
+            {
+                dt.Rows.Add(product.OriginalProduct.Id, DescriptionLimiter(product.OriginalProduct.Name, ConstIntegers.MaxLengthOfName), product.Quantity);
+            }
+            cartTable.Table = dt;
+            cartFrame.Add(cartTable);
+            win.Add(listView);
             var exitButton = new Button("Zamknij")
             {
-                Y = Pos.Bottom(listView)+1,
+                Y = Pos.Bottom(listView) + 1,
                 X = Pos.Left(listView)
             };
             exitButton.Clicked += () => { Application.RequestStop(); };
+            win.KeyPress += (e) =>
+            {
+                if (e.KeyEvent.Key == Key.Esc)
+                {
+                    Application.RequestStop();
+                }
+            };
             win.Add(exitButton);
-            OpenFrameAndShutdown(win,cartFrame);
+            OpenFrameAndShutdown(win, cartFrame);
             return result;
 
         }
@@ -271,7 +282,7 @@ namespace ConsoleApp.Views
         }
 
         public int ShowMenu()
-        
+
         {
             InitializeWindow();
             // Stworzenie okna dialogowego, które będzie pełniło rolę menu
@@ -318,22 +329,22 @@ namespace ConsoleApp.Views
                 Application.RequestStop();
 
             };
-			var showHistoryButton = new Button($"_{iter++}. Pokaż historie zakupów")
-			{
-				X = Pos.Center(),
-				Y = 4
-			};
-			showHistoryButton.Clicked += () =>
-			{
-				selection = 4;
-				Application.RequestStop();
-			};
-			var exitShopButton = new Button($"_{iter++}. Wyjdź z {ConstString.AppName}")
+            var showHistoryButton = new Button($"_{iter++}. Pokaż historie zakupów")
+            {
+                X = Pos.Center(),
+                Y = 4
+            };
+            showHistoryButton.Clicked += () =>
+            {
+                selection = 4;
+                Application.RequestStop();
+            };
+            var exitShopButton = new Button($"_{iter++}. Wyjdź z {ConstString.AppName}")
             {
                 X = Pos.Center(),
                 Y = 5
             };
-            
+
             exitShopButton.Clicked += () =>
             {
                 selection = 5;
@@ -344,13 +355,13 @@ namespace ConsoleApp.Views
             return selection;
         }
 
-       
+
 
 
         public (CartActionEnum, CartProductModel?) ShowUserCart(List<CartProductModel> cartProducts)
         {
             InitializeWindow();
-			(CartActionEnum, CartProductModel?) result = (CartActionEnum.Exit, null);
+            (CartActionEnum, CartProductModel?) result = (CartActionEnum.Exit, null);
             var frame = new FrameView("Koszyk")
             {
                 X = 0,
@@ -359,15 +370,15 @@ namespace ConsoleApp.Views
                 Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
-            
+
             if (cartProducts.Count == 0)
             {
-				var nullHeaderLabel = new Label()
-				{
-					X = Pos.Center(),
-					Y = Pos.Center(),
-				};
-				nullHeaderLabel.Text = "Twój koszyk jest pusty";
+                var nullHeaderLabel = new Label()
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                };
+                nullHeaderLabel.Text = "Twój koszyk jest pusty";
                 frame.Add(nullHeaderLabel);
                 var exitNullButton = new Button("Zamknij")
                 {
@@ -378,6 +389,14 @@ namespace ConsoleApp.Views
                 {
                     Application.RequestStop();
                 };
+                frame.KeyPress += (e) =>
+                {
+                    if (e.KeyEvent.Key == Key.Esc)
+                    {
+                        Application.RequestStop();
+                    }
+                };
+
                 frame.Add(exitNullButton);
                 OpenFrameAndShutdown(frame);
                 return result;
@@ -444,7 +463,7 @@ namespace ConsoleApp.Views
                 Y = 2,
                 Width = table[0].Length,
                 Height = Dim.Percent(80),
-				AllowsMarking = false
+                AllowsMarking = false
             };
 
 
@@ -457,10 +476,10 @@ namespace ConsoleApp.Views
                     Width = Dim.Fill(1),
                     Height = Dim.Fill(1),
                     ColorScheme = ColorTheme.GrayThemePalette,
-                    
+
                 };
-                
-				var idLabel = new Label("Kod kreskowy: " + cartProducts[args.Item].OriginalProduct.Id)
+
+                var idLabel = new Label("Kod kreskowy: " + cartProducts[args.Item].OriginalProduct.Id)
                 {
                     X = Pos.Center(),
                     Y = 1
@@ -501,7 +520,7 @@ namespace ConsoleApp.Views
                     Y = Pos.Bottom(quantityQuestionLabel),
                     Width = 30,
                 };
-                
+
                 var priceToPayLabel = new Label("")
                 {
                     X = Pos.Center(),
@@ -511,8 +530,8 @@ namespace ConsoleApp.Views
                 {
                     X = Pos.Center(),
                     Y = Pos.Bottom(priceToPayLabel) + 1,
-                    Width=Dim.Sized(54+12),
-                    Height=1
+                    Width = Dim.Sized(54 + 12),
+                    Height = 1
                 };
                 var changeQuantityInCartButton = new Button("Zmień ilość")
                 {
@@ -524,9 +543,9 @@ namespace ConsoleApp.Views
                     if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity) && (quantity > 0 && quantity <= cartProducts[args.Item].OriginalProduct.Quantity))
                     {
                         var cartProduct = cartProducts[args.Item];
-                        cartProduct.Quantity= quantity;
-						result = (CartActionEnum.Update, cartProduct);
-						Application.RequestStop();
+                        cartProduct.Quantity = quantity;
+                        result = (CartActionEnum.Update, cartProduct);
+                        Application.RequestStop();
                     }
                     else
                     {
@@ -542,21 +561,21 @@ namespace ConsoleApp.Views
                 {
                     frame.Remove(windowDetails);
                 };
-				var removeProductFromCartButton = new Button("Usuń z koszyka")
-				{
-					X = Pos.Right(rejectChangesButton),
-					Y = Pos.Top(rejectChangesButton)
-				};
-				removeProductFromCartButton.Clicked += () =>
-				{
-                    var answer=MessageBox.Query("Usuwanie produktu z koszyka","Czy jesteś pewien, że chcesz usunąć produkt z koszyka?","Tak","Nie");
+                var removeProductFromCartButton = new Button("Usuń z koszyka")
+                {
+                    X = Pos.Right(rejectChangesButton),
+                    Y = Pos.Top(rejectChangesButton)
+                };
+                removeProductFromCartButton.Clicked += () =>
+                {
+                    var answer = MessageBox.Query("Usuwanie produktu z koszyka", "Czy jesteś pewien, że chcesz usunąć produkt z koszyka?", "Tak", "Nie");
                     if (answer == 0)
                     {
                         result = (CartActionEnum.Remove, cartProducts[args.Item]);
                         Application.RequestStop();
                     }
-				};
-				TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
+                };
+                TextFieldValidator.AllowOnlyIntegers(quantityQuestionTextField);
                 quantityQuestionTextField.TextChanged += (_) =>
                 {
                     if (int.TryParse(quantityQuestionTextField.Text.ToString(), out int quantity))
@@ -564,7 +583,7 @@ namespace ConsoleApp.Views
                         priceToPayLabel.Text = $"Cena do zapłaty: {quantity * cartProducts[args.Item].OriginalProduct.Price} {ConstString.Currency}";
                     }
                 };
-                buttonContainer.Add(changeQuantityInCartButton,rejectChangesButton,removeProductFromCartButton);
+                buttonContainer.Add(changeQuantityInCartButton, rejectChangesButton, removeProductFromCartButton);
                 windowDetails.Add(idLabel,
                     nameLabel,
                     descriptionLabel,
@@ -576,63 +595,70 @@ namespace ConsoleApp.Views
                     priceToPayLabel,
                     buttonContainer);
                 frame.Add(windowDetails);
-				windowDetails.SetFocus();
-				quantityQuestionTextField.SetFocus();
+                windowDetails.SetFocus();
+                quantityQuestionTextField.SetFocus();
 
-			};
+            };
             frame.Add(listView);
-			string summaryText = ((Func<string>)(() =>
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.Append("Łączna kwota: ");
+            string summaryText = ((Func<string>)(() =>
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Łączna kwota: ");
                 decimal sum = 0m;
                 sum = cartProducts.Sum(p => p.Quantity * p.OriginalProduct.Price);
                 sb.Append(sum.ToString());
                 sb.Append(ConstString.Currency);
-				return sb.ToString();
-			}))();
-			var summary = new Label(summaryText)
+                return sb.ToString();
+            }))();
+            var summary = new Label(summaryText)
             {
-                Y=Pos.Bottom(listView) + 1,
-                X= Pos.Left(listView)
-			};
+                Y = Pos.Bottom(listView) + 1,
+                X = Pos.Left(listView)
+            };
             var finalizeShoppingButton = new Button("Zapłać za zakupy")
             {
                 Y = Pos.Bottom(summary),
-				X = Pos.Left(summary)
-			};
-			finalizeShoppingButton.Clicked += () =>
-            { 
-				result = (CartActionEnum.Buy, null);
-				Application.RequestStop();
-			};
+                X = Pos.Left(summary)
+            };
+            finalizeShoppingButton.Clicked += () =>
+            {
+                result = (CartActionEnum.Buy, null);
+                Application.RequestStop();
+            };
             var removeAllProductsFromCart = new Button("Wyczyść koszyk")
             {
                 Y = Pos.Top(finalizeShoppingButton),
-				X = Pos.Right(finalizeShoppingButton) + 1
-			};
+                X = Pos.Right(finalizeShoppingButton) + 1
+            };
             removeAllProductsFromCart.Clicked += () =>
             {
-				var answer = MessageBox.Query("Koszyk", "Czy chcesz usunąć wszystkie produkty z koszyka?", "Tak", "Nie");
-                if (answer == 0) 
+                var answer = MessageBox.Query("Koszyk", "Czy chcesz usunąć wszystkie produkty z koszyka?", "Tak", "Nie");
+                if (answer == 0)
                 {
-                    result= (CartActionEnum.RemoveAll, null);
-					Application.RequestStop();
-				}
-			};
-			var exitButton = new Button("Zamknij")
-			{
-				Y = Pos.Top(removeAllProductsFromCart),
-				X = Pos.Right(removeAllProductsFromCart) + 1
-			};
-			exitButton.Clicked += () =>
-			{
-				Application.RequestStop();
-			};
-			
-			frame.Add(summary);
-			frame.Add(finalizeShoppingButton,removeAllProductsFromCart,exitButton);
-			OpenFrameAndShutdown(frame);
+                    result = (CartActionEnum.RemoveAll, null);
+                    Application.RequestStop();
+                }
+            };
+            var exitButton = new Button("Zamknij")
+            {
+                Y = Pos.Top(removeAllProductsFromCart),
+                X = Pos.Right(removeAllProductsFromCart) + 1
+            };
+            exitButton.Clicked += () =>
+            {
+                Application.RequestStop();
+            };
+            frame.KeyPress += (e) =>
+            {
+                if (e.KeyEvent.Key == Key.Esc)
+                {
+                    Application.RequestStop();
+                }
+            };
+
+            frame.Add(summary);
+            frame.Add(finalizeShoppingButton, removeAllProductsFromCart, exitButton);
+            OpenFrameAndShutdown(frame);
             return result;
         }
 
@@ -640,8 +666,8 @@ namespace ConsoleApp.Views
         {
             PaymentMethodEnum paymentMethod = PaymentMethodEnum.Exit;
             InitializeWindow();
-			if (productsFromCart.Count == 0)
-			{
+            if (productsFromCart.Count == 0)
+            {
                 var nullFrame = new FrameView("Koszyk")
                 {
                     X = 0,
@@ -651,27 +677,34 @@ namespace ConsoleApp.Views
                     ColorScheme = ColorTheme.GrayThemePalette
                 };
 
-				var nullLabel = new Label("Twój koszyk jest pusty")
-				{
-					X = Pos.Center(),
-					Y = Pos.Center()
-				};
-				var exitNullButton = new Button("Zamknij")
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(nullLabel) + 1
-				};
-                exitNullButton.Clicked+=() => { Application.RequestStop(); };
-				nullFrame.Add(nullLabel, exitNullButton);
-				OpenFrameAndShutdown(nullFrame);
-				return paymentMethod;
-			}
-			var paymentMethodFrame = new FrameView("Dokonaj zakupu")
+                var nullLabel = new Label("Twój koszyk jest pusty")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center()
+                };
+                var exitNullButton = new Button("Zamknij")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(nullLabel) + 1
+                };
+                exitNullButton.Clicked += () => { Application.RequestStop(); };
+                nullFrame.KeyPress += (e) =>
+                {
+                    if (e.KeyEvent.Key == Key.Esc)
+                    {
+                        Application.RequestStop();
+                    }
+                };
+                nullFrame.Add(nullLabel, exitNullButton);
+                OpenFrameAndShutdown(nullFrame);
+                return paymentMethod;
+            }
+            var paymentMethodFrame = new FrameView("Dokonaj zakupu")
             {
                 X = 0,
                 Y = 1,
                 Width = Dim.Percent(50),
-                Height =Dim.Fill(1),
+                Height = Dim.Fill(1),
                 ColorScheme = ColorTheme.GrayThemePalette
             };
             var paymentMethodLabel = new Label("Wybierz sposób płatności: ")
@@ -692,150 +725,166 @@ namespace ConsoleApp.Views
                 RadioLabels = options,
                 SelectedItem = 0
             };
-			var confirmPaymentMethodButton = new Button("Kup teraz")
-			{
-				X = Pos.Center(),
-				Y = Pos.Bottom(radioPayementMethodButton) + 1
-			};
+            var confirmPaymentMethodButton = new Button("Kup teraz")
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(radioPayementMethodButton) + 1
+            };
             var continueShoppingButton = new Button("Kontynuuj zakupy")
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(confirmPaymentMethodButton)
             };
-           
-            confirmPaymentMethodButton.Clicked += () => 
+
+            confirmPaymentMethodButton.Clicked += () =>
             {
-                
+
                 var paymentMethodWindow = new Window("Potwierdzenie zakupu")
-				{
-					X = Pos.Center(),
-					Y = Pos.Center(),
-					Width = 50,
-					Height = 9,
-					ColorScheme = ColorTheme.RedThemePalette
-				};
-               
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                    Width = 50,
+                    Height = 9,
+                    ColorScheme = ColorTheme.RedThemePalette
+                };
+
                 var isUserSureLabel = new Label("Czy na pewno chcesz dokonać zakupu?")
                 {
                     X = Pos.Center(),
                     Y = 1
                 };
                 var yesButton = new Button("Tak")
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(isUserSureLabel)+1
-				};
-                yesButton.Clicked += () => 
                 {
-					paymentMethod = (PaymentMethodEnum)radioPayementMethodButton.SelectedItem;
-					Application.RequestStop(); 
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(isUserSureLabel) + 1
                 };
-				var noButton = new Button("Nie")
+                yesButton.Clicked += () =>
                 {
-					X = Pos.Center(),
-					Y = Pos.Bottom(yesButton)
-				};
+                    paymentMethod = (PaymentMethodEnum)radioPayementMethodButton.SelectedItem;
+                    Application.RequestStop();
+                };
+                var noButton = new Button("Nie")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(yesButton)
+                };
                 noButton.Clicked += () =>
                 {
                     paymentMethodFrame.Remove(paymentMethodWindow);
                 };
-				paymentMethodFrame.Add(paymentMethodWindow);
+                paymentMethodFrame.Add(paymentMethodWindow);
                 paymentMethodWindow.Add(isUserSureLabel, yesButton, noButton);
                 paymentMethodWindow.SetFocus();
-			};
-            continueShoppingButton.Clicked += () => 
+            };
+            continueShoppingButton.Clicked += () =>
             {
-				paymentMethod = PaymentMethodEnum.None;
-				Application.RequestStop();
-            }; 
-            
-			var summaryCartFrame = new FrameView("Zawartość koszyka")
-			{
-				X = Pos.Right(paymentMethodFrame),
-				Y = Pos.Top(paymentMethodFrame),
-				Width = Dim.Percent(50),
-				Height = Dim.Fill(1),
-				ColorScheme = ColorTheme.GrayThemePalette
-			};
-
-			var cartTable = new TableView()
-			{
-				X = Pos.Center(),
-				Y = 1,
-				Width = Dim.Fill(1),
-				Height = Dim.Percent(80),
-				CanFocus = false
-			};
-			var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość","Cena","Suma" };
-			var dt = new DataTable();
-			foreach (var columnName in columnNames)
-			{
-				dt.Columns.Add(columnName);
-			}
-			foreach (var product in productsFromCart)
-			{
-				dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name, product.Quantity,product.OriginalProduct.Price,product.OriginalProduct.Price*product.Quantity);
-			}
-			cartTable.Table = dt;
-
-			string summaryText = ((Func<string>)(() =>
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.Append("Łączna kwota: ");
-				decimal sum = 0m;
-				sum = productsFromCart.Sum(p => p.Quantity * p.OriginalProduct.Price);
-				sb.Append(sum.ToString());
-				sb.Append(ConstString.Currency);
-				return sb.ToString();
-			}))();
-
-
-			var priceToPayLabel = new Label(summaryText) 
+                paymentMethod = PaymentMethodEnum.None;
+                Application.RequestStop();
+            };
+            paymentMethodFrame.KeyPress += (e) =>
             {
-                X=Pos.Center(),
-                Y=Pos.Bottom(cartTable),
+                if (e.KeyEvent.Key == Key.Esc)
+                {
+                    paymentMethod = PaymentMethodEnum.None;
+                    Application.RequestStop();
+                }
             };
 
-			summaryCartFrame.Add(cartTable,priceToPayLabel);
+
+            var summaryCartFrame = new FrameView("Zawartość koszyka")
+            {
+                X = Pos.Right(paymentMethodFrame),
+                Y = Pos.Top(paymentMethodFrame),
+                Width = Dim.Percent(50),
+                Height = Dim.Fill(1),
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
+
+            var cartTable = new TableView()
+            {
+                X = Pos.Center(),
+                Y = 1,
+                Width = Dim.Fill(1),
+                Height = Dim.Percent(80),
+                CanFocus = false
+            };
+            var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Ilość", "Cena", "Suma" };
+            var dt = new DataTable();
+            foreach (var columnName in columnNames)
+            {
+                dt.Columns.Add(columnName);
+            }
+            foreach (var product in productsFromCart)
+            {
+                dt.Rows.Add(product.OriginalProduct.Id, product.OriginalProduct.Name, product.Quantity, product.OriginalProduct.Price, product.OriginalProduct.Price * product.Quantity);
+            }
+            cartTable.Table = dt;
+
+            string summaryText = ((Func<string>)(() =>
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Łączna kwota: ");
+                decimal sum = 0m;
+                sum = productsFromCart.Sum(p => p.Quantity * p.OriginalProduct.Price);
+                sb.Append(sum.ToString());
+                sb.Append(ConstString.Currency);
+                return sb.ToString();
+            }))();
+
+
+            var priceToPayLabel = new Label(summaryText)
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(cartTable),
+            };
+
+            summaryCartFrame.Add(cartTable, priceToPayLabel);
 
 
 
 
 
 
-			paymentMethodFrame.Add(paymentMethodLabel, radioPayementMethodButton, confirmPaymentMethodButton, continueShoppingButton);
-			OpenFrameAndShutdown(paymentMethodFrame,summaryCartFrame);
-			return paymentMethod;
-		}
+            paymentMethodFrame.Add(paymentMethodLabel, radioPayementMethodButton, confirmPaymentMethodButton, continueShoppingButton);
+            OpenFrameAndShutdown(paymentMethodFrame, summaryCartFrame);
+            return paymentMethod;
+        }
 
-		public void ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
-		{
+        public void ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
+        {
             InitializeWindow();
             var historyFrame = new FrameView("Historia zakupów")
-			{
-				X = 0,
-				Y = 0,
-				Width = Dim.Fill(1),
-				Height = Dim.Fill(1),
-				ColorScheme = ColorTheme.GrayThemePalette
-			};
-			if (shoppingCartHistories.Count == 0)
-			{
-				var nullLabel = new Label("Brak historii zakupów w bazie")
-				{
-					X = Pos.Center(),
-					Y = Pos.Center()
-				};
-				var exitNullButton = new Button("Zamknij")
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(nullLabel) + 1
-				};
-				exitNullButton.Clicked += () => { Application.RequestStop(); };
-				historyFrame.Add(nullLabel, exitNullButton);
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(1),
+                ColorScheme = ColorTheme.GrayThemePalette
+            };
+            if (shoppingCartHistories.Count == 0)
+            {
+                var nullLabel = new Label("Brak historii zakupów w bazie")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center()
+                };
+                var exitNullButton = new Button("Zamknij")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(nullLabel) + 1
+                };
+                exitNullButton.Clicked += () => { Application.RequestStop(); };
+                historyFrame.KeyPress += (e) =>
+                {
+                    if (e.KeyEvent.Key == Key.Esc)
+                    {
+                        Application.RequestStop();
+                    }
+                };
+                historyFrame.Add(nullLabel, exitNullButton);
                 OpenFrameAndShutdown(historyFrame);
                 return;
-			}
+            }
 
             var productNames = shoppingCartHistories.Select(p => new string[]
             {
@@ -845,146 +894,153 @@ namespace ConsoleApp.Views
                 p.PurchasedProducts.Count.ToString()
 
             }).ToList();
-			string[] header = { "Data", "Suma", "Płatność", "Ilość zakupionych produktów" };
-			int[] columnWidths = header.Select(h => h.Length).ToArray();
-			for (int col = 0; col < productNames[0].Length; col++)
-			{
-				columnWidths[col] = Math.Max(columnWidths[col], productNames.Max(row => row[col].Length));
-			}
+            string[] header = { "Data", "Suma", "Płatność", "Ilość zakupionych produktów" };
+            int[] columnWidths = header.Select(h => h.Length).ToArray();
+            for (int col = 0; col < productNames[0].Length; col++)
+            {
+                columnWidths[col] = Math.Max(columnWidths[col], productNames.Max(row => row[col].Length));
+            }
 
-			string[] table = productNames.Select(p =>
-			{
-				StringBuilder s = new();
-				for (int i = 0; i < p.Length; i++)
-				{
-					s.Append(" | ");
-					s.Append(p[i].PadRight(columnWidths[i]));
-				}
+            string[] table = productNames.Select(p =>
+            {
+                StringBuilder s = new();
+                for (int i = 0; i < p.Length; i++)
+                {
+                    s.Append(" | ");
+                    s.Append(p[i].PadRight(columnWidths[i]));
+                }
 
-				s.Append(" | ");
-				return s.ToString();
+                s.Append(" | ");
+                return s.ToString();
 
-			}).ToArray();
+            }).ToArray();
 
-			var label = new Label("Wpisy historii")
-			{
-				X = Pos.Center(),
-				Y = 0
-			};
-			historyFrame.Add(label);
+            var label = new Label("Wpisy historii")
+            {
+                X = Pos.Center(),
+                Y = 0
+            };
+            historyFrame.Add(label);
 
-			string tableHeader = ((Func<string>)(() =>
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.Append(" | ");
-				for (int j = 0; j < header.Length; j++)
-				{
-					sb.Append(header[j].PadRight(columnWidths[j]));
-					sb.Append(" | ");
-				}
+            string tableHeader = ((Func<string>)(() =>
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(" | ");
+                for (int j = 0; j < header.Length; j++)
+                {
+                    sb.Append(header[j].PadRight(columnWidths[j]));
+                    sb.Append(" | ");
+                }
 
-				return sb.ToString();
-			}))();
-			var tableHeaderLabel = new Label(tableHeader)
-			{
-				X = Pos.Center(),
-				Y = 1
-			};
-			historyFrame.Add(tableHeaderLabel);
+                return sb.ToString();
+            }))();
+            var tableHeaderLabel = new Label(tableHeader)
+            {
+                X = Pos.Center(),
+                Y = 1
+            };
+            historyFrame.Add(tableHeaderLabel);
 
 
-			var listView = new ListView(table)
-			{
-				X = Pos.Center(),
-				Y = 2,
-				Width = table[0].Length,
-				Height = Dim.Fill() - 2,
-				AllowsMarking = false
-			};
+            var listView = new ListView(table)
+            {
+                X = Pos.Center(),
+                Y = 2,
+                Width = table[0].Length,
+                Height = Dim.Fill() - 2,
+                AllowsMarking = false
+            };
             listView.OpenSelectedItem += (args) =>
             {
-				var windowDetails = new Window("Szczegóły wpisu")
-				{
-					X = 0,
-					Y = 1,
-					Width = Dim.Fill(1),
-					Height = Dim.Fill(1),
-					ColorScheme = ColorTheme.GrayThemePalette
-				};
-                var dateLabel = new Label("Zakupiono: " + shoppingCartHistories[args.Item].Date.ToString()) 
+                var windowDetails = new Window("Szczegóły wpisu")
                 {
-                    X=Pos.Center(),
-                    Y=1,
+                    X = 0,
+                    Y = 1,
+                    Width = Dim.Fill(1),
+                    Height = Dim.Fill(1),
+                    ColorScheme = ColorTheme.GrayThemePalette
                 };
-                var totalPriceLabel = new Label("Za kwotę: " + shoppingCartHistories[args.Item].TotalPrice.ToString()) 
+                var dateLabel = new Label("Zakupiono: " + shoppingCartHistories[args.Item].Date.ToString())
                 {
-					X = Pos.Center(),
-					Y =Pos.Bottom(dateLabel)
+                    X = Pos.Center(),
+                    Y = 1,
+                };
+                var totalPriceLabel = new Label("Za kwotę: " + shoppingCartHistories[args.Item].TotalPrice.ToString())
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(dateLabel)
                 };
                 PaymentMethodEnum? paymentEnum = shoppingCartHistories[args.Item].PaymentMethod;
-                string paymentMethodString = (paymentEnum != null) ? GetEnumDescription((PaymentMethodEnum)paymentEnum) : ""; 
-				var paymentMethodLabel = new Label("Metoda płatności: "+paymentMethodString)
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(totalPriceLabel)
-				};
-				var quantityOfProductsLabel = new Label("Ilość produktów: "+ shoppingCartHistories[args.Item].PurchasedProducts.Count.ToString())
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(paymentMethodLabel)
-				};
-				var cartTable = new TableView()
-				{
-					X = Pos.Center(),
-					Y = Pos.Bottom(quantityOfProductsLabel)+2,
-					Width = Dim.Fill(1),
-					Height = Dim.Percent(60),
-					CanFocus = false
-				};
-				var columnNames = new string[] { "Kod kreskowy", "Nazwa","Opis", "Ilość", "Cena", "Suma" };
-				var dt = new DataTable();
-				foreach (var columnName in columnNames)
-				{
-					dt.Columns.Add(columnName);
-				}
-				foreach (var product in shoppingCartHistories[args.Item].PurchasedProducts)
-				{
-				dt.Rows.Add(product.ProductId, DescriptionLimiter(product.Name,ConstIntegers.MaxLengthOfName),DescriptionLimiter(product.Description), product.Quantity, product.Price, product.Price * product.Quantity);
-				}
-				cartTable.Table = dt;
-                var closeDetailsButton= new Button("Zamknij szczegóły")
+                string paymentMethodString = (paymentEnum != null) ? GetEnumDescription((PaymentMethodEnum)paymentEnum) : "";
+                var paymentMethodLabel = new Label("Metoda płatności: " + paymentMethodString)
                 {
-					X = Pos.Center(),
-                    Y= Pos.Bottom(cartTable),
-				};
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(totalPriceLabel)
+                };
+                var quantityOfProductsLabel = new Label("Ilość produktów: " + shoppingCartHistories[args.Item].PurchasedProducts.Count.ToString())
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(paymentMethodLabel)
+                };
+                var cartTable = new TableView()
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(quantityOfProductsLabel) + 2,
+                    Width = Dim.Fill(1),
+                    Height = Dim.Percent(60),
+                    CanFocus = false
+                };
+                var columnNames = new string[] { "Kod kreskowy", "Nazwa", "Opis", "Ilość", "Cena", "Suma" };
+                var dt = new DataTable();
+                foreach (var columnName in columnNames)
+                {
+                    dt.Columns.Add(columnName);
+                }
+                foreach (var product in shoppingCartHistories[args.Item].PurchasedProducts)
+                {
+                    dt.Rows.Add(product.ProductId, DescriptionLimiter(product.Name, ConstIntegers.MaxLengthOfName), DescriptionLimiter(product.Description), product.Quantity, product.Price, product.Price * product.Quantity);
+                }
+                cartTable.Table = dt;
+                var closeDetailsButton = new Button("Zamknij szczegóły")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Bottom(cartTable),
+                };
                 closeDetailsButton.Clicked += () =>
                 {
                     historyFrame.Remove(windowDetails);
                 };
-                windowDetails.Add(dateLabel,totalPriceLabel,paymentMethodLabel,quantityOfProductsLabel, cartTable, closeDetailsButton);
+                windowDetails.Add(dateLabel, totalPriceLabel, paymentMethodLabel, quantityOfProductsLabel, cartTable, closeDetailsButton);
                 historyFrame.Add(windowDetails);
-               
-			};
+
+            };
             var closeButton = new Button("Zamknij historie zakupów")
             {
-                X=Pos.Left(listView),
-                Y=Pos.Bottom(listView)+1
+                X = Pos.Left(listView),
+                Y = Pos.Bottom(listView) + 1
             };
-            closeButton.Clicked += () => 
+            closeButton.Clicked += () =>
             {
                 Application.RequestStop();
             };
-            historyFrame.Add(listView,closeButton);
-			OpenFrameAndShutdown(historyFrame);
-		}
+            historyFrame.KeyPress += (e) =>
+            {
+                if (e.KeyEvent.Key == Key.Esc)
+                {
+                    Application.RequestStop();
+                }
+            };
+            historyFrame.Add(listView, closeButton);
+            OpenFrameAndShutdown(historyFrame);
+        }
 
         private string GetEnumDescription(PaymentMethodEnum value)
-		{
-			var field = value.GetType().GetField(value.ToString());
+        {
+            var field = value.GetType().GetField(value.ToString());
             if (field == null)
                 return value.ToString();
-			var attribute = System.Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-			return attribute == null ? value.ToString() : attribute.Description;
-		}
-	}
+            var attribute = System.Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+            return attribute == null ? value.ToString() : attribute.Description;
+        }
+    }
 }
