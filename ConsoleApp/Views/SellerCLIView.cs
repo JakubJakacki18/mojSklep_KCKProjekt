@@ -187,8 +187,15 @@ namespace ConsoleApp.Views
             {
                 Application.RequestStop();
             };
+			win.KeyPress += (e) =>
+			{
+				if (e.KeyEvent.Key == Key.Esc)
+				{
+					Application.RequestStop();
+				}
+			};
 
-            TextFieldValidator.AllowOnlyDoubles(productPrice);
+			TextFieldValidator.AllowOnlyDoubles(productPrice);
             TextFieldValidator.AllowOnlyIntegers(productQuantity);
             TextFieldValidator.AllowOnlyIntegers(productShelfRow);
             TextFieldValidator.AllowOnlyIntegers(productShelfColumn);
@@ -247,6 +254,13 @@ namespace ConsoleApp.Views
 					Y = Pos.Bottom(nullLabel) + 1
 				};
 				exitNullButton.Clicked += () => { Application.RequestStop(); };
+                nullFrame.KeyPress += (e) =>
+				{
+					if (e.KeyEvent.Key == Key.Esc)
+					{
+						Application.RequestStop();
+					}
+				};
 				nullFrame.Add(nullLabel, exitNullButton);
 				OpenFrameAndShutdown(nullFrame);
 				return result;
@@ -539,6 +553,7 @@ namespace ConsoleApp.Views
 			{
 				Application.RequestStop();
 			};
+            win.KeyPress += (e) => { Application.RequestStop(); };
 			win.Add(listView,closeButton);
             OpenFrameAndShutdown(win);
             return result;

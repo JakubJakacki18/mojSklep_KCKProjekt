@@ -102,20 +102,32 @@ namespace ConsoleApp.Views
                 X = 1,
                 Y = 7
             };
+            void HandleSignIn() 
+            {
+				username = inputField.Text.ToString() ?? string.Empty;
+				password = passwordField.Text.ToString() ?? string.Empty;
+				if (username == string.Empty || password == string.Empty)
+				{
+					MessageBox.Query("Bład", "Login albo hasło nie zostało uzupełnione", "Ok");
+				}
+				else
+				{
+					Application.RequestStop(); // Zakończenie aplikacji
+				}
+			}
             okButton.Clicked += () =>
             {
-                username = inputField.Text.ToString() ?? string.Empty;
-                password = passwordField.Text.ToString() ?? string.Empty;
-                if (username == string.Empty || password == string.Empty)
-                {
-                    MessageBox.Query("Bład", "Login albo hasło nie zostało uzupełnione", "Ok");
-                }
-                else
-                {
-                    Application.RequestStop(); // Zakończenie aplikacji
-                }
-            };
-            win.Add(okButton, passwordSecretButton);
+                HandleSignIn();
+
+			};
+			passwordField.KeyPress += (e) =>
+			{
+				if (e.KeyEvent.Key == Key.Enter)
+				{
+					HandleSignIn();
+				}
+			};
+			win.Add(okButton, passwordSecretButton);
             Application.Run();
             Application.Shutdown();
 
