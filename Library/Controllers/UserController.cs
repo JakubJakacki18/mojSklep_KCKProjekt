@@ -104,7 +104,7 @@ namespace Library.Controllers
         public void Logout()
         {
             CurrentLoggedInUser = null;
-		}
+        }
         public bool ChangePassword(string login, string password)
         {
             // some logic
@@ -121,10 +121,10 @@ namespace Library.Controllers
             return loggedUser.Role;
         }
 
-        public int RoleSelecion(UserModel loggedUser)
+        public async Task<int> RoleSelecion(UserModel loggedUser)
         {
             var Roles = loggedUser.Role;
-            return _userView.RoleSelection(Roles);
+            return await _userView.RoleSelection(Roles);
 
         }
     }

@@ -13,7 +13,7 @@ namespace ConsoleApp.Views
 {
     public class BuyerCLIView : RoleCLIView, IBuyerView
     {
-        public Object? ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
+        public Task<Object?> ShowAllProducts(List<ProductModel> products, List<CartProductModel> productsFromCart)
         {
             InitializeWindow();
             Object? result = null;
@@ -276,12 +276,12 @@ namespace ConsoleApp.Views
 
         }
 
-        public void ShowInterface()
+        public Task ShowInterface()
         {
 
         }
 
-        public int ShowMenu()
+        public Task<int> ShowMenu()
 
         {
             InitializeWindow();
@@ -358,7 +358,7 @@ namespace ConsoleApp.Views
 
 
 
-        public (CartActionEnum, CartProductModel?) ShowUserCart(List<CartProductModel> cartProducts)
+        public Task<(CartActionEnum, CartProductModel?)> ShowUserCart(List<CartProductModel> cartProducts)
         {
             InitializeWindow();
             (CartActionEnum, CartProductModel?) result = (CartActionEnum.Exit, null);
@@ -662,7 +662,7 @@ namespace ConsoleApp.Views
             return result;
         }
 
-        public PaymentMethodEnum ShowPaymentMethod(List<CartProductModel> productsFromCart)
+        public Task<PaymentMethodEnum> ShowPaymentMethod(List<CartProductModel> productsFromCart)
         {
             PaymentMethodEnum paymentMethod = PaymentMethodEnum.Exit;
             InitializeWindow();
@@ -850,7 +850,7 @@ namespace ConsoleApp.Views
             return paymentMethod;
         }
 
-        public void ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
+        public Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
         {
             InitializeWindow();
             var historyFrame = new FrameView("Historia zakupów")

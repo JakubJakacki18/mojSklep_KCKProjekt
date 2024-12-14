@@ -7,6 +7,6 @@ namespace Library.Interfaces
         public Task<(string, string)> ShowSignIn(bool isValid = true);
         public Task<(string, string)> ShowSignUp(bool isValid = true);
         public Task<bool> LandingPage();
-        int RoleSelection(RolesEnum roles);
+        public Task<int> RoleSelection(RolesEnum roles);
     }
 }

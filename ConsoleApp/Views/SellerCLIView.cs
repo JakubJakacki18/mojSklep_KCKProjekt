@@ -13,7 +13,7 @@ namespace ConsoleApp.Views
     public class SellerCLIView : RoleCLIView, ISellerView
     {
 
-        public int ShowMenu()
+        public Task<int> ShowMenu()
         {
             InitializeWindow();
             var menuWindow = new FrameView("Menu")
@@ -64,7 +64,7 @@ namespace ConsoleApp.Views
         }
 
 
-        public ProductModel? AddProduct()
+        public Task<ProductModel?> AddProduct()
         {
             InitializeWindow();
             ProductModel? product = null;
@@ -224,12 +224,12 @@ namespace ConsoleApp.Views
             return product;
         }
 
-        public void EditProduct()
+        public Task EditProduct()
         {
             throw new NotImplementedException();
         }
 
-        public (ShowProductsSellerActionEnum, ProductModel?) ShowAllProductsAndEdit(List<ProductModel> products)
+        public Task<(ShowProductsSellerActionEnum, ProductModel?)> ShowAllProductsAndEdit(List<ProductModel> products)
         {
             (ShowProductsSellerActionEnum, ProductModel?) result = (ShowProductsSellerActionEnum.exit, null);
 

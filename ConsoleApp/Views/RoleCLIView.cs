@@ -19,22 +19,22 @@ namespace ConsoleApp.Views
         }
 
         protected void OpenFrameAndShutdown(params FrameView[] frames)
-		{
-			if (mainWindow == null || top == null)
-			{
-				throw new InvalidOperationException("InitializeWindow() musi być wywołane przed OpenFrameAndShutdown().");
-			}
-			foreach (var f in frames)
-			{
-				mainWindow.Add(f);
-			}
-            top.Add(mainWindow);
-			Application.Run(top);
-			Application.Shutdown();
-		}
-		public bool ExitApp()
         {
-			InitializeWindow();
+            if (mainWindow == null || top == null)
+            {
+                throw new InvalidOperationException("InitializeWindow() musi być wywołane przed OpenFrameAndShutdown().");
+            }
+            foreach (var f in frames)
+            {
+                mainWindow.Add(f);
+            }
+            top.Add(mainWindow);
+            Application.Run(top);
+            Application.Shutdown();
+        }
+        public Task<bool> ExitApp()
+        {
+            InitializeWindow();
             bool isExitWanted = false;
             var win = new Window("Wyjście")
             {
@@ -75,35 +75,35 @@ namespace ConsoleApp.Views
             OpenWindowAndShutdown(win);
             return isExitWanted;
         }
-		public void ShowMessage(string addProductStatus)
-		{
+        public Task ShowMessage(string addProductStatus)
+        {
             Application.Init();
-			MessageBox.Query("", addProductStatus, "Ok");
+            MessageBox.Query("", addProductStatus, "Ok");
             Application.Shutdown();
-		}
+        }
 
-		protected void InitializeWindow()
-		{
-			Application.Init();
-			top = Application.Top;
-			mainWindow = new Window("Sklep internetowy - " + ConstString.AppName)
-			{
-				X = 0,
-				Y = 1,
-				Width = Dim.Fill(),
-				Height = Dim.Fill()
-			};
-			top.Add(GetMenuBar());
-		}
-		private MenuBar GetMenuBar()
-		{
-			return new MenuBar(new MenuBarItem[]
-			{
-				new MenuBarItem("Konto", new MenuItem[]
+        protected void InitializeWindow()
+        {
+            Application.Init();
+            top = Application.Top;
+            mainWindow = new Window("Sklep internetowy - " + ConstString.AppName)
+            {
+                X = 0,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill()
+            };
+            top.Add(GetMenuBar());
+        }
+        private MenuBar GetMenuBar()
+        {
+            return new MenuBar(new MenuBarItem[]
+            {
+                new MenuBarItem("Konto", new MenuItem[]
                 {
                     new MenuItem("Informacje o użytkowniku", "",() => MessageBox.Query("Informacje o użytkowniku", "Nazwa użytkownika: "+UserController.GetInstance().CurrentLoggedInUser?.Login ?? "" , "Ok")),
 
-					new MenuItem("Wyloguj się!", "",
+                    new MenuItem("Wyloguj się!", "",
                         () => {
                             int result = MessageBox.Query("Wylogowywanie:", "Czy na pewno chcesz się wylogować?", "Tak","Nie");
                             if(result==0)
@@ -111,26 +111,26 @@ namespace ConsoleApp.Views
                                 UserController.GetInstance().Logout();
                                 Application.RequestStop();
                             }
-						}),
+                        }),
 
 
-				}),
+                }),
                 new MenuBarItem("O programie", "", () => MessageBox.Query("O programie", ConstString.AppName+"\nAutor: Jakub Jakacki\nWersja: alpha 0.0.1", "Ok")),
-			});
-		}
-		protected string DescriptionLimiter(string? description, int maxLength = ConstIntegers.MaxLengthOfDescription)
-		{
-			//p.OriginalProduct.Description?.Substring(0, Math.Min(p.OriginalProduct.Description.Length, 20)) ?? "";
-			if (description == null)
-			{
-				return "";
-			}
-			if (description.Length > maxLength)
-			{
-				return $"{description.Substring(0, maxLength - 3)}...";
-			}
-			return description;
-		}
+            });
+        }
+        protected string DescriptionLimiter(string? description, int maxLength = ConstIntegers.MaxLengthOfDescription)
+        {
+            //p.OriginalProduct.Description?.Substring(0, Math.Min(p.OriginalProduct.Description.Length, 20)) ?? "";
+            if (description == null)
+            {
+                return "";
+            }
+            if (description.Length > maxLength)
+            {
+                return $"{description.Substring(0, maxLength - 3)}...";
+            }
+            return description;
+        }
 
-	}
+    }
 }
