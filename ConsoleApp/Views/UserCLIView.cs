@@ -389,11 +389,11 @@ namespace ConsoleApp.Views
 
         }
 
-        public int RoleSelection(RolesEnum roles)
+        public Task<int> RoleSelection(RolesEnum roles)
         {
             if (roles == RolesEnum.PermissionBuyer)
             {
-                return 0;
+                return Task.FromResult(0);
             }
 
             int val = -1;
@@ -475,7 +475,7 @@ namespace ConsoleApp.Views
 
 			Application.Run();
             Application.Shutdown();
-            return val;
+            return Task.FromResult(val);
         }
     }
 }

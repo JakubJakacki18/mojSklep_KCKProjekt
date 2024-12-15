@@ -17,7 +17,7 @@ public class Launcher(/*Io io,*/ IUserView _userView, IBuyerView _buyerView, ISe
         do
         {
             var loggedUser = await userController.SignInOrUpSelectionAsync();
-            int choosedInterface = userController.RoleSelecion(loggedUser);
+            int choosedInterface = await userController.RoleSelecion(loggedUser);
             switch (choosedInterface)
             {
                 case 0:

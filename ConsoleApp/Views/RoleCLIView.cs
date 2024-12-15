@@ -73,14 +73,15 @@ namespace ConsoleApp.Views
 
             win.Add(label, yesButton, noButton);
             OpenWindowAndShutdown(win);
-            return isExitWanted;
+            return Task.FromResult(isExitWanted);
         }
         public Task ShowMessage(string addProductStatus)
         {
             Application.Init();
             MessageBox.Query("", addProductStatus, "Ok");
             Application.Shutdown();
-        }
+			return Task.CompletedTask;
+		}
 
         protected void InitializeWindow()
         {

@@ -60,7 +60,7 @@ namespace ConsoleApp.Views
             };
             menuWindow.Add(addNewProductButton, showAllProducts, exitShopButton);
             OpenFrameAndShutdown(menuWindow);
-            return selection;
+            return Task.FromResult(selection);
         }
 
 
@@ -221,7 +221,7 @@ namespace ConsoleApp.Views
                 rejectProductButton
                 );
             OpenFrameAndShutdown(win);
-            return product;
+            return Task.FromResult(product);
         }
 
         public Task EditProduct()
@@ -266,7 +266,7 @@ namespace ConsoleApp.Views
                 };
                 nullFrame.Add(nullLabel, exitNullButton);
                 OpenFrameAndShutdown(nullFrame);
-                return result;
+                return Task.FromResult(result);
             }
 
             var win = new FrameView("Lista produktów")
@@ -568,7 +568,7 @@ namespace ConsoleApp.Views
             };
             win.Add(listView, closeButton);
             OpenFrameAndShutdown(win);
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

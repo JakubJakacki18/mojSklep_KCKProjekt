@@ -49,7 +49,7 @@ namespace ConsoleApp.Views
                 };
                 win.Add(nullLabel, exitNullButton);
                 OpenFrameAndShutdown(win);
-                return result;
+                return Task.FromResult(result);
             }
 
             var productNames = products.Select(p => new string[]
@@ -272,13 +272,13 @@ namespace ConsoleApp.Views
             };
             win.Add(exitButton);
             OpenFrameAndShutdown(win, cartFrame);
-            return result;
+            return Task.FromResult(result);
 
         }
 
         public Task ShowInterface()
         {
-
+            return Task.CompletedTask;
         }
 
         public Task<int> ShowMenu()
@@ -352,7 +352,7 @@ namespace ConsoleApp.Views
             };
             menuFrame.Add(showProductListButton, showCartButton, finalizeShoppingButton, showHistoryButton, exitShopButton);
             OpenFrameAndShutdown(menuFrame);
-            return selection;
+            return Task.FromResult(selection);
         }
 
 
@@ -399,7 +399,7 @@ namespace ConsoleApp.Views
 
                 frame.Add(exitNullButton);
                 OpenFrameAndShutdown(frame);
-                return result;
+                return Task.FromResult(result);
             }
             var productNames = cartProducts.Select(p => new string[]
         {
@@ -659,7 +659,7 @@ namespace ConsoleApp.Views
             frame.Add(summary);
             frame.Add(finalizeShoppingButton, removeAllProductsFromCart, exitButton);
             OpenFrameAndShutdown(frame);
-            return result;
+            return Task.FromResult(result);
         }
 
         public Task<PaymentMethodEnum> ShowPaymentMethod(List<CartProductModel> productsFromCart)
@@ -697,7 +697,7 @@ namespace ConsoleApp.Views
                 };
                 nullFrame.Add(nullLabel, exitNullButton);
                 OpenFrameAndShutdown(nullFrame);
-                return paymentMethod;
+                return Task.FromResult(paymentMethod);
             }
             var paymentMethodFrame = new FrameView("Dokonaj zakupu")
             {
@@ -847,7 +847,7 @@ namespace ConsoleApp.Views
 
             paymentMethodFrame.Add(paymentMethodLabel, radioPayementMethodButton, confirmPaymentMethodButton, continueShoppingButton);
             OpenFrameAndShutdown(paymentMethodFrame, summaryCartFrame);
-            return paymentMethod;
+            return Task.FromResult(paymentMethod);
         }
 
         public Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
@@ -883,7 +883,7 @@ namespace ConsoleApp.Views
                 };
                 historyFrame.Add(nullLabel, exitNullButton);
                 OpenFrameAndShutdown(historyFrame);
-                return;
+                return Task.CompletedTask;
             }
 
             var productNames = shoppingCartHistories.Select(p => new string[]
@@ -1032,7 +1032,8 @@ namespace ConsoleApp.Views
             };
             historyFrame.Add(listView, closeButton);
             OpenFrameAndShutdown(historyFrame);
-        }
+			return Task.CompletedTask;
+		}
 
         private string GetEnumDescription(PaymentMethodEnum value)
         {
