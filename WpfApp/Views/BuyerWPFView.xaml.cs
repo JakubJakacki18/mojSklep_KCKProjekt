@@ -44,8 +44,7 @@ namespace WpfApp.Views
 		{
 			var showAllProductsPage = new ShowAllProductsPage(products, productsFromCart);
 			_mainFrame.Navigate(showAllProductsPage);
-			await Task.Delay(100000);
-			return Task.FromResult<object?>(null);
+			return await showAllProductsPage.WaitForObject();
 
 		}
 
@@ -63,7 +62,8 @@ namespace WpfApp.Views
 
 		public Task ShowMessage(string addProductStatus)
 		{
-			throw new NotImplementedException();
+			MessageBox.Show(addProductStatus);
+			return Task.CompletedTask;
 		}
 
 		public Task<PaymentMethodEnum> ShowPaymentMethod(List<CartProductModel> productsFromCart)
