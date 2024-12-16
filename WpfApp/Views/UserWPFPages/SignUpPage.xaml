@@ -9,6 +9,16 @@
       Title="SignUpPage">
 
     <Grid>
-        
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
+        <StackPanel Orientation="Vertical">
+            <Label Content="Zarejestruj się"/>
+            <Button x:Name="sign_up_button" Content="Button" HorizontalAlignment="Left" Margin="360,328,0,0" VerticalAlignment="Top" Click="sign_up_button_Click"/>
+            <Label Content="Login: "/>
+            <TextBox Margin="20" Name="login"></TextBox>
+            <Label Content="Hasło: "/>
+            <TextBox Margin="20" Name="password"></TextBox>
+            <Label Content="Powtórz hasło: "/>
+            <TextBox Margin="20" Name="confirm_password"></TextBox>
+        </StackPanel>
     </Grid>
 </Page>

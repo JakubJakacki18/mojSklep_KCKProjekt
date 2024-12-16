@@ -20,9 +20,30 @@ namespace WpfApp.Views.UserWPFPages
     /// </summary>
     public partial class SignUpPage : Page
     {
-        public SignUpPage()
+		private TaskCompletionSource<(string, string)> _taskCompletionSource = new();
+		public SignUpPage()
         {
             InitializeComponent();
         }
-    }
+
+
+
+		internal async Task<(string, string)> WaitForSignUp()
+		{
+			return await _taskCompletionSource.Task;
+		}
+
+		private void sign_up_button_Click(object sender, RoutedEventArgs e)
+		{
+			if (login.Text.Length > 0 && password.Text.Length > 0)
+			{
+				var authenticationData = (login.Text, password.Text);
+				_taskCompletionSource.SetResult(authenticationData);
+			}
+			else
+			{
+				MessageBox.Show("Login lub hasło jest puste");
+			}
+		}
+	}
 }

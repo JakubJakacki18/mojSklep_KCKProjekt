@@ -14,12 +14,8 @@ namespace WpfApp.Views
         private readonly Frame _mainFrame;
         public UserWPFView(Frame mainFrame)
         {
-            InitializeComponent();
-            _mainFrame = mainFrame;
-            //_mainFrame.Navigate(new LandingPage());
-            //_mainFrame.Navigated += LandingPageReturn;
-
-
+			InitializeComponent();
+			_mainFrame = mainFrame;
         }
 
         public async Task<bool> LandingPage()
@@ -37,33 +33,24 @@ namespace WpfApp.Views
 
         }
 
-        public async Task<(string, string)> ShowSignUp()
+        public async Task<(string, string)> ShowSignUp(bool isValid = true)
         {
-            //_mainFrame.Navigate(new SignUpPage());
-            return ("", "");
-        }
+			var signUpPage = new SignUpPage();
+			_mainFrame.Navigate(signUpPage);
+			return await signUpPage.WaitForSignUp();
+		}
 
-        private void OnLoginCompleted(string username, string password)
-        {
+		async Task<int> IUserView.RoleSelection(RolesEnum roles)
+		{
+            if (RolesEnum.PermissionBuyer==roles) 
+            {
+                return 0;
+            }
+			var roleSelectionPage = new RoleSelectionPage();
+			_mainFrame.Navigate(roleSelectionPage);
+			return await roleSelectionPage.WaitForRoleSelectionAsync();
+		}
+		
 
-        }
-
-        public Task<(string, string)> ShowSignUp(bool isValid = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int RoleSelection(RolesEnum roles)
-        {
-            throw new NotImplementedException();
-        }
-        //      private void LandingPageReturn(object sender, NavigationEventArgs e)
-        //      {
-        //	if (e.Content is LandingPage landingPage)
-        //          {
-        //		_usersChoice = landingPage.usersChoice;
-        //	}
-        //}
-
-    }
+	}
 }

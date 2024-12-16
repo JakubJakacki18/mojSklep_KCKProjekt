@@ -17,7 +17,7 @@ namespace WpfApp.Views.UserWPFPages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var authenticationData = (input1.Text, input2.Text);
+            var authenticationData = (login.Text, password.Text);
             _taskCompletionSource.SetResult(authenticationData);
         }
         public async Task<(string, string)> WaitForSignIn()
