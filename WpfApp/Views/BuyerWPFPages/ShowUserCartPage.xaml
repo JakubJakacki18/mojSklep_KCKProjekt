@@ -9,6 +9,20 @@
       Title="ShowUserCartPage">
 
     <Grid>
-        
+        <StackPanel Orientation="Vertical">
+            <DataGrid x:Name="CartProductsDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding Id}"/>
+                    <DataGridTextColumn Width="2*" Header="Nazwa" Binding="{Binding Name}" />
+                    <DataGridTextColumn Width="5*" Header="Opis" Binding="{Binding Description}"/>
+                    <DataGridTextColumn Width="1*" Header="Cena" Binding="{Binding Price}" />
+                </DataGrid.Columns>
+                <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="10,220,10,0"/>
+            </DataGrid>
+            <Button Name="exit_button">Wyjdź do menu</Button>
+            <Button Name="pay_button">Zapłać za zakupy</Button>
+            <Button Name="remove_all_cart_button">Usuń wszystkie produkty z koszyka</Button>
+            
+        </StackPanel>
     </Grid>
 </Page>

@@ -28,9 +28,11 @@ namespace WpfApp.Views.BuyerWPFPages
 		{
 			InitializeComponent();
 			this.cartProducts = cartProducts;
-		}
+            CartProductsDataGrid.ItemsSource = this.cartProducts;
+			PriceToPayLabel.Content = $"Łącznie do zapłaty: {this.cartProducts.Sum(p=> p.Quantity*p.OriginalProduct.Price)}";
+        }
 
-		internal async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> WaitForResultAsync()
+        internal async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> WaitForResultAsync()
 		{
 			return await _taskCompletionSource.Task;
 		}

@@ -9,6 +9,8 @@
       Title="ShowShoppingHistoryPage">
 
     <Grid>
-        
+        <StackPanel Orientation="Vertical">
+            <Button Name="exit_button">Wyjdź do menu</Button>
+        </StackPanel>
     </Grid>
 </Page>

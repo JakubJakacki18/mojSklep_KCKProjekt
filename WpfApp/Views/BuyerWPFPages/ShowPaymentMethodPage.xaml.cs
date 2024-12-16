@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Library.Data;
+using Library.Models;
 
 namespace WpfApp.Views.BuyerWPFPages
 {
@@ -20,9 +22,17 @@ namespace WpfApp.Views.BuyerWPFPages
 	/// </summary>
 	public partial class ShowPaymentMethodPage : Page
 	{
-		public ShowPaymentMethodPage()
+        private TaskCompletionSource<PaymentMethodEnum> _taskCompletionSource = new();
+		private List<CartProductModel> cartProducts;
+        public ShowPaymentMethodPage(List<CartProductModel> cartProducts)
 		{
 			InitializeComponent();
+			this.cartProducts = cartProducts;
 		}
-	}
+
+        internal async Task<PaymentMethodEnum> WaitForResultAsync()
+        {
+			return await _taskCompletionSource.Task;
+		}
+    }
 }

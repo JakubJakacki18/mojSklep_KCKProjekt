@@ -66,17 +66,21 @@ namespace WpfApp.Views
 			return Task.CompletedTask;
 		}
 
-		public Task<PaymentMethodEnum> ShowPaymentMethod(List<CartProductModel> productsFromCart)
+		public async Task<PaymentMethodEnum> ShowPaymentMethod(List<CartProductModel> productsFromCart)
 		{
-			throw new NotImplementedException();
+			var showPaymentMethodPage = new ShowPaymentMethodPage(productsFromCart);
+			_mainFrame.Navigate(showPaymentMethodPage);
+			await showPaymentMethodPage.WaitForResultAsync();
 		}
 
-		public Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
+		public async Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
 		{
-			throw new NotImplementedException();
+			var showShoppingHistoryPage = new ShowShoppingHistoryPage(shoppingCartHistories);
+			_mainFrame.Navigate(showShoppingHistoryPage);
+			await showShoppingHistoryPage.WaitForResultAsync();
 		}
 
-		public Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> ShowUserCart(List<CartProductModel> cartProducts)
+		public async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> ShowUserCart(List<CartProductModel> cartProducts)
 		{
 			var showUserCartPage = new ShowUserCartPage(cartProducts);
 			_mainFrame.Navigate(showUserCartPage);
