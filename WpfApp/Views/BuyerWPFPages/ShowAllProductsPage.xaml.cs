@@ -54,7 +54,7 @@ namespace WpfApp.Views.BuyerWPFPages
 			}
 		}
 
-		public async Task<object?> WaitForObject()
+		public async Task<object?> WaitForObjectAsync()
 		{
 			return await _taskCompletionSource.Task;
 		}

@@ -44,7 +44,7 @@ namespace WpfApp.Views
 		{
 			var showAllProductsPage = new ShowAllProductsPage(products, productsFromCart);
 			_mainFrame.Navigate(showAllProductsPage);
-			return await showAllProductsPage.WaitForObject();
+			return await showAllProductsPage.WaitForObjectAsync();
 
 		}
 
@@ -78,7 +78,9 @@ namespace WpfApp.Views
 
 		public Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> ShowUserCart(List<CartProductModel> cartProducts)
 		{
-			throw new NotImplementedException();
+			var showUserCartPage = new ShowUserCartPage(cartProducts);
+			_mainFrame.Navigate(showUserCartPage);
+			return await showUserCartPage.WaitForResultAsync();
 		}
 	}
 }

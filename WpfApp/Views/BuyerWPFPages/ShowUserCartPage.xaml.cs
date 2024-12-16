@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Library.Data;
+using Library.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,17 @@ namespace WpfApp.Views.BuyerWPFPages
 	/// </summary>
 	public partial class ShowUserCartPage : Page
 	{
-		public ShowUserCartPage()
+		private TaskCompletionSource<(CartActionEnum actionEnum, CartProductModel? cartProduct)> _taskCompletionSource = new();
+		List<CartProductModel> cartProducts;
+		public ShowUserCartPage(List<CartProductModel> cartProducts)
 		{
 			InitializeComponent();
+			this.cartProducts = cartProducts;
+		}
+
+		internal async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> WaitForResultAsync()
+		{
+			return await _taskCompletionSource.Task;
 		}
 	}
 }
