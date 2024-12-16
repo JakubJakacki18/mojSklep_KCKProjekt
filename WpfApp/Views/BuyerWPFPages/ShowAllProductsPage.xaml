@@ -18,7 +18,7 @@
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
         <StackPanel Grid.Column="0">
             
-            <DataGrid x:Name="ProductsDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick">
+            <DataGrid Name="ProductsDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding Id}"/>
                     <DataGridTextColumn Width="2*" Header="Nazwa" Binding="{Binding Name}" />
@@ -31,7 +31,7 @@
 
         <!-- Expander umieszczony w prawej kolumnie -->
         <Expander Grid.Column="1" BorderThickness="0" ExpandDirection="Left">
-            <DataGrid x:Name="CartProductsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0">
+            <DataGrid Name="CartProductsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="100" Header="Kod kreskowy" Binding="{Binding OriginalProduct.Id}"/>
                     <DataGridTextColumn Width="100" Header="Nazwa" Binding="{Binding OriginalProduct.Name}" />

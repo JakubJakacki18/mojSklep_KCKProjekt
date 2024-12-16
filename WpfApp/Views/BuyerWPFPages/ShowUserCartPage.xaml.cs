@@ -28,13 +28,44 @@ namespace WpfApp.Views.BuyerWPFPages
 		{
 			InitializeComponent();
 			this.cartProducts = cartProducts;
-            CartProductsDataGrid.ItemsSource = this.cartProducts;
+			CartProductsSummaryDataGrid.ItemsSource = this.cartProducts;
 			PriceToPayLabel.Content = $"Łącznie do zapłaty: {this.cartProducts.Sum(p=> p.Quantity*p.OriginalProduct.Price)}";
         }
 
         internal async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> WaitForResultAsync()
 		{
 			return await _taskCompletionSource.Task;
+		}
+
+		private void CartProductsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			if (CartProductsSummaryDataGrid.SelectedItem is CartProductModel selectedProduct)
+			{
+				var detailsWindow = new CartProductDetailsWindow(selectedProduct);
+				bool? result = detailsWindow.ShowDialog();
+
+				if (result != true || detailsWindow == null)
+				{
+					return;
+				}
+				_taskCompletionSource.SetResult(detailsWindow.Result);
+
+			}
+		}
+
+		private void exit_button_Click(object sender, RoutedEventArgs e)
+		{
+			_taskCompletionSource.SetResult((CartActionEnum.Exit,null));
+		}
+
+		private void pay_button_Click(object sender, RoutedEventArgs e)
+		{
+			_taskCompletionSource.SetResult((CartActionEnum.Buy, null));
+		}
+
+		private void remove_all_cart_button_Click(object sender, RoutedEventArgs e)
+		{
+			_taskCompletionSource.SetResult((CartActionEnum.RemoveAll, null));
 		}
 	}
 }

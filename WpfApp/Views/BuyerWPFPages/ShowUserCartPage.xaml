@@ -3,25 +3,38 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
+      xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages" 
+      xmlns:converter="clr-namespace:WpfApp.Converter"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ShowUserCartPage">
-
+    <Page.Resources>
+        <converter:PriceSumConverter x:Key="PriceSumConverter" />
+    </Page.Resources>
     <Grid>
         <StackPanel Orientation="Vertical">
-            <DataGrid x:Name="CartProductsDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick">
+            <DataGrid Name="CartProductsSummaryDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="CartProductsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding Id}"/>
-                    <DataGridTextColumn Width="2*" Header="Nazwa" Binding="{Binding Name}" />
-                    <DataGridTextColumn Width="5*" Header="Opis" Binding="{Binding Description}"/>
-                    <DataGridTextColumn Width="1*" Header="Cena" Binding="{Binding Price}" />
+                    <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding OriginalProduct.Id}"/>
+                    <DataGridTextColumn Width="2*" Header="Nazwa" Binding="{Binding OriginalProduct.Name}" />
+                    <DataGridTextColumn Width="5*" Header="Opis" Binding="{Binding OriginalProduct.Description}"/>
+                    <DataGridTextColumn Width="1*" Header="Cena" Binding="{Binding OriginalProduct.Price}" />
+                    <DataGridTextColumn Width="1*" Header="Ilość w koszyku" Binding="{Binding Quantity}" />
+                    <DataGridTextColumn Width="1*" Header="Suma">
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding Converter="{StaticResource PriceSumConverter}" StringFormat="F2">
+                                <Binding Path="Quantity" />
+                                <Binding Path="OriginalProduct.Price" />
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
-                <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="10,220,10,0"/>
+                
             </DataGrid>
-            <Button Name="exit_button">Wyjdź do menu</Button>
-            <Button Name="pay_button">Zapłać za zakupy</Button>
-            <Button Name="remove_all_cart_button">Usuń wszystkie produkty z koszyka</Button>
+            <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="10,220,10,0"/>
+            <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
+            <Button Name="pay_button" Click="pay_button_Click">Zapłać za zakupy</Button>
+            <Button Name="remove_all_cart_button" Click="remove_all_cart_button_Click">Usuń wszystkie produkty z koszyka</Button>
             
         </StackPanel>
     </Grid>
