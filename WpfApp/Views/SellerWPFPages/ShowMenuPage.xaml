@@ -9,8 +9,8 @@
       Title="ShowMenuPage">
 
     <Grid>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
-        <StackPanel Orientation="Vertical">
+        <TextBlock Text="Panel Sprzedawcy" Style="{StaticResource Title}"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
             <Button Content="1. Dodaj nowy produkt" Tag="1" Click="menu_button_click" />
             <Button Content="2. Przejrzyj i edytuj produkty" Tag="2" Click="menu_button_click"/>
             <Button Content="3. Wyjdź z aplikacji" Tag="3" Click="menu_button_click"/>

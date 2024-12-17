@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
         mc:Ignorable="d"
-        Title="CartProductDetailsWindow" Height="400" Width="400">
+        Title="CartProductDetailsWindow" Height="600" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Label Name="IdLabel" Content="Kod kreskowy: " VerticalAlignment="Top" />
-            <Label Name="NameLabel" Content="Nazwa: " VerticalAlignment="Top" />
-            <Label Name="DescriptionLabel" Content="Opis: " VerticalAlignment="Top" />
-            <Label Name="PriceLabel" Content="Cena: " VerticalAlignment="Top" />
-            <Label Name="QuantityLabel" Content="Ilość dostępnych sztuk: " VerticalAlignment="Top"/>
-            <Label Name="QuantityInCartLabel" Content="Ilość w koszyku obecnie: " VerticalAlignment="Top" />
+            <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,5,0,0" />
+            <Label Name="NameLabel" Content="Nazwa: " Margin="5,5,0,0" />
+            <Label Name="DescriptionLabel" Content="Opis: " Margin="5,5,0,0" />
+            <Label Name="PriceLabel" Content="Cena: " Margin="5,5,0,0" />
+            <Label Name="QuantityLabel" Content="Ilość dostępnych sztuk: " Margin="5,5,0,0"/>
+            <Label Name="QuantityInCartLabel" Content="Ilość w koszyku obecnie: " Margin="5,5,0,0" />
 
             <!-- Question and TextBox for quantity -->
-            <Label Name="QuantityQuestionLabel" Content="Ile sztuk produktu chcesz kupić?" VerticalAlignment="Top" />
-            <TextBox Name="QuantityTextBox" VerticalAlignment="Top" Width="200"/>
-            <Label Name="PriceToPayLabel" VerticalAlignment="Top"/>
+            <Label Name="QuantityQuestionLabel" Content="Ile sztuk produktu chcesz kupić?" Margin="5,5,0,0" />
+            <TextBox Name="QuantityTextBox" Margin="0,10,0,0" Width="200"/>
+            <Label Name="PriceToPayLabel" Margin="5,5,0,0"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" >
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,0" >
                 <Button Name="change_quantity_button" Content="Zmień ilość" />
                 <Button Name="reject_changes_button" Content="Zrezygnuj z zmieniania ilości" />
                 <Button Name="remove_cartproduct_button" Content="Usuń z koszyka" />

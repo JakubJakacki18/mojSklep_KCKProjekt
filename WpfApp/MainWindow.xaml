@@ -5,15 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="mójSklep" Height="768" Width="1366" MinHeight="720" MinWidth="1280">
+
     <Grid>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Loaded="MainFrame_Loaded" />
-        <!--<StackPanel Orientation="Vertical">
-            <TextBox Margin="20" Name="input1"></TextBox>
-            <TextBox Margin="20" Name="input2"></TextBox>
-            <Label   Margin="20" Name="output"></Label>
-            <Button Margin="40" Click="ButtonBase_OnClick" >Run</Button>
-        </StackPanel>-->
+        
 
     </Grid>
 </Window>

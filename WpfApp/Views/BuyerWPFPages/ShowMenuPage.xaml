@@ -9,8 +9,8 @@
       Title="ShowMenuPage">
 
     <Grid>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
-        <StackPanel Orientation="Vertical">
+        <TextBlock Text="Panel Klienta" Style="{StaticResource Title}"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
             <Button Name="show_all_products_button" Content="1. Zobacz listę naszych produktów" Tag="1" Click="menu_button_click"/>
             <Button Name="show_user_cart_button" Content="2. Zobacz swój koszyk" Tag="2" Click="menu_button_click"/>
             <Button Name="show_payement_method" Content="3. Zapłać za zakupy"  Tag="3" Click="menu_button_click"/>

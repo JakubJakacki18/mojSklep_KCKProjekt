@@ -42,13 +42,18 @@ namespace WpfApp.Views.BuyerWPFPages
 
 		private void QuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (int.TryParse(QuantityTextBox.Text, out int quantity))
+			if (int.TryParse(QuantityTextBox.Text, out int quantity) && quantity > 0 && quantity <= product.Quantity)
 			{
-				if (quantity > 0 && quantity <= product.Quantity)
-				{
-					PriceToPayLabel.Content = $"Cena do zapłaty: {quantity * product.Price} {ConstString.Currency}";
-				}
+				PriceToPayLabel.Content = $"Cena do zapłaty: {quantity * product.Price} {ConstString.Currency}";
 			}
+			else if (QuantityTextBox.Text.Length > 0)
+			{
+				string text = QuantityTextBox.Text;
+				int caretIndex = QuantityTextBox.CaretIndex;
+				QuantityTextBox.Text = text.Substring(0, text.Length - 1);
+				QuantityTextBox.CaretIndex = Math.Max(0, caretIndex - 1);
+			}
+
 		}
 
 		// Kliknięcie przycisku "Dodaj do koszyka"

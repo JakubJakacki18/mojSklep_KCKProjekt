@@ -9,7 +9,7 @@
       Title="RoleSelectionPage">
 
     <Grid>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
+        <TextBlock Text="Wybór roli" Style="{StaticResource Title}"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Label  Name="role_selection_label" Content="Zaloguj się jako: " HorizontalContentAlignment="Center"></Label>
             <Button Name="seller_button" Content="Sprzedający" Click="seller_button_Click"/>

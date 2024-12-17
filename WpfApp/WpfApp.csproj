@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -10,6 +10,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\CommonWPF\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
   </ItemGroup>
 
 </Project>

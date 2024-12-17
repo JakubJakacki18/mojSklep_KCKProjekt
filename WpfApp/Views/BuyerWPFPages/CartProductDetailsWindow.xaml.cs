@@ -61,12 +61,9 @@ namespace WpfApp.Views.BuyerWPFPages
 
 		private void QuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (int.TryParse(QuantityTextBox.Text, out int quantity))
+			if (int.TryParse(QuantityTextBox.Text, out int quantity) && quantity > 0 && quantity <= cartProduct.OriginalProduct.Quantity)
 			{
-				if (quantity > 0 && quantity <= cartProduct.OriginalProduct.Quantity)
-				{
-					PriceToPayLabel.Content = $"Cena do zapłaty: {quantity * cartProduct.OriginalProduct.Price} {ConstString.Currency}";
-				}
+				PriceToPayLabel.Content = $"Cena do zapłaty: {quantity * cartProduct.OriginalProduct.Price} {ConstString.Currency}";
 			}
 			else if (QuantityTextBox.Text.Length>0) 
 			{

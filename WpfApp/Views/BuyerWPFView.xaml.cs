@@ -70,13 +70,15 @@ namespace WpfApp.Views
 		{
 			var showPaymentMethodPage = new ShowPaymentMethodPage(productsFromCart);
 			_mainFrame.Navigate(showPaymentMethodPage);
-			await showPaymentMethodPage.WaitForResultAsync();
+			return await showPaymentMethodPage.WaitForResultAsync();
 		}
 
 		public async Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
 		{
 			var showShoppingHistoryPage = new ShowShoppingHistoryPage(shoppingCartHistories);
+			MessageBox.Show("test2");
 			_mainFrame.Navigate(showShoppingHistoryPage);
+			MessageBox.Show("test");
 			await showShoppingHistoryPage.WaitForResultAsync();
 		}
 

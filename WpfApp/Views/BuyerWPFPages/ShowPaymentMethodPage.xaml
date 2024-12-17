@@ -13,45 +13,51 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Orientation="Vertical">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Wybierz płatność" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Title}"/>
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
             <Label Content="Wybierz sposób płatności:" />
 
-
-            <RadioButton GroupName="Options" Margin="10" Tag="cash" IsChecked="True">
-                <StackPanel Orientation="Horizontal">
+            <StackPanel Name="radio_buttons_stackpanel">
+            <RadioButton GroupName="Options" Margin="10" Tag="cash" IsChecked="True" >
+                <WrapPanel>
                     <!-- Obraz -->
-                    <!--<Image Source="/Images/CASH-LOGO.svg" Width="24" Height="24" Margin="0,0,10,0" />-->
-                    <!-- Tekst -->
+                        <Image Source="/Images/CASH-LOGO.jpg" Width="24" Height="24"  />
+                        <!-- Tekst -->
                     <TextBlock Text="Gotówka" VerticalAlignment="Center" />
-                </StackPanel>
+                </WrapPanel>
             </RadioButton>
 
 
 
-            <RadioButton GroupName="Options" Margin="10" Tag="card">
+            <RadioButton GroupName="Options" Margin="10" Tag="card" >
                 <StackPanel Orientation="Horizontal">
-                    <!--Image Source="pack://application:,,,/Images/1.jpg" Width="24" Height="24" Margin="0,0,10,0" />-->
+                    <Image Source="/Images/1.jpg" Width="24" Height="24" Margin="0,0,10,0" />
                     <TextBlock Text="Karta debetowa" VerticalAlignment="Center" />
                 </StackPanel>
             </RadioButton>
 
-            <RadioButton GroupName="Options" Margin="10" Tag="blik">
+            <RadioButton GroupName="Options" Margin="10" Tag="blik" >
                 <StackPanel Orientation="Horizontal">
-                    <!--<Image Source="pack://application:,,,/Images/BLIK-LOGO.webp" Width="24" Height="24" Margin="0,0,10,0" />-->
-                    <TextBlock Text="Blik" VerticalAlignment="Center" />
+                        <Image Source="/Images/BLIK-LOGO.webp" Width="24" Height="24" Margin="0,0,10,0" />
+                        <TextBlock Text="Blik" VerticalAlignment="Center" />
                 </StackPanel>
             </RadioButton>
+            </StackPanel>
             <Button Name="buy_now_button" Content="Kup teraz" Click="buy_now_button_Click" />
             <Button Name="exit_button" Content="Kontynuuj zakupy" Click="exit_button_Click" />
 
         </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
             <DataGrid Name="CartProductsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="100" Header="Kod kreskowy" Binding="{Binding OriginalProduct.Id}"/>
-                    <DataGridTextColumn Width="100" Header="Nazwa" Binding="{Binding OriginalProduct.Name}" />
-                    <DataGridTextColumn Width="100" Header="Ilość" Binding="{Binding Quantity}"/>
-                    <DataGridTextColumn Width="100" Header="Cena za szt." Binding="{Binding OriginalProduct.Price}" />
+                    <DataGridTextColumn Width="*" Header="Kod kreskowy" Binding="{Binding OriginalProduct.Id}"/>
+                    <DataGridTextColumn Width="*" Header="Nazwa" Binding="{Binding OriginalProduct.Name}" />
+                    <DataGridTextColumn Width="*" Header="Ilość" Binding="{Binding Quantity}"/>
+                    <DataGridTextColumn Width="*" Header="Cena za szt." Binding="{Binding OriginalProduct.Price}" />
                 </DataGrid.Columns>
             </DataGrid>
             <Label Name="price_to_pay_label"/>

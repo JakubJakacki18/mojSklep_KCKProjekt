@@ -9,25 +9,30 @@
       Title="AddProductPage">
 
     <Grid>
-        <StackPanel>
-            <TextBlock FontSize="20" Text="Dodaj produkt"/>
-            <Label Name="product_name_label" Content="Nazwa produktu"/>
-            <TextBox Name="product_name"/>
-            <Label Name="product_description_label" Content="Opis produktu"/>
-            <TextBox Name="product_desctription" AcceptsReturn="True" TextWrapping="Wrap"/>
-            <Label Name="product_price_label" Content="Cena produktu"/>
-            <TextBox Name="product_price" />
-            <Label Name="product_quantity_label" Content="Ilość produktu na stanie"/>
-            <TextBox Name="product_quantity" />
-            <Label Name="product_row_label" Content="Umieszczenie w magazynie - rząd"/>
-            <TextBox Name="product_row" />
-            <Label Name="product_column_label" Content="Umieszczenie w magazynie - kolumna"/>
-            <TextBox Name="product_column" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Dodaj produkt" Style="{StaticResource Title}"/>
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <Label Name="product_name_label" Content="Nazwa produktu" Margin="0,10,0,0"/>
+            <TextBox Name="product_name" Margin="0,5,0,0"/>
+            <Label Name="product_description_label" Content="Opis produktu"  Margin="0,10,0,0"/>
+            <TextBox Name="product_desctription" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,5,0,0"/>
+            <Label Name="product_price_label" Content="Cena produktu"  Margin="0,10,0,0"/>
+            <TextBox Name="product_price" Margin="0,5,0,0" />
+            <Label Name="product_quantity_label" Content="Ilość produktu na stanie"  Margin="0,10,0,0"/>
+            <TextBox Name="product_quantity" Margin="0,5,0,0"/>
+            <Label Name="product_row_label" Content="Umieszczenie w magazynie - rząd"  Margin="0,10,0,0"/>
+            <TextBox Name="product_row" Margin="0,5,0,0"/>
+            <Label Name="product_column_label" Content="Umieszczenie w magazynie - kolumna"  Margin="0,10,0,0"/>
+            <TextBox Name="product_column" Margin="0,5,0,0"/>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Name="add_product_button" Content="Dodaj produkt" Margin="10" Click="add_product_button_Click"/>
+                <Button Name="exit_button" Content="Wyjdź do menu" Margin="10" Click="exit_button_Click"/>
+            </StackPanel>
 
-
-
-            <Button Name="add_product_button" Content="Dodaj produkt" Margin="10" Click="add_product_button_Click"/>
-            <Button Name="exit_button" Content="Wyjdź do menu" Margin="10" Click="exit_button_Click"/>
         </StackPanel>
     </Grid>
 </Page>

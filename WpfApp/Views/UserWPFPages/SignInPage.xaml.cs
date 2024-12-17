@@ -13,12 +13,15 @@ namespace WpfApp.Views.UserWPFPages
         public SignInPage()
         {
             InitializeComponent();
-        }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+		}
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var authenticationData = (login.Text, password.Password);
-            _taskCompletionSource.SetResult(authenticationData);
+			loginProgress.Visibility = Visibility.Visible;
+            await Task.Delay(1000);
+			var authenticationData = (login.Text, password.Password);
+			_taskCompletionSource.SetResult(authenticationData);
         }
         public async Task<(string, string)> WaitForSignIn()
         {

@@ -43,10 +43,12 @@ namespace WpfApp.Views.BuyerWPFPages
 
 		private void buy_now_button_Click(object sender, RoutedEventArgs e)
 		{
-			var selectedRadioButton = LogicalTreeHelper
-	   .GetChildren(this)
-	   .OfType<RadioButton>()
+
+
+			var selectedRadioButton = radio_buttons_stackpanel.Children.OfType<RadioButton>()
 	   .FirstOrDefault(rb => rb.GroupName == "Options" && rb.IsChecked == true);
+
+
 
 			if (selectedRadioButton == null) 
 			{
@@ -61,6 +63,7 @@ namespace WpfApp.Views.BuyerWPFPages
 				_ => PaymentMethodEnum.None
 			});
 		}
+
 
 
 	}

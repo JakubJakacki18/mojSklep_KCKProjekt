@@ -12,7 +12,13 @@
         <converter:PriceSumConverter x:Key="PriceSumConverter" />
     </Page.Resources>
     <Grid>
-        <StackPanel Orientation="Vertical">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+            <TextBlock Text="Koszyk" Style="{StaticResource Title}"/>
             <DataGrid Name="CartProductsSummaryDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="CartProductsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding OriginalProduct.Id}"/>
@@ -31,11 +37,18 @@
                 </DataGrid.Columns>
                 
             </DataGrid>
-            <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="10,220,10,0"/>
-            <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
-            <Button Name="pay_button" Click="pay_button_Click">Zapłać za zakupy</Button>
-            <Button Name="remove_all_cart_button" Click="remove_all_cart_button_Click">Usuń wszystkie produkty z koszyka</Button>
-            
         </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="0,0,0,10" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
+                <Button Name="pay_button" Click="pay_button_Click">Zapłać za zakupy</Button>
+                <Button Name="remove_all_cart_button" Click="remove_all_cart_button_Click">Usuń wszystkie produkty z koszyka</Button>
+            </StackPanel>
+
+        </StackPanel>
+
     </Grid>
 </Page>

@@ -5,23 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
         mc:Ignorable="d"
-        Title="ProductDetailsWindow" Height="400" Width="400">
+        Title="ProductDetailsWindow" Height="500" Width="400">
     <Grid>
-        <Label Name="IdLabel" Content="Kod kreskowy: " VerticalAlignment="Top" Margin="10,10,10,0"/>
-        <Label Name="NameLabel" Content="Nazwa: " VerticalAlignment="Top" Margin="10,40,10,0"/>
-        <Label Name="DescriptionLabel" Content="Opis: " VerticalAlignment="Top" Margin="10,70,10,0"/>
-        <Label Name="PriceLabel" Content="Cena: " VerticalAlignment="Top" Margin="10,100,10,0"/>
-        <Label Name="QuantityLabel" Content="Ilość dostępnych sztuk: " VerticalAlignment="Top" Margin="10,130,10,0"/>
+        <StackPanel Orientation="Vertical">
+        <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,5,0,0"/>
+            <Label Name="NameLabel" Content="Nazwa: " Margin="5,5,0,0"/>
+            <Label Name="DescriptionLabel" Content="Opis: " Margin="5,5,0,0"/>
+            <Label Name="PriceLabel" Content="Cena: " Margin="5,5,0,0"/>
+            <Label Name="QuantityLabel" Content="Ilość dostępnych sztuk: " Margin="5,5,0,0"/>
 
         <!-- Question and TextBox for quantity -->
-        <Label Name="QuantityQuestionLabel" Content="Ile sztuk chcesz dodać do koszyka?" VerticalAlignment="Top" Margin="10,160,10,0"/>
-        <TextBox Name="QuantityTextBox" VerticalAlignment="Top" Margin="10,190,10,0" Width="200"/>
+            <Label Name="QuantityQuestionLabel" Content="Ile sztuk chcesz dodać do koszyka?" Margin="5,10,0,0"/>
+        <TextBox Name="QuantityTextBox" Width="200"/>
 
         <!-- Price to pay -->
-        <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="10,220,10,0"/>
+        <Label Name="PriceToPayLabel"/>
 
         <!-- Buttons -->
-        <Button Name="AddToCartButton" Content="Dodaj do koszyka" VerticalAlignment="Top" Margin="10,250,10,0" Width="200" />
-        <Button Name="RejectButton" Content="Zrezygnuj z dodawania do koszyka" VerticalAlignment="Top" Margin="10,280,10,0" Width="200"/>
+        <Button Name="AddToCartButton" Content="Dodaj do koszyka" />
+        <Button Name="RejectButton" Content="Zrezygnuj z dodawania do koszyka"/>
+        </StackPanel>
     </Grid>
 </Window>
