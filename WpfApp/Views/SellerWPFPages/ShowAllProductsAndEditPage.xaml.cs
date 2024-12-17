@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp.Views.BuyerWPFPages;
 
 namespace WpfApp.Views.SellerWPFPages
 {
@@ -37,7 +38,17 @@ namespace WpfApp.Views.SellerWPFPages
 
 		private void ProductsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
+			if (ProductsDataGrid.SelectedItem is ProductModel selectedProduct)
+			{
+				var editWindow = new EditProductWindow(selectedProduct);
+				bool? result = editWindow.ShowDialog();
 
+				if (result != true || editWindow == null)
+				{
+					return;
+				}
+				
+			}
 		}
 
 		private void exit_button_Click(object sender, RoutedEventArgs e)

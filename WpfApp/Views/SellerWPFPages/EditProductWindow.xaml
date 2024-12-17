@@ -5,8 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.SellerWPFPages"
         mc:Ignorable="d"
-        Title="EditProductWindow" Height="450" Width="800">
+        Title="EditProductWindow" Height="800" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+            <Label Name="product_name_label" Content="Nazwa produktu" Margin="0,10,0,0"/>
+            <TextBox Name="product_name" Margin="0,5,0,0"/>
+            <Label Name="product_description_label" Content="Opis produktu"  Margin="0,10,0,0"/>
+            <TextBox Name="product_desctription" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,5,0,0"/>
+            <Label Name="product_price_label" Content="Cena produktu"  Margin="0,10,0,0"/>
+            <TextBox Name="product_price" Margin="0,5,0,0" />
+            <Label Name="product_quantity_label" Content="Ilość produktu na stanie"  Margin="0,10,0,0"/>
+            <TextBox Name="product_quantity" Margin="0,5,0,0"/>
+            <Label Name="product_row_label" Content="Umieszczenie w magazynie - rząd"  Margin="0,10,0,0"/>
+            <TextBox Name="product_row" Margin="0,5,0,0"/>
+            <Label Name="product_column_label" Content="Umieszczenie w magazynie - kolumna"  Margin="0,10,0,0"/>
+            <TextBox Name="product_column" Margin="0,5,0,0"/>
+            
+
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="remove_product_button" Content="Usuń produkt" Margin="10" Click="remove_product_button_Click" />
+                <Button Name="reject_changes_button" Content="Zrezygnuj z wprowadzania zmian" Margin="10" Click="reject_changes_button_Click" />
+            </StackPanel>
+            <Button Name="add_product_button" Content="Edytuj produkt" Margin="10" Click="add_product_button_Click" />
+
+        </StackPanel>
     </Grid>
 </Window>

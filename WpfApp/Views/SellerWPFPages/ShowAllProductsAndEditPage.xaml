@@ -9,8 +9,13 @@
       Title="ShowAllProductsAndEditPage">
 
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <TextBlock Text="Edytuj produkty" Style="{StaticResource Title}"/>
+
             <DataGrid x:Name="ProductsDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"  IsReadOnly="True" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Id" Binding="{Binding Id}" />
@@ -23,7 +28,8 @@
 
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Name="edit_button">Edytuj</Button>
         </StackPanel>
+        <Button Grid.Row="1" Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
+
     </Grid>
 </Page>
