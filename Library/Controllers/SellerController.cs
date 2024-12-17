@@ -35,7 +35,7 @@ namespace Library.Controllers
         }
 
 
-        public async void ShowMenu()
+        public async Task ShowMenu()
         {
 
             bool isExitWanted = false;

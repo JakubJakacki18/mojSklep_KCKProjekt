@@ -14,6 +14,7 @@
             <Button Content="1. Dodaj nowy produkt" Tag="1" Click="menu_button_click" />
             <Button Content="2. Przejrzyj i edytuj produkty" Tag="2" Click="menu_button_click"/>
             <Button Content="3. Wyjdź z aplikacji" Tag="3" Click="menu_button_click"/>
+            <Button Name="logout_button" Content="4. Wyloguj się" Click="logout_button_Click"></Button>
         </StackPanel>
     </Grid>
 </Page>

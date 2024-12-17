@@ -36,7 +36,7 @@ namespace Library.Controllers
 
 
 
-        public async void ShowMenu()
+        public async Task ShowMenu()
         {
             bool isExitWanted = false;
             do
@@ -141,7 +141,7 @@ namespace Library.Controllers
                 return true;
             }
             var result = await _buyerView.ShowPaymentMethod(cartContent);
-            
+
             if (result == PaymentMethodEnum.None)
             {
                 return true;
