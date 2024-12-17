@@ -69,7 +69,7 @@ namespace Library.Controllers
                         while (resultShowUserCart.Item1 != CartActionEnum.Exit && isExitWanted == false);
                         break;
                     case 3:
-                        _ = BuyProducts();
+                        _ = await BuyProducts();
                         break;
                     case 4:
                         await _buyerView.ShowShoppingHistory(_userRepository.GetShoppingCartHistory(currentLoggedInUser).ToList());
@@ -141,7 +141,7 @@ namespace Library.Controllers
                 return true;
             }
             var result = await _buyerView.ShowPaymentMethod(cartContent);
-
+            
             if (result == PaymentMethodEnum.None)
             {
                 return true;

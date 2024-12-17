@@ -9,14 +9,15 @@
       Title="LandingPage">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Button x:Name="SignInButton" Content="Zaloguj się!" Grid.Column="0" Grid.Row="0" Width="100" Height="30" Click="SignInButton_Click"  ></Button>
-        <Button x:Name="SignUpButton" Content="Zarejestruj się!" Grid.Column="1" Width="100" Height="30" Click="SignUpButton_Click" />
+        
+        
+        <Label Content="mójSklep" Foreground="#0197F6" FontSize="50" HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="300">
+
+            <Label HorizontalAlignment="Center" Content="Chcesz przejść do logowania czy rejestracji?" Margin="0,20,0,20"/>
+                <Button x:Name="SignInButton" Content="Zaloguj się!" Click="SignInButton_Click"  />
+            <Button x:Name="SignUpButton" Content="Zarejestruj się!" Click="SignUpButton_Click" Margin="0,0,0,30" />
+        </StackPanel>
+
     </Grid>
 </Page>

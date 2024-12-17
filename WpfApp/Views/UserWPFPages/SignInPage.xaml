@@ -9,15 +9,17 @@
       Title="SignInPage">
 
     <Grid>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
-        <StackPanel Orientation="Vertical">
-            <Label   Margin="20" Name="login_label" Content="Login:" ></Label>
-            <TextBox Margin="20" Name="login"></TextBox>
-            <Label   Margin="20" Name="password_label" Content="Hasło:"></Label>
-            <TextBox Margin="20" Name="password"></TextBox>
-            <Label   Margin="20" Name="output"></Label>
-            <Button Margin="40" Click="Button_Click">Zaloguj się</Button>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Column="1" >
+                <Label Name="login_label" Content="Wprowadź swój login:" ></Label>
+                <TextBox Margin="0,0,0,20" Name="login"></TextBox>
+                <Label Name="password_label" Content="Wprowadź swoje hasło:"></Label>
+                <PasswordBox Name="password" ></PasswordBox>
+                <Button Margin="40" Click="Button_Click">Zaloguj się</Button>
         </StackPanel>
-
     </Grid>
 </Page>

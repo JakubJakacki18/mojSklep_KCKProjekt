@@ -4,6 +4,57 @@
              xmlns:local="clr-namespace:WpfApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="Button">
+            <!-- Ustawienia wyglądu -->
+            <Setter Property="Background" Value="#0197F6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="#004777" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Margin" Value="10" />
+            <!-- Obsługa zaokrąglonych rogów -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#ADF5FF"/>
+            <Setter Property="BorderBrush" Value="#004777"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+            
+            
+          
+        </Style>
+
+        <!-- Styl dla PasswordBox -->
+        <Style TargetType="PasswordBox">
+            <Setter Property="Background" Value="#ADF5FF"/>
+            <Setter Property="BorderBrush" Value="#80D7FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="10,20,10,20"/>
+        </Style>
     </Application.Resources>
 </Application>

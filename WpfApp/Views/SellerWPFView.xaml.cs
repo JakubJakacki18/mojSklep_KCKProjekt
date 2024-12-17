@@ -31,14 +31,18 @@ namespace WpfApp.Views
 			_mainFrame = mainFrame;
 		}
 
-		public Task<ProductModel?> AddProduct()
+		public async Task<ProductModel?> AddProduct()
 		{
-			throw new NotImplementedException();
+			var addProductPage = new AddProductPage();
+			_mainFrame.Navigate(addProductPage);
+			return await addProductPage.WaitForResultAsync();
 		}
 
-		public Task EditProduct()
+		public async Task<(ShowProductsSellerActionEnum, ProductModel?)> ShowAllProductsAndEdit(List<ProductModel> product)
 		{
-			throw new NotImplementedException();
+			var showAllProductsAndEditPage = new ShowAllProductsAndEditPage(product);
+			_mainFrame.Navigate(showAllProductsAndEditPage);
+			return await showAllProductsAndEditPage.WaitForResultAsync();
 		}
 
 		public Task<bool> ExitApp()
@@ -49,11 +53,6 @@ namespace WpfApp.Views
 			return Task.FromResult(result);
 		}
 
-		public Task<(ShowProductsSellerActionEnum, ProductModel?)> ShowAllProductsAndEdit(List<ProductModel> product)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<int> ShowMenu()
 		{
 			var showMenuPage = new ShowMenuPage();
@@ -62,6 +61,13 @@ namespace WpfApp.Views
 		}
 
 		public Task ShowMessage(string addProductStatus)
+		{
+			MessageBox.Show(addProductStatus);
+			return Task.CompletedTask;
+		}
+
+
+		public Task EditProduct()
 		{
 			throw new NotImplementedException();
 		}

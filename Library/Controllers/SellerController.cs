@@ -49,10 +49,10 @@ namespace Library.Controllers
                 switch (await _sellerView.ShowMenu())
                 {
                     case 1:
-                        AddProduct(await _sellerView.AddProduct());
+                        await AddProduct(await _sellerView.AddProduct());
                         break;
                     case 2:
-                        ShowAllProducts();
+                        await ShowAllProducts();
                         break;
                     /*case 2:
                         _sellerView.ShowUserCart();
@@ -74,7 +74,7 @@ namespace Library.Controllers
             //_sellerView.ShowInterface();
         }
 
-        public async void AddProduct(ProductModel? product)
+        public async Task AddProduct(ProductModel? product)
         {
             if (product != null)
             {
@@ -92,7 +92,7 @@ namespace Library.Controllers
         {
         }
 
-        public async void RemoveProduct(ProductModel? productModel)
+        public async Task RemoveProduct(ProductModel? productModel)
         {
             if (productModel != null)
             {
@@ -106,7 +106,7 @@ namespace Library.Controllers
         }
         public void ShowDetailsOfProduct() { }
 
-        public async void ShowAllProducts()
+        public async Task ShowAllProducts()
         {
             (ShowProductsSellerActionEnum, ProductModel?) result;
             do
@@ -117,10 +117,10 @@ namespace Library.Controllers
                     case ShowProductsSellerActionEnum.exit:
                         return;
                     case ShowProductsSellerActionEnum.update:
-                        EditProduct(result.Item2);
+                        await EditProduct(result.Item2);
                         break;
                     case ShowProductsSellerActionEnum.delete:
-                        RemoveProduct(result.Item2);
+                        await RemoveProduct(result.Item2);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -128,7 +128,7 @@ namespace Library.Controllers
             } while (result.Item1 != ShowProductsSellerActionEnum.exit);
         }
 
-        public async void EditProduct(ProductModel? product)
+        public async Task EditProduct(ProductModel? product)
         {
             if (product != null)
             {

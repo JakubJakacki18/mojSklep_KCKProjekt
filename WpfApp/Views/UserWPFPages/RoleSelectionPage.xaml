@@ -10,10 +10,10 @@
 
     <Grid>
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />
-        <StackPanel Orientation="Vertical">
-            <Label   Margin="20" Name="role_selection_label" Content="Zaloguj się jako: " ></Label>
-            <Button Margin="20" Name="seller_button" Content="Sprzedający" HorizontalAlignment="Center" VerticalAlignment="Top" Click="seller_button_Click"/>
-            <Button Margin="20" Name="buyer_button" Content="Kupujący" HorizontalAlignment="Center" VerticalAlignment="Top" Click="buyer_button_Click"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label  Name="role_selection_label" Content="Zaloguj się jako: " HorizontalContentAlignment="Center"></Label>
+            <Button Name="seller_button" Content="Sprzedający" Click="seller_button_Click"/>
+            <Button  Name="buyer_button" Content="Kupujący" Click="buyer_button_Click"/>
 
         </StackPanel>
     </Grid>
