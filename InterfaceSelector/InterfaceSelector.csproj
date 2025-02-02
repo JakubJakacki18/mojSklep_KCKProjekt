@@ -7,9 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp\ConsoleApp.csproj" />
-    <ProjectReference Include="..\WpfApp\WpfApp.csproj" />
-  </ItemGroup>
-
 </Project>
