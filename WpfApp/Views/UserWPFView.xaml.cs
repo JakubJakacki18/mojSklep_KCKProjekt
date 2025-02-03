@@ -1,6 +1,7 @@
 ﻿using Library.Data;
 using Library.Interfaces;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using WpfApp.Views.UserWPFPages;
 
 namespace WpfApp.Views
@@ -14,8 +15,8 @@ namespace WpfApp.Views
         private readonly Frame _mainFrame;
         public UserWPFView(Frame mainFrame)
         {
-			InitializeComponent();
-			_mainFrame = mainFrame;
+            InitializeComponent();
+            _mainFrame = mainFrame;
         }
 
         public async Task<bool> LandingPage()
@@ -29,28 +30,32 @@ namespace WpfApp.Views
         {
             var signInPage = new SignInPage();
             _mainFrame.Navigate(signInPage);
+            if (!isValid)
+                MessageBox.Show("Logowanie nieudane, spróbuj ponownie");
             return await signInPage.WaitForSignIn();
 
         }
 
         public async Task<(string, string)> ShowSignUp(bool isValid = true)
         {
-			var signUpPage = new SignUpPage();
-			_mainFrame.Navigate(signUpPage);
-			return await signUpPage.WaitForSignUp();
-		}
+            var signUpPage = new SignUpPage();
+            _mainFrame.Navigate(signUpPage);
+            if (!isValid)
+                MessageBox.Show("Rejestracja nieudana, spróbuj ponownie");
+            return await signUpPage.WaitForSignUp();
+        }
 
-		async Task<int> IUserView.RoleSelection(RolesEnum roles)
-		{
-            if (RolesEnum.PermissionBuyer==roles) 
+        async Task<int> IUserView.RoleSelection(RolesEnum roles)
+        {
+            if (RolesEnum.PermissionBuyer == roles)
             {
                 return 0;
             }
-			var roleSelectionPage = new RoleSelectionPage();
-			_mainFrame.Navigate(roleSelectionPage);
-			return await roleSelectionPage.WaitForRoleSelectionAsync();
-		}
-		
+            var roleSelectionPage = new RoleSelectionPage();
+            _mainFrame.Navigate(roleSelectionPage);
+            return await roleSelectionPage.WaitForRoleSelectionAsync();
+        }
 
-	}
+
+    }
 }
