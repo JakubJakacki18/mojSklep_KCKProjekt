@@ -9,6 +9,41 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\1.jpg" />
+    <None Remove="Images\BLIK-LOGO.webp" />
+    <None Remove="Images\CARD-LOGO.svg" />
+    <None Remove="Images\CASH-LOGO.jpg" />
+    <None Remove="Images\CASH-LOGO.svg" />
+    <None Remove="Images\profil-icon.png" />
+    <None Remove="Views\BuyerWPFPages\BLIK-LOGO.webp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\profil-icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\1.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\BLIK-LOGO.webp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\CARD-LOGO.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\CASH-LOGO.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\CASH-LOGO.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Views\BuyerWPFPages\BLIK-LOGO.webp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj" />
   </ItemGroup>
 

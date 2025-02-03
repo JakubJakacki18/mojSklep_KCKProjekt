@@ -9,8 +9,18 @@
       Title="ShowShoppingHistoryPage">
 
     <Grid>
+        
         <StackPanel Orientation="Vertical">
-            <Button Name="exit_button">Wyjdź do menu</Button>
+            <TextBlock Text="Historia zakupów" Style="{StaticResource Title}"/>
+            <DataGrid Name="HistoryDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="HistoryDataGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="3*" Header="Data" Binding="{Binding Date}"/>
+                    <DataGridTextColumn Width="1*" Header="Suma" Binding="{Binding TotalPrice}" />
+                    <DataGridTextColumn Width="2*" Header="Płatność" Binding="{Binding PaymentMethod}"/>
+                    <DataGridTextColumn Width="1*" Header="Ilość pozycji" Binding="{Binding ProductCount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
         </StackPanel>
     </Grid>
 </Page>

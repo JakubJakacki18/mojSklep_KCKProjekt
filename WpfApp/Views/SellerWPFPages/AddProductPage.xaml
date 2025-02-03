@@ -9,13 +9,17 @@
       Title="AddProductPage">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Dodaj produkt" Style="{StaticResource Title}"/>
-        <StackPanel Orientation="Vertical" Grid.Column="1">
+        <TextBlock Text="Dodaj produkt" Style="{StaticResource Title}" Grid.Row="0"/>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
             <Label Name="product_name_label" Content="Nazwa produktu" Margin="0,10,0,0"/>
             <TextBox Name="product_name" Margin="0,5,0,0"/>
             <Label Name="product_description_label" Content="Opis produktu"  Margin="0,10,0,0"/>
@@ -29,8 +33,8 @@
             <Label Name="product_column_label" Content="Umieszczenie w magazynie - kolumna"  Margin="0,10,0,0"/>
             <TextBox Name="product_column" Margin="0,5,0,0"/>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Name="add_product_button" Content="Dodaj produkt" Margin="10" Click="add_product_button_Click"/>
-                <Button Name="exit_button" Content="Wyjdź do menu" Margin="10" Click="exit_button_Click"/>
+                <Button Name="add_product_button" Content="Dodaj" Margin="10" Click="add_product_button_Click"/>
+                <Button Name="exit_button" Content="Zrezygnuj" Margin="10" Click="exit_button_Click"/>
             </StackPanel>
 
         </StackPanel>

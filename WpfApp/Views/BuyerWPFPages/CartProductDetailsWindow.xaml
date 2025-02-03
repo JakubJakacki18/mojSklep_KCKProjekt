@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
         mc:Ignorable="d"
-        Title="CartProductDetailsWindow" Height="600" Width="400">
+        Title="Szczegóły wpisu w koszyku" Height="600" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,5,0,0" />
+            <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,15,0,0" />
             <Label Name="NameLabel" Content="Nazwa: " Margin="5,5,0,0" />
             <Label Name="DescriptionLabel" Content="Opis: " Margin="5,5,0,0" />
             <Label Name="PriceLabel" Content="Cena: " Margin="5,5,0,0" />
@@ -22,8 +22,8 @@
 
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,0" >
                 <Button Name="change_quantity_button" Content="Zmień ilość" />
-                <Button Name="reject_changes_button" Content="Zrezygnuj z zmieniania ilości" />
-                <Button Name="remove_cartproduct_button" Content="Usuń z koszyka" />
+                <Button Name="remove_cartproduct_button" Content="Usuń"/>
+                <Button Name="reject_changes_button" Content="Zrezygnuj" />
             </StackPanel>
         </StackPanel>
     </Grid>

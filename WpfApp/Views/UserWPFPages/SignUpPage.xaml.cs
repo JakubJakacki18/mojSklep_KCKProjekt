@@ -35,9 +35,9 @@ namespace WpfApp.Views.UserWPFPages
 
 		private void sign_up_button_Click(object sender, RoutedEventArgs e)
 		{
-			if (login.Text.Length > 0 && password.Text.Length > 0)
+			if (login.Text.Length > 0 && password.Password.Length > 0)
 			{
-				var authenticationData = (login.Text, password.Text);
+				var authenticationData = (login.Text, password.Password);
 				_taskCompletionSource.SetResult(authenticationData);
 			}
 			else

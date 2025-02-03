@@ -43,9 +43,9 @@
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <Label Name="PriceToPayLabel" VerticalAlignment="Top" Margin="0,0,0,10" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
                 <Button Name="pay_button" Click="pay_button_Click">Zapłać za zakupy</Button>
-                <Button Name="remove_all_cart_button" Click="remove_all_cart_button_Click">Usuń wszystkie produkty z koszyka</Button>
+                <Button Name="remove_all_cart_button" Click="remove_all_cart_button_Click">Usuń wszystkie produkty</Button>
+                <Button Name="exit_button" Click="exit_button_Click">Wyjdź do menu</Button>
             </StackPanel>
 
         </StackPanel>

@@ -64,10 +64,10 @@ namespace WpfApp.Views
         public async Task ShowShoppingHistory(List<ShoppingCartHistoryModel> shoppingCartHistories)
         {
             var showShoppingHistoryPage = new ShowShoppingHistoryPage(shoppingCartHistories);
-            MessageBox.Show("test2");
             _mainFrame.Navigate(showShoppingHistoryPage);
-            MessageBox.Show("test");
             await showShoppingHistoryPage.WaitForResultAsync();
+            return;
+            
         }
 
         public async Task<(CartActionEnum actionEnum, CartProductModel? cartProduct)> ShowUserCart(List<CartProductModel> cartProducts)

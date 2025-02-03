@@ -9,14 +9,44 @@
       Title="ShowAllProductsPage">
 
     <Grid>
-
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
             <TextBlock Text="Katalog produktów" Style="{StaticResource Title}"/>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Szukaj produktu:" Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="0"/>
+                <TextBox Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" VerticalContentAlignment="Center" TextWrapping="NoWrap" TextChanged="SearchTextBox_TextChanged">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Height" Value="30"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Background" Value="#ADF5FF"/>
+                            <Setter Property="BorderBrush" Value="#004777"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                                            <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                        <Button Name="SearchButton" Content="Wyczyść" Margin="0,0,0,0" Grid.Column="2" Click="SearchButton_Click"/>
+            </Grid>
+
             <DataGrid Name="ProductsDataGrid" IsReadOnly="True"  AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,0" SelectionUnit="FullRow" MouseDoubleClick="ProductsDataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Kod kreskowy" Binding="{Binding Id}"/>

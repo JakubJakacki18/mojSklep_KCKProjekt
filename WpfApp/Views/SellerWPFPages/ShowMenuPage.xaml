@@ -8,13 +8,21 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ShowMenuPage">
 
+
     <Grid>
         <TextBlock Text="Panel Sprzedawcy" Style="{StaticResource Title}"/>
+        <Button x:Name="AccountButton" Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Top" Click="AccountButton_Click">
+            <Image Source="/Images/profil-icon.png" Width="50" Height="50"></Image>
+            <Button.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Wyloguj się" Click="logout_menu_item_click"/>
+                </ContextMenu>
+            </Button.ContextMenu>
+        </Button>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
             <Button Content="1. Dodaj nowy produkt" Tag="1" Click="menu_button_click" />
             <Button Content="2. Przejrzyj i edytuj produkty" Tag="2" Click="menu_button_click"/>
             <Button Content="3. Wyjdź z aplikacji" Tag="3" Click="menu_button_click"/>
-            <Button Name="logout_button" Content="4. Wyloguj się" Click="logout_button_Click"></Button>
         </StackPanel>
     </Grid>
 </Page>

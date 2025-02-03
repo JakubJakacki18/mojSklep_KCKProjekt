@@ -1,6 +1,7 @@
 ﻿using Library.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace WpfApp.Views.BuyerWPFPages
 	/// </summary>
 	public partial class ShowAllProductsPage : Page
 	{
+
+		private ObservableCollection<ProductModel> filteredProducts;
 		private TaskCompletionSource<object?> _taskCompletionSource = new();
 		List<ProductModel> products;
 		List<CartProductModel> productsFromCart;
@@ -29,7 +32,9 @@ namespace WpfApp.Views.BuyerWPFPages
 			InitializeComponent();
 			this.products = products;
 			this.productsFromCart = productsFromCart;
-			ProductsDataGrid.ItemsSource = this.products;
+
+			filteredProducts = new ObservableCollection<ProductModel>(products);
+			ProductsDataGrid.ItemsSource = filteredProducts;
 			CartProductsDataGrid.ItemsSource = this.productsFromCart;
 		}
 
@@ -37,7 +42,7 @@ namespace WpfApp.Views.BuyerWPFPages
 		{
 			if (ProductsDataGrid.SelectedItem is ProductModel selectedProduct)
 			{
-				var detailsWindow = new ProductDetailsWindow(selectedProduct);
+				var detailsWindow = new ProductDetailsWindow(selectedProduct);   
 				bool? result = detailsWindow.ShowDialog();
 
 				if (result != true || detailsWindow == null)
@@ -62,6 +67,36 @@ namespace WpfApp.Views.BuyerWPFPages
 		private void exit_button_Click(object sender, RoutedEventArgs e)
 		{
 			_taskCompletionSource.SetResult(null);
+		}
+
+		private void SearchButton_Click(object sender, RoutedEventArgs e)
+		{
+			SearchTextBox.Text = "";
+		}
+
+		private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			string searchText = SearchTextBox.Text.Trim().ToLower();
+			if (string.IsNullOrEmpty(searchText))
+			{
+				filteredProducts.Clear();
+				foreach (var product in products)
+				{
+					filteredProducts.Add(product);
+				}
+				return;
+			}
+			var filtered = products.Where(p =>
+			(int.TryParse(searchText, out int searchId) && p.Id == searchId) ||
+			p.Name.ToLower().Contains(searchText) ||
+			(p.Description?.Contains(searchText, StringComparison.CurrentCultureIgnoreCase) ?? false)).ToList();
+
+			// Aktualizacja listy
+			filteredProducts.Clear();
+			foreach (var product in filtered)
+			{
+				filteredProducts.Add(product);
+			}
 		}
 	}
 }

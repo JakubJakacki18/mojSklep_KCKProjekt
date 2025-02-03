@@ -22,12 +22,10 @@
             <Label Content="Wybierz sposób płatności:" />
 
             <StackPanel Name="radio_buttons_stackpanel">
-            <RadioButton GroupName="Options" Margin="10" Tag="cash" IsChecked="True" >
+            <RadioButton GroupName="Options" Margin="10" Tag="cash" IsChecked="True"  >
                 <WrapPanel>
-                    <!-- Obraz -->
-                        <Image Source="/Images/CASH-LOGO.jpg" Width="24" Height="24"  />
-                        <!-- Tekst -->
-                    <TextBlock Text="Gotówka" VerticalAlignment="Center" />
+                        <Image Source="/Images/CASH-LOGO.jpg" Width="30" Height="30"  />
+                        <TextBlock Text="Gotówka" VerticalAlignment="Center" />
                 </WrapPanel>
             </RadioButton>
 
@@ -35,14 +33,14 @@
 
             <RadioButton GroupName="Options" Margin="10" Tag="card" >
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/1.jpg" Width="24" Height="24" Margin="0,0,10,0" />
+                    <Image Source="/Images/1.jpg" Width="30" Height="30" Margin="0,0,10,0" />
                     <TextBlock Text="Karta debetowa" VerticalAlignment="Center" />
                 </StackPanel>
             </RadioButton>
 
             <RadioButton GroupName="Options" Margin="10" Tag="blik" >
                 <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/BLIK-LOGO.webp" Width="24" Height="24" Margin="0,0,10,0" />
+                        <Image Source="/Views/BuyerWPFPages/BLIK-LOGO.webp" Width="30" Height="30" Margin="0,0,10,0" />
                         <TextBlock Text="Blik" VerticalAlignment="Center" />
                 </StackPanel>
             </RadioButton>

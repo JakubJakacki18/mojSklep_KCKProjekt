@@ -30,14 +30,25 @@ namespace WpfApp.Views.SellerWPFPages
             }
         }
 
-        private void logout_button_Click(object sender, RoutedEventArgs e)
-        {
-            var result = (MessageBox.Show("Czy chcesz się wylogować?", ConstString.AppName, MessageBoxButton.YesNo) == MessageBoxResult.Yes);
-            if (result)
-            {
-                UserController.GetInstance().Logout();
-                _taskCompletionSource.SetResult(0);
-            }
-        }
-    }
+		private void logout_menu_item_click(object sender, RoutedEventArgs e)
+		{
+			var result = (MessageBox.Show("Czy chcesz się wylogować?", ConstString.AppName, MessageBoxButton.YesNo) == MessageBoxResult.Yes);
+			if (result)
+			{
+				UserController.GetInstance().Logout();
+				_taskCompletionSource.SetResult(0);
+			}
+		}
+
+		private void AccountButton_Click(object sender, RoutedEventArgs e)
+		{
+			Button button = (Button)sender;
+			if (button != null && button.ContextMenu != null)
+			{
+				button.ContextMenu.PlacementTarget = button;
+				button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+				button.ContextMenu.IsOpen = true;
+			}
+		}
+	}
 }

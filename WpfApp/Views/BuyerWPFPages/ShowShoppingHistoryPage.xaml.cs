@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Library.Data;
 using Library.Models;
+using WpfApp.ViewModel;
 
 namespace WpfApp.Views.BuyerWPFPages
 {
@@ -22,13 +23,18 @@ namespace WpfApp.Views.BuyerWPFPages
 	/// </summary>
 	public partial class ShowShoppingHistoryPage : Page
 	{
-        private TaskCompletionSource _taskCompletionSource = new();
+        private TaskCompletionSource<object?> _taskCompletionSource = new();
 		private List<ShoppingCartHistoryModel> shoppingCartHistories;
+		private List<ShoppingCartHistoryViewModel> shoppingCartHistoryViewModels;
         public ShowShoppingHistoryPage(List<ShoppingCartHistoryModel> shoppingCartHistories)
 		{
 			InitializeComponent();
 			this.shoppingCartHistories = shoppingCartHistories;
-			_taskCompletionSource.SetResult();
+			this.shoppingCartHistoryViewModels = shoppingCartHistories
+	   .Select(model => new ShoppingCartHistoryViewModel(model))
+	   .ToList();
+			HistoryDataGrid.ItemsSource = shoppingCartHistoryViewModels;
+
 		}
 
         internal async Task WaitForResultAsync()
@@ -36,5 +42,20 @@ namespace WpfApp.Views.BuyerWPFPages
 			await _taskCompletionSource.Task;
             return;
         }
-    }
+
+		private void HistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			if (HistoryDataGrid.SelectedItem is ShoppingCartHistoryViewModel selectedHistoryEntry)
+			{
+				var detailsWindow = new HistoryDetailsWindow(selectedHistoryEntry);
+				bool? result = detailsWindow.ShowDialog();
+
+			}
+		}
+
+		private void exit_button_Click(object sender, RoutedEventArgs e)
+		{
+			_taskCompletionSource.SetResult(null);
+		}
+	}
 }

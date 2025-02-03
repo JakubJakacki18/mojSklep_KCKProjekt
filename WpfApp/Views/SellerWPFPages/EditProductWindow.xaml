@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.SellerWPFPages"
         mc:Ignorable="d"
-        Title="EditProductWindow" Height="800" Width="800">
+        Title="Edycja produktu" Height="800" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -34,10 +34,11 @@
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
             <StackPanel Orientation="Horizontal">
-                <Button Name="remove_product_button" Content="Usuń produkt" Margin="10" Click="remove_product_button_Click" />
-                <Button Name="reject_changes_button" Content="Zrezygnuj z wprowadzania zmian" Margin="10" Click="reject_changes_button_Click" />
+                <Button Name="add_product_button" Content="Edytuj" Margin="10" Click="add_product_button_Click" />
+                <Button Name="remove_product_button" Content="Usuń" Margin="10" Click="remove_product_button_Click" />
             </StackPanel>
-            <Button Name="add_product_button" Content="Edytuj produkt" Margin="10" Click="add_product_button_Click" />
+            <Button Name="reject_changes_button" Content="Zrezygnuj" Margin="10" Click="reject_changes_button_Click" />
+
 
         </StackPanel>
     </Grid>

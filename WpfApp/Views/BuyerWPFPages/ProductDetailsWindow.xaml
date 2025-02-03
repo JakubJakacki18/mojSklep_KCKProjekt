@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
         mc:Ignorable="d"
-        Title="ProductDetailsWindow" Height="500" Width="400">
+        Title="Dodaj do koszyka" Height="500" Width="400">
     <Grid>
         <StackPanel Orientation="Vertical">
-        <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,5,0,0"/>
+        <Label Name="IdLabel" Content="Kod kreskowy: " Margin="5,15,0,0"/>
             <Label Name="NameLabel" Content="Nazwa: " Margin="5,5,0,0"/>
             <Label Name="DescriptionLabel" Content="Opis: " Margin="5,5,0,0"/>
             <Label Name="PriceLabel" Content="Cena: " Margin="5,5,0,0"/>
@@ -22,8 +22,8 @@
         <Label Name="PriceToPayLabel"/>
 
         <!-- Buttons -->
-        <Button Name="AddToCartButton" Content="Dodaj do koszyka" />
-        <Button Name="RejectButton" Content="Zrezygnuj z dodawania do koszyka"/>
+        <Button Name="AddToCartButton" Content="Dodaj" />
+        <Button Name="RejectButton" Content="Zrezygnuj"/>
         </StackPanel>
     </Grid>
 </Window>
