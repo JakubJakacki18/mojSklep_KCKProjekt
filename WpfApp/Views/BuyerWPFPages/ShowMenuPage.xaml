@@ -20,11 +20,11 @@
             </Button.ContextMenu>
         </Button>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-            <Button Name="show_all_products_button" Content="1. Zobacz listę naszych produktów" Tag="1" Click="menu_button_click"/>
-            <Button Name="show_user_cart_button" Content="2. Zobacz swój koszyk" Tag="2" Click="menu_button_click"/>
-            <Button Name="show_payement_method" Content="3. Zapłać za zakupy"  Tag="3" Click="menu_button_click"/>
-            <Button Name="show_shopping_history_button" Content="4. Pokaż historię zakupów" Tag="4" Click="menu_button_click"/>
-            <Button Name="exit_button" Content="5. Wyjdź z Aplikacji" Tag="5" Click="menu_button_click"/>
+            <Button Name="show_all_products_button" Content="Zobacz listę naszych produktów" Tag="1" Click="menu_button_click"/>
+            <Button Name="show_user_cart_button" Content="Zobacz swój koszyk" Tag="2" Click="menu_button_click"/>
+            <Button Name="show_payement_method" Content="Zapłać za zakupy"  Tag="3" Click="menu_button_click"/>
+            <Button Name="show_shopping_history_button" Content="Pokaż historię zakupów" Tag="4" Click="menu_button_click"/>
+            <Button Name="exit_button" Content="Wyjdź z Aplikacji" Tag="5" Click="menu_button_click"/>
             <!--<Button Name="logout_button" Content="6. Wyloguj się" Click="logout_button_Click"></Button>-->
         </StackPanel>
     </Grid>

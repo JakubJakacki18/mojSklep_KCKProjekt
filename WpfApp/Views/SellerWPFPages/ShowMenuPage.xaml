@@ -20,9 +20,9 @@
             </Button.ContextMenu>
         </Button>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-            <Button Content="1. Dodaj nowy produkt" Tag="1" Click="menu_button_click" />
-            <Button Content="2. Przejrzyj i edytuj produkty" Tag="2" Click="menu_button_click"/>
-            <Button Content="3. Wyjdź z aplikacji" Tag="3" Click="menu_button_click"/>
+            <Button Content="Dodaj nowy produkt" Tag="1" Click="menu_button_click" />
+            <Button Content="Przejrzyj i edytuj produkty" Tag="2" Click="menu_button_click"/>
+            <Button Content="Wyjdź z aplikacji" Tag="3" Click="menu_button_click"/>
         </StackPanel>
     </Grid>
 </Page>
