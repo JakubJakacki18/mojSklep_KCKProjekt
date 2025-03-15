@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.Views.BuyerWPFPages"
+        xmlns:converter="clr-namespace:WpfApp.Converter"
         mc:Ignorable="d"
              Title="Szczegóły wpisu" Height="600" Width="600">
+    <Window.Resources>
+        <converter:PriceSumConverter x:Key="PriceSumConverter" />
+    </Window.Resources>
     <Grid>
         <StackPanel Orientation="Vertical">
             <Label Name="DateLabel" Content="Zakupiono: " Margin="5,15,0,0" />

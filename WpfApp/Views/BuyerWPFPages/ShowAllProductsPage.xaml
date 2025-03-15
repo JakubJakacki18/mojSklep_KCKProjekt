@@ -55,7 +55,7 @@
                     <DataGridTextColumn Width="1*" Header="Cena" Binding="{Binding Price}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Name="exit_button" Content="Powrót" HorizontalAlignment="Right" Click="exit_button_Click" />
+            <Button Name="exit_button" Content="Wyjdź do menu" HorizontalAlignment="Right" Click="exit_button_Click" />
         </StackPanel>
 
         <!-- Expander umieszczony w prawej kolumnie -->
